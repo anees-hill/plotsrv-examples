@@ -5,8 +5,17 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "plotsrv",
     "pandas>=3.0.0",
     "plotnine>=0.15.3",
     "polars>=1.38.1",
     "pyarrow>=23.0.0",
+    "psutil>=7.2.2",
+    "matplotlib>=3.10.8",
+    "seaborn>=0.13.2",
+    "numpy>=2.4.2",
 ]
+
+[tool.uv.sources]
+plotsrv = { path = "../plotsrv", editable = true }
+
