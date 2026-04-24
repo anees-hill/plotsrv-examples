@@ -1,0 +1,57 @@
+# Application configuration file
+app:
+  name: ExampleService-YML
+  version: 1.4.2
+  environment: production
+  debug: false
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  ssl:
+    enabled: true
+    certificate_path: /etc/example/certs/server.crt
+    key_path: /etc/example/certs/server.key
+
+database:
+  engine: postgres
+  host: db.example.internal
+  port: 5432
+  name: exampledb
+  user: example_user
+  password: ${DB_PASSWORD}   # pulled from environment variable
+  pool:
+    max_connections: 20
+    min_connections: 5
+    timeout_seconds: 30
+
+logging:
+  level: info
+  format: json
+  output:
+    - stdout
+    - /var/log/example-service/app.log
+
+features:
+  authentication: true
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 120
+  caching:
+    enabled: true
+    ttl_seconds: 300
+
+integrations:
+  payment_provider:
+    enabled: true
+    api_key: ${PAYMENT_API_KEY}
+    endpoint: https://api.payments.example.com/v1
+  analytics:
+    enabled: false
+
+users:
+  - username: admin
+    roles: [admin, ops]
+  - username: service_bot
+    roles: [system]
+

@@ -1,0 +1,69 @@
+{
+  "app": {
+    "name": "ExampleService",
+    "version": "1.4.2",
+    "environment": "production",
+    "debug": false
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080,
+    "ssl": {
+      "enabled": true,
+      "certificatePath": "/etc/example/certs/server.crt",
+      "keyPath": "/etc/example/certs/server.key"
+    }
+  },
+  "database": {
+    "engine": "postgres",
+    "host": "db.example.internal",
+    "port": 5432,
+    "name": "exampledb",
+    "user": "example_user",
+    "password": "${DB_PASSWORD}",
+    "pool": {
+      "maxConnections": 20,
+      "minConnections": 5,
+      "timeoutSeconds": 30
+    }
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "output": [
+      "stdout",
+      "/var/log/example-service/app.log"
+    ]
+  },
+  "features": {
+    "authentication": true,
+    "rateLimiting": {
+      "enabled": true,
+      "requestsPerMinute": 120
+    },
+    "caching": {
+      "enabled": true,
+      "ttlSeconds": 300
+    }
+  },
+  "integrations": {
+    "paymentProvider": {
+      "enabled": true,
+      "apiKey": "${PAYMENT_API_KEY}",
+      "endpoint": "https://api.payments.example.com/v1"
+    },
+    "analytics": {
+      "enabled": false
+    }
+  },
+  "users": [
+    {
+      "username": "admin",
+      "roles": ["admin", "ops"]
+    },
+    {
+      "username": "service_bot",
+      "roles": ["system"]
+    }
+  ]
+}

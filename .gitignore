@@ -6,6 +6,9 @@ dist/
 wheels/
 *.egg-info
 
+# plotsrv snapshots
+.plotsrv/*
+
 # Virtual environments
 .venv
 .vscode/settings.json

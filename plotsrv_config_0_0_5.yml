@@ -1,0 +1,35 @@
+ui-settings:
+  default:
+    terminate_process_option: false
+    show_help_note: false
+    show_history_controls: true
+    show_history_banner: true
+    show_freshness: true
+
+freshness-settings:
+  default:
+    enabled: true
+    warn_after: 90s
+    overdue_after: 180s
+
+storage-settings:
+  default:
+    enabled: true
+    watch_enabled: false
+    root_dir: .plotsrv/store
+    default_keep_last: 2
+    max_snapshot_size_mb: 20
+    views:
+      etl:import:
+        keep_last: 5
+      static-files:csv-large-head:
+        enabled: false
+
+  instances:
+    smoke:
+      root_dir: .plotsrv/store-smoke
+      default_keep_last: 1
+      views:
+        etl:import:
+          keep_last: 2
+          max_snapshot_size_mb: 100
