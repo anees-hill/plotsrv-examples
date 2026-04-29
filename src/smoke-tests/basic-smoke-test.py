@@ -41,6 +41,12 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "--publisher-script",
+        default=None,
+        help="Path to a Python publisher script to run instead of --publisher-module.",
+    )
+
+    parser.add_argument(
         "--config",
         default="plotsrv.yml",
     )
@@ -179,6 +185,12 @@ def build_plotsrv_command(args: argparse.Namespace) -> list[str]:
 
 
 def build_publisher_command(args: argparse.Namespace) -> list[str]:
+    if args.publisher_script:
+        return [
+            sys.executable,
+            args.publisher_script,
+        ]
+
     return [
         sys.executable,
         "-m",
