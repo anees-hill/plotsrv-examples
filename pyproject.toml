@@ -19,3 +19,8 @@ dependencies = [
 [tool.uv.sources]
 plotsrv = { path = "../plotsrv", editable = true }
 
+[dependency-groups]
+dev = [
+    "ipython>=9.13.0",
+]
+

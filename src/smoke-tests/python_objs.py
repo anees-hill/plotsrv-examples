@@ -1,9 +1,15 @@
+from __future__ import annotations
+
+import os
 import polars as pl
 import numpy as np
 from plotsrv import plotsrv
 
+HOST = os.getenv("PLOTSRV_HOST", os.getenv("HOST", "127.0.0.1"))
+PORT = int(os.getenv("PLOTSRV_PORT", os.getenv("PORT", "8998")))
 
-@plotsrv(label="planets (nested dict)", host="127.0.0.1", port=8000)
+
+@plotsrv(label="planets (nested dict)", host=HOST, port=PORT)
 def get_planets():
     planets = {
         "earth": {
@@ -58,7 +64,7 @@ def get_planets():
     return planets
 
 
-@plotsrv(label="weather_observations (nested list)", host="127.0.0.1", port=8000)
+@plotsrv(label="weather_observations (nested list)", host=HOST, port=PORT)
 def get_weather_observations():
     weather_observations = [
         {
@@ -92,7 +98,7 @@ def get_weather_observations():
     return weather_observations
 
 
-@plotsrv(label="computer_resources (nested dict)", host="127.0.0.1", port=8000)
+@plotsrv(label="computer_resources (nested dict)", host=HOST, port=PORT)
 def get_computer_resources():
     computer_resources = {
         "servers": {
@@ -126,7 +132,7 @@ def get_computer_resources():
     return computer_resources
 
 
-@plotsrv(label="Satellite (class)", host="127.0.0.1", port=8000)
+@plotsrv(label="Satellite (class)", host=HOST, port=PORT)
 class Satellite:
     def __init__(self, name, planet, altitude_km, instruments):
         self.name = name
@@ -148,13 +154,13 @@ class Satellite:
         }
 
 
-@plotsrv(label="random array (np.array)", host="127.0.0.1", port=8000)
+@plotsrv(label="random array (np.array)", host=HOST, port=PORT)
 def get_random_np():
     arr = np.random.randn(5000, 10)
     return arr
 
 
-@plotsrv(label="satellites (nested list)", host="127.0.0.1", port=8000)
+@plotsrv(label="satellites (nested list)", host=HOST, port=PORT)
 def get_satellites_list():
     satellites = [
         Satellite(
@@ -174,7 +180,7 @@ def get_satellites_list():
     return satellites
 
 
-@plotsrv(label="planet_metrics (pl.df)", host="127.0.0.1", port=8000)
+@plotsrv(label="planet_metrics (pl.df)", host=HOST, port=PORT)
 def get_planet_metrics_df():
     planet_metrics = pl.DataFrame(
         {
@@ -188,7 +194,7 @@ def get_planet_metrics_df():
     return planet_metrics
 
 
-@plotsrv(label="mixed_objects (nested list)", host="127.0.0.1", port=8000)
+@plotsrv(label="mixed_objects (nested list)", host=HOST, port=PORT)
 def get_mixed_objects_list():
     mixed_objects = [
         planets["earth"],
