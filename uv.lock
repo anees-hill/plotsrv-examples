@@ -880,7 +880,7 @@ wheels = [
 
 [[package]]
 name = "plotsrv"
-version = "0.0.7"
+version = "0.0.8"
 source = { editable = "../plotsrv" }
 dependencies = [
     { name = "bleach" },
@@ -907,10 +907,9 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "ipython", specifier = ">=9.13.0" },
-    { name = "polars-lts-cpu", specifier = ">=1.33,<2" },
-    { name = "pyarrow", specifier = ">=20,<21" },
-    { name = "seaborn", specifier = ">=0.13,<1" },
+    { name = "polars-lts-cpu", specifier = ">=1.33" },
+    { name = "pyarrow", specifier = ">=20" },
+    { name = "seaborn", specifier = ">=0.13" },
 ]
 test = [
     { name = "httpx", specifier = ">=0.28,<1" },

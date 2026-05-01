@@ -1,0 +1,100 @@
+planet_name,star_system,distance_from_earth_ly,mass_earth_masses,radius_km,orbital_period_days,surface_temp_c,has_rings,number_of_moons,gravity_m_s2,escape_velocity_km_s,atmosphere_type,discovered_year,discovering_mission,habitable,water_presence,magnetic_field,axial_tilt_deg,rotation_period_hours,radiation_level
+Uranus,Sol,800.61,1.75,67797.0,3993.3,342.1,False,79,21.71,9.84,None,1969,Voyager,False,Liquid,False,61.45,294.5,477.12
+Mars,Sol,200.23,2.4,5593.0,2998.4,-105.9,False,14,6.69,34.74,Thick,1903,Galileo,True,Ice,True,38.45,795.38,185.72
+Jupiter,Sol,167.57,65.8,45734.0,1477.5,127.4,True,27,21.01,15.96,None,1759,JWST,True,Vapor,True,53.24,493.03,414.7
+Uranus,Proxima Centauri,104.66,11.11,6113.0,1556.9,224.1,True,94,12.32,14.46,Toxic,1804,Galileo,False,Ice,True,66.07,44.61,95.4
+Earth,Sirius,636.47,32.5,26907.0,4356.1,99.8,False,22,13.06,1.68,Thick,1712,Hubble,False,None,True,46.35,764.2,403.59
+Neptune,Proxima Centauri,706.51,101.72,56463.0,5977.0,-181.0,False,16,14.61,8.69,Thin,1767,Apollo,False,None,True,73.26,172.73,328.75
+Jupiter,Sirius,31.68,240.8,30910.0,852.1,348.5,True,97,11.66,19.25,Thick,1952,Galileo,False,Vapor,False,64.99,633.32,96.37
+Jupiter,Proxima Centauri,936.22,171.66,69806.0,9398.7,-192.6,False,12,3.92,7.9,Toxic,1852,JWST,True,None,False,55.36,90.24,151.25
+Uranus,Proxima Centauri,52.07,153.85,39575.0,7563.6,333.3,False,13,9.98,59.17,None,1785,Cassini,False,Vapor,True,13.57,947.13,65.89
+Venus,Betelgeuse,541.34,88.12,23160.0,5886.9,425.3,False,10,20.25,19.21,None,1946,JWST,False,Vapor,False,75.24,295.27,191.48
+Earth,Proxima Centauri,709.09,279.53,16188.0,8293.0,103.0,False,27,20.31,8.69,Thin,1826,Galileo,True,Ice,True,84.23,230.33,101.82
+Uranus,Alpha Centauri,870.98,119.16,25186.0,847.9,174.9,False,41,9.3,12.75,None,1615,Cassini,False,Vapor,True,12.33,133.49,322.0
+Earth,Betelgeuse,714.12,26.22,26705.0,4794.5,133.9,True,95,14.34,35.67,None,1755,Hubble,True,None,False,43.94,946.27,497.25
+Earth,Proxima Centauri,801.75,185.16,5741.0,6319.4,72.4,False,98,6.61,4.78,Toxic,1953,JWST,False,Liquid,False,23.3,713.34,6.0
+Neptune,Sol,339.52,34.24,26501.0,8295.1,421.2,False,60,7.1,51.88,Thick,1710,Apollo,False,Liquid,False,67.91,742.95,270.46
+Jupiter,Alpha Centauri,814.84,103.63,33032.0,7845.5,425.8,True,63,1.67,57.73,None,1600,Cassini,True,None,False,64.95,501.91,286.83
+Mars,Alpha Centauri,80.21,152.27,50869.0,2806.8,35.1,True,30,27.01,15.56,Toxic,1640,Cassini,False,Liquid,False,12.68,477.35,457.1
+Neptune,Alpha Centauri,894.83,262.28,46314.0,9411.8,230.5,True,80,7.11,27.56,Toxic,1647,JWST,True,Liquid,True,78.93,114.47,253.0
+Neptune,Betelgeuse,547.64,148.11,49905.0,1287.2,448.8,True,72,7.6,2.31,Thin,2014,Galileo,True,Vapor,True,16.29,562.04,271.85
+Earth,Proxima Centauri,817.32,210.71,1577.0,8757.6,473.4,False,9,9.11,38.8,Toxic,2019,Cassini,True,Liquid,True,71.75,250.68,235.83
+Saturn,Proxima Centauri,452.37,297.85,16019.0,9710.9,156.3,False,7,4.69,25.42,Thin,1707,Hubble,False,Liquid,False,41.13,977.26,134.45
+Jupiter,Sol,643.61,39.53,46656.0,1812.7,117.0,False,20,19.54,16.93,None,1760,JWST,False,Liquid,True,29.54,797.6,28.01
+Venus,Sol,526.45,82.49,34395.0,7234.6,-4.9,False,76,3.18,13.2,Thin,1760,Hubble,True,Ice,False,14.24,415.93,204.33
+Neptune,Alpha Centauri,731.62,118.43,1367.0,450.8,471.2,True,58,4.89,39.59,Toxic,1958,JWST,False,None,True,15.09,155.58,26.3
+Mars,Sol,81.72,126.61,56510.0,4084.0,-100.0,True,49,19.7,25.56,Thick,1727,Hubble,False,Vapor,False,59.57,786.41,275.25
+Saturn,Betelgeuse,60.45,123.37,54324.0,5187.0,205.9,False,68,10.85,11.6,Thick,1809,Galileo,False,Liquid,False,49.54,126.44,153.65
+Saturn,Proxima Centauri,247.18,272.29,38841.0,5827.4,-2.2,False,69,21.53,41.66,None,1750,JWST,True,None,True,10.99,193.39,266.8
+Venus,Alpha Centauri,159.63,214.24,5586.0,9362.6,-4.7,False,29,17.17,34.34,None,1854,Apollo,True,Liquid,True,10.14,215.46,67.15
+Neptune,Sol,871.8,182.41,53890.0,6738.9,83.5,False,94,8.42,51.66,Thick,1817,Galileo,False,Ice,True,6.51,559.11,466.31
+Mars,Betelgeuse,219.29,92.88,41276.0,4838.7,499.2,True,16,19.87,7.93,Thin,1629,Hubble,True,Ice,True,66.94,788.12,447.26
+Jupiter,Betelgeuse,975.87,247.15,54955.0,8106.3,-161.5,False,74,4.37,47.35,None,1644,JWST,False,Liquid,False,64.07,317.74,95.0
+Mercury,Sol,336.96,286.52,52871.0,9507.8,205.0,True,19,16.56,40.74,Toxic,1679,Galileo,False,Liquid,True,5.26,89.25,171.72
+Mars,Proxima Centauri,182.2,246.38,56407.0,269.6,-142.2,True,47,13.68,7.79,None,1638,Hubble,False,Liquid,False,50.42,467.22,306.75
+Venus,Sol,789.72,0.57,36743.0,9826.1,-91.8,True,72,8.77,41.99,Thin,1839,Voyager,True,Ice,True,7.62,749.37,47.84
+Saturn,Alpha Centauri,658.74,190.96,10682.0,907.0,107.7,True,1,18.52,27.05,None,1644,Voyager,True,Ice,True,81.34,225.56,177.28
+Jupiter,Sol,498.25,15.44,47310.0,8153.1,157.3,False,36,26.27,56.75,Toxic,1677,Cassini,False,None,True,81.64,223.82,125.56
+Mars,Betelgeuse,555.41,77.36,43813.0,2839.3,-18.8,False,0,29.97,9.36,Toxic,1936,Apollo,True,Vapor,True,62.84,947.49,457.76
+Mercury,Sol,719.23,17.95,52215.0,1365.2,21.5,False,3,18.63,38.93,Toxic,1995,Voyager,False,Vapor,True,83.36,954.38,426.26
+Mercury,Proxima Centauri,228.53,181.18,12722.0,4426.6,-139.1,False,99,12.74,23.54,Thin,1948,Hubble,True,Ice,False,73.03,990.51,289.92
+Earth,Sirius,996.33,206.01,14453.0,6457.4,12.3,True,53,7.53,57.45,Thin,1887,Galileo,True,Vapor,True,74.57,808.62,260.17
+Earth,Sol,974.8,34.43,62438.0,3840.5,476.6,True,24,8.46,20.47,Toxic,1879,JWST,True,Liquid,False,51.27,192.24,465.36
+Uranus,Proxima Centauri,650.36,115.21,52748.0,592.9,461.3,True,2,14.9,57.77,Toxic,1715,Galileo,False,None,True,27.55,215.92,466.21
+Venus,Proxima Centauri,199.62,136.93,63668.0,6014.6,34.4,False,8,11.65,54.19,Thin,1868,Cassini,False,Ice,False,19.6,343.52,484.67
+Neptune,Betelgeuse,680.26,110.78,53351.0,9028.9,199.6,True,85,27.5,16.95,Thin,2003,Galileo,False,Ice,True,29.45,321.54,62.69
+Mars,Proxima Centauri,72.29,36.4,42204.0,3863.0,436.7,True,86,11.68,48.41,Thin,1934,Voyager,True,Vapor,True,56.56,956.75,80.28
+Mars,Proxima Centauri,30.75,125.74,46135.0,2202.5,-195.7,True,75,11.83,59.74,Thick,1911,Galileo,False,Liquid,True,15.54,790.13,338.37
+Neptune,Proxima Centauri,257.76,225.38,62350.0,4453.6,367.5,True,73,12.12,15.91,Thin,1652,Voyager,False,None,False,23.28,725.39,270.72
+Uranus,Proxima Centauri,462.68,21.4,40938.0,531.2,463.9,False,33,25.26,26.77,Toxic,1667,Voyager,False,Vapor,False,42.13,190.03,9.23
+Saturn,Alpha Centauri,868.29,24.15,44635.0,8213.9,-136.1,True,42,19.87,31.69,Thick,1781,Apollo,False,Ice,True,20.97,909.98,30.99
+Saturn,Alpha Centauri,727.2,106.5,11797.0,8272.1,-87.0,True,73,18.81,18.4,Thin,1633,Cassini,True,Ice,True,52.98,828.73,444.04
+Uranus,Betelgeuse,742.73,282.52,33701.0,5900.6,472.5,False,93,10.69,1.9,Toxic,1883,Hubble,True,Vapor,True,83.09,167.82,434.44
+Saturn,Sol,425.55,200.6,50431.0,3563.4,176.3,False,21,24.72,13.99,None,1905,Voyager,False,Liquid,False,67.33,871.81,178.64
+Earth,Proxima Centauri,346.0,203.63,19695.0,8007.8,-190.1,False,69,2.11,17.63,Thick,1985,JWST,True,None,True,59.98,275.89,445.53
+Mars,Sol,371.1,108.64,14956.0,5569.1,-19.7,True,1,26.25,27.17,Toxic,1848,Cassini,True,None,False,52.44,85.47,296.84
+Uranus,Sol,987.65,178.14,22654.0,8268.0,115.0,True,93,15.87,11.1,None,1710,Hubble,True,None,True,43.92,658.54,402.95
+Mars,Betelgeuse,40.21,3.14,17664.0,6333.0,285.0,True,65,12.55,52.52,Toxic,1693,JWST,True,None,False,16.79,655.54,213.72
+Neptune,Proxima Centauri,867.04,190.87,15829.0,7854.8,313.2,True,31,15.42,42.59,Thin,2009,Galileo,True,Liquid,False,80.52,99.46,56.7
+Mercury,Proxima Centauri,578.72,273.99,30315.0,6005.7,496.8,False,15,20.36,6.03,Thin,1778,Cassini,False,Ice,False,22.37,322.26,216.86
+Earth,Sirius,438.67,183.81,63641.0,4170.7,1.3,True,75,1.37,39.36,None,1646,JWST,True,Ice,True,8.22,992.85,228.65
+Jupiter,Sol,725.29,262.12,35987.0,9581.6,176.8,True,0,26.28,39.57,Thin,1881,Cassini,False,None,False,67.5,680.03,275.47
+Earth,Sol,486.72,217.22,13967.0,5434.1,173.3,False,71,13.96,57.42,Toxic,1939,Cassini,False,None,True,15.81,731.42,52.79
+Uranus,Alpha Centauri,873.44,36.26,6311.0,6070.6,84.0,False,47,10.95,1.18,None,1961,Galileo,False,None,False,33.47,216.85,495.7
+Jupiter,Sirius,900.71,270.75,49035.0,2243.9,-81.6,False,49,5.01,15.63,Toxic,1691,Galileo,True,Vapor,True,2.55,83.39,122.07
+Mercury,Alpha Centauri,421.78,20.03,27413.0,6275.2,484.2,True,12,13.74,55.74,Toxic,1975,Cassini,True,Vapor,False,12.34,280.52,99.28
+Uranus,Alpha Centauri,276.9,160.24,57706.0,5737.5,397.3,True,14,15.39,56.0,Toxic,1811,JWST,True,Ice,False,15.59,252.65,263.4
+Venus,Alpha Centauri,592.39,42.73,46506.0,1889.1,148.8,True,52,12.71,43.51,Thin,1674,Apollo,True,Ice,True,4.9,238.37,268.6
+Mars,Betelgeuse,912.37,3.61,55941.0,642.9,222.3,True,43,20.68,46.18,Thin,1977,Voyager,False,None,True,59.1,196.79,219.91
+Mercury,Betelgeuse,210.74,126.67,19764.0,6063.4,-40.9,True,7,13.21,6.4,Toxic,1801,Galileo,False,Vapor,False,75.33,576.88,385.95
+Mars,Alpha Centauri,623.0,88.58,48773.0,7648.7,180.7,False,73,28.88,31.32,Thick,2006,Apollo,False,Liquid,False,33.6,331.46,258.33
+Saturn,Sirius,631.6,145.85,19220.0,5257.8,286.5,False,45,18.38,14.66,Toxic,2020,Galileo,True,Vapor,True,78.71,821.24,304.85
+Venus,Sol,733.14,173.2,65796.0,2306.4,160.6,True,68,24.42,11.69,Toxic,1896,Cassini,False,Ice,False,19.2,188.03,361.87
+Venus,Sirius,131.65,13.22,44910.0,6681.9,493.2,True,18,4.17,48.81,None,1907,Apollo,False,Vapor,False,29.29,467.3,12.51
+Mercury,Proxima Centauri,715.85,36.99,23391.0,847.1,227.9,True,37,12.52,8.97,Toxic,1810,JWST,False,Ice,True,13.57,18.59,285.32
+Venus,Betelgeuse,909.04,167.64,19596.0,4446.2,59.7,True,10,10.77,28.65,Thin,1937,JWST,True,None,True,55.85,484.27,442.1
+Jupiter,Sol,179.77,103.02,14174.0,1675.5,340.5,True,42,17.51,56.38,None,2010,Hubble,False,Liquid,True,37.79,60.56,8.69
+Venus,Sol,237.62,218.78,48930.0,1885.4,-80.7,False,19,25.97,11.96,Thick,1733,Voyager,False,None,False,55.2,977.83,202.59
+Mars,Proxima Centauri,971.4,195.72,16091.0,2062.8,69.2,False,19,3.27,58.7,None,1929,Voyager,True,None,False,68.55,791.64,463.11
+Mars,Proxima Centauri,181.06,253.7,42076.0,3897.7,42.9,False,20,3.1,59.66,Thick,1665,Galileo,False,Liquid,False,49.11,492.66,176.58
+Uranus,Alpha Centauri,854.4,207.78,19260.0,558.9,102.3,True,81,25.66,33.78,None,1879,Voyager,True,Liquid,True,56.49,91.15,229.36
+Mars,Betelgeuse,492.33,129.04,46676.0,4008.0,347.2,True,56,7.17,11.04,None,2021,Hubble,False,Liquid,False,84.17,594.48,490.77
+Uranus,Betelgeuse,247.31,201.92,57231.0,5141.5,138.9,False,49,20.39,19.65,Thick,1627,JWST,True,Ice,True,26.92,759.97,99.66
+Mars,Sirius,870.76,82.69,54684.0,4858.8,355.8,False,73,16.74,26.05,Thin,2011,Apollo,True,None,True,32.32,194.76,32.63
+Jupiter,Alpha Centauri,445.36,91.96,53499.0,3858.7,203.5,True,97,25.15,19.25,Thin,1716,Apollo,True,Ice,False,64.59,570.37,429.71
+Neptune,Alpha Centauri,514.87,236.72,13953.0,8399.5,39.4,False,25,4.63,17.56,Thin,1969,JWST,False,Liquid,True,55.02,815.14,434.23
+Uranus,Alpha Centauri,359.3,133.98,7099.0,1496.0,367.0,False,29,4.76,58.36,None,1916,Cassini,False,Ice,False,16.07,769.41,236.04
+Earth,Alpha Centauri,592.99,239.53,49227.0,5081.7,-33.2,True,72,17.15,10.05,Toxic,1924,JWST,True,Liquid,True,33.85,803.98,257.1
+Saturn,Betelgeuse,163.61,246.74,26416.0,667.3,-42.9,False,30,28.44,44.27,None,1713,Apollo,True,Vapor,True,42.11,879.93,417.9
+Mercury,Betelgeuse,391.14,257.28,30832.0,758.0,153.2,False,41,13.03,1.02,Toxic,1674,Galileo,True,Liquid,True,37.75,937.99,369.28
+Mars,Alpha Centauri,969.42,275.0,3149.0,5760.0,-17.4,False,67,10.48,36.17,Toxic,1801,Hubble,True,None,False,16.04,408.49,132.57
+Venus,Sirius,258.21,129.35,18911.0,5681.9,-193.6,True,60,18.59,55.04,Thin,1658,JWST,True,None,True,83.2,570.93,8.45
+Neptune,Sol,656.77,95.73,3324.0,8786.4,253.8,False,60,27.98,17.99,Toxic,1985,Cassini,True,None,False,68.61,791.71,239.85
+Mars,Sol,325.26,174.7,61664.0,5600.8,157.8,False,69,25.27,11.95,None,1614,Galileo,True,Ice,True,43.32,698.65,429.46
+Venus,Sirius,773.5,111.41,17794.0,9599.9,111.9,False,77,29.87,39.45,None,1830,JWST,True,None,True,61.21,995.54,447.92
+Saturn,Alpha Centauri,130.96,180.36,39456.0,534.5,476.9,True,67,1.65,43.04,Thin,1704,Galileo,True,Liquid,True,80.76,18.61,478.11
+Saturn,Betelgeuse,969.82,211.71,3690.0,1025.2,199.8,True,89,4.27,41.59,Thick,1764,JWST,True,Vapor,False,12.26,358.36,439.78
+Saturn,Sol,453.84,206.55,47012.0,488.5,404.4,False,16,18.67,19.84,None,1798,Galileo,True,None,False,22.53,284.62,290.02
+Venus,Proxima Centauri,236.13,112.43,23289.0,1893.5,-102.4,True,18,24.8,15.88,Toxic,2003,Voyager,True,Ice,False,48.84,266.0,222.3
+Mars,Proxima Centauri,73.59,50.14,62956.0,5435.6,198.4,False,50,9.27,57.4,None,1953,Galileo,False,Vapor,False,71.91,226.42,387.42
+Saturn,Sirius,169.84,129.22,62280.0,6473.4,407.6,True,69,7.94,55.47,None,1634,Voyager,True,None,False,3.26,710.58,369.91
