@@ -59,3 +59,7 @@ freshness-settings:
   expected_every: 60s
   warn_after: 90s
   error_after: 180s
+
+# Security settings -------
+security-settings:
+  tracebacks_enabled: false

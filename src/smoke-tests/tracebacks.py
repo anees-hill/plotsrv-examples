@@ -19,8 +19,8 @@ def run_a1():
                 e,
                 label="A1 - explicit publish_traceback",
                 section="traceback-tests",
-                host="127.0.0.1",
-                port=8000,
+                host="0.0.0.0",
+                port=8101,
             )
 
         time.sleep(1)
@@ -36,8 +36,8 @@ def run_a2():
         with capture_exceptions(
             label="A2 - capture_exceptions",
             section="traceback-tests",
-            host="127.0.0.1",
-            port=8000,
+            host="0.0.0.0",
+            port=8101,
             reraise=False,  # keep the loop going
         ):
             do_work(i)
@@ -49,8 +49,8 @@ def run_a2():
 @plotsrv(
     label="B1 - decorator on_error",
     section="traceback-tests",
-    host="127.0.0.1",
-    port=8000,
+    host="0.0.0.0",
+    port=8101,
     on_error="publish_and_raise",
 )
 def sometimes_fails(i: int) -> np.ndarray:
