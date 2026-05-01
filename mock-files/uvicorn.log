@@ -1,0 +1,726 @@
+INFO:     Started server process [18234]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+WARNING:  127.0.0.1:51298 - "GET /stars/unknown HTTP/1.1" 404 Not Found
+
+INFO:     127.0.0.1:51300 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51302 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51304 - "GET /planets HTTP/1.1" 200 OK
+
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/srv/api/app/routes/planets.py", line 120, in create_planet
+    radius = float(payload["radius_km"])
+KeyError: 'radius_km'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/srv/api/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 237, in app
+    raw_response = await run_endpoint_function(
+  File "/srv/api/app/routes/planets.py", line 125, in create_planet
+    raise ValueError("Invalid payload structure")
+ValueError: Invalid payload structure
+INFO:     127.0.0.1:51306 - "POST /planets HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51234 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51236 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51240 - "GET /planets?limit=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51244 - "GET /planets/earth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51246 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51250 - "GET /planets/mars HTTP/1.1" 200 OK
+
+WARNING:  127.0.0.1:51252 - "GET /planets/pluto HTTP/1.1" 404 Not Found
+WARNING:  127.0.0.1:51254 - "POST /planets HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:51258 - "GET /stars HTTP/1.1" 200 OK
+
+INFO:     127.0.0.1:51260 - "GET /planets/jupiter HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51264 - "PATCH /planets/jupiter HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51266 - "GET /planets/jupiter/moons HTTP/1.1" 200 OK
+
+WARNING:  127.0.0.1:51270 - "DELETE /planets/venus HTTP/1.1" 403 Forbidden
+
+INFO:     127.0.0.1:51272 - "GET /metrics HTTP/1.1" 200 OK
+
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/srv/api/.venv/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+    result = await app(scope, receive, send)
+  File "/srv/api/.venv/lib/python3.11/site-packages/fastapi/applications.py", line 1106, in __call__
+    await super().__call__(scope, receive, send)
+  File "/srv/api/.venv/lib/python3.11/site-packages/starlette/applications.py", line 122, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/srv/api/.venv/lib/python3.11/site-packages/starlette/middleware/errors.py", line 184, in __call__
+    raise exc
+  File "/srv/api/.venv/lib/python3.11/site-packages/starlette/middleware/errors.py", line 162, in __call__
+    await self.app(scope, receive, _send)
+  File "/srv/api/app/routes/planets.py", line 78, in get_planet
+    return Planet(**planet)
+TypeError: 'NoneType' object is not iterable
+INFO:     127.0.0.1:51274 - "GET /planets/unknown HTTP/1.1" 500 Internal Server Error
+
+INFO:     127.0.0.1:51278 - "GET /planets/saturn HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51280 - "GET /planets/saturn/rings HTTP/1.1" 200 OK
+
+WARNING:  127.0.0.1:51282 - "PUT /planets/mars HTTP/1.1" 400 Bad Request
+
+INFO:     127.0.0.1:51284 - "GET /planets/neptune HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51288 - "GET /planets/uranus HTTP/1.1" 200 OK
+
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/srv/api/app/db.py", line 45, in fetch_planet
+    result = await conn.fetchrow(query, name)
+  File "/srv/api/.venv/lib/python3.11/site-packages/asyncpg/connection.py", line 654, in fetchrow
+    return await self._execute(query, args, 1, timeout)
+asyncpg.exceptions.PostgresError: relation "planets" does not exist
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/srv/api/app/routes/planets.py", line 52, in get_planet
+    planet = await fetch_planet(name)
+  File "/srv/api/app/db.py", line 49, in fetch_planet
+    raise RuntimeError("Database query failed")
+RuntimeError: Database query failed
+INFO:     127.0.0.1:51290 - "GET /planets/mercury HTTP/1.1" 500 Internal Server Error
+
+INFO:     127.0.0.1:51294 - "GET /stars HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51296 - "GET /stars/sol HTTP/1.1" 200 OK
+
+WARNING:  127.0.0.1:51298 - "GET /stars/unknown HTTP/1.1" 404 Not Found
+
+INFO:     127.0.0.1:51300 - "GET /planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51302 - "POST /planets HTTP/1.1" 201 Created
+INFO:     127.0.0.1:51304 - "GET /planets HTTP/1.1" 200 OK
+
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/srv/api/app/routes/planets.py", line 120, in create_planet
+    radius = float(payload["radius_km"])
+KeyError: 'radius_km'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/srv/api/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 237, in app
+    raw_response = await run_endpoint_function(
+  File "/srv/api/app/routes/planets.py", line 125, in create_planet
+    raise ValueError("Invalid payload structure")
+ValueError: Invalid payload structure
+INFO:     127.0.0.1:51306 - "POST /planets HTTP/1.1" 500 Internal Server Error
+
+INFO:     127.0.0.1:51308 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51310 - "GET /health HTTP/1.1" 200 OK
+
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [18234]

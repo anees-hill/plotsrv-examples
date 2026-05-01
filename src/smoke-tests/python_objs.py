@@ -1,12 +1,36 @@
 from __future__ import annotations
 
 import os
-import polars as pl
+
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import polars as pl
+from plotnine import aes, geom_col, ggplot, labs, theme_minimal
+
 from plotsrv import plotsrv
 
 HOST = os.getenv("PLOTSRV_HOST", os.getenv("HOST", "127.0.0.1"))
-PORT = int(os.getenv("PLOTSRV_PORT", os.getenv("PORT", "8998")))
+PORT = int(os.getenv("PLOTSRV_PORT", os.getenv("PORT", "8101")))
+
+
+def make_deep_nested_dict(depth: int = 20) -> dict:
+    """Create a deliberately deep nested dict for testing JSON rendering."""
+    root = {"level_01": {}}
+    current = root["level_01"]
+
+    for level in range(2, depth + 1):
+        next_key = f"level_{level:02d}"
+        current[next_key] = {}
+        current = current[next_key]
+
+    current["terminal_value"] = {
+        "message": "Reached the deepest level",
+        "depth": depth,
+        "purpose": "testing deeply nested JSON rendering",
+    }
+
+    return root
 
 
 @plotsrv(label="planets (nested dict)", host=HOST, port=PORT)
@@ -125,6 +149,7 @@ def get_computer_resources():
             "alpha": {
                 "region": "us-east",
                 "servers": ["srv-001", "srv-002"],
+                "deep_deployment_trace": make_deep_nested_dict(depth=20),
             }
         },
     }
@@ -194,6 +219,48 @@ def get_planet_metrics_df():
     return planet_metrics
 
 
+@plotsrv(
+    label="planet gravity (matplotlib)", section="simple plots", host=HOST, port=PORT
+)
+def get_planet_gravity_matplotlib():
+    planets = ["Earth", "Mars", "Jupiter"]
+    gravity = [9.81, 3.71, 24.79]
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.bar(planets, gravity)
+    ax.set_title("Planet surface gravity")
+    ax.set_xlabel("Planet")
+    ax.set_ylabel("Gravity (m/s²)")
+    fig.tight_layout()
+
+    return fig
+
+
+@plotsrv(
+    label="planet temperature (plotnine)", section="simple plots", host=HOST, port=PORT
+)
+def get_planet_temperature_plotnine():
+    df = pd.DataFrame(
+        {
+            "planet": ["Earth", "Mars", "Jupiter"],
+            "mean_temp_c": [15, -63, -110],
+        }
+    )
+
+    plot = (
+        ggplot(df, aes(x="planet", y="mean_temp_c"))
+        + geom_col()
+        + labs(
+            title="Mean planet temperature",
+            x="Planet",
+            y="Mean temperature (°C)",
+        )
+        + theme_minimal()
+    )
+
+    return plot
+
+
 @plotsrv(label="mixed_objects (nested list)", host=HOST, port=PORT)
 def get_mixed_objects_list():
     mixed_objects = [
@@ -212,5 +279,7 @@ if __name__ == "__main__":
     computer_resources = get_computer_resources()
     satellites = get_satellites_list()
     planet_metrics = get_planet_metrics_df()
+    matplotlib_plot = get_planet_gravity_matplotlib()
+    plotnine_plot = get_planet_temperature_plotnine()
     mixed_objects = get_mixed_objects_list()
     array = get_random_np()
