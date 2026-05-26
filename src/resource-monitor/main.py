@@ -25,7 +25,7 @@ from plotnine import (
     theme_bw,
 )
 
-from plotsrv import plot, plot_launch, plotsrv, publish_artifact, publish_view, table
+from plotsrv import view, publish_view
 
 PublishStyle = Literal["decorator", "direct"]
 KindMode = Literal["explicit", "infer"]
@@ -249,15 +249,9 @@ def direct_publish(
     host: str,
     port: int,
 ) -> None:
-    if kind == "infer":
-        publish_artifact(obj, label=label, section=section, host=host, port=port)
-        return
 
-    if view_type == "table":
-        publish_view(obj, label=label, section=section, host=host, port=port)
-        return
-
-    plot_launch(obj, label=label, section=section, host=host, port=port)
+    publish_view(obj, label=label, section=section, host=host, port=port)
+    return
 
 
 def decorate_publisher(
@@ -271,12 +265,12 @@ def decorate_publisher(
     port: int,
 ) -> Callable:
     if kind == "infer":
-        return plotsrv(label=label, section=section, host=host, port=port)(fn)
+        return view(label=label, section=section, host=host, port=port)(fn)
 
     if view_type == "table":
-        return table(label=label, section=section, host=host, port=port)(fn)
+        return view(label=label, section=section, host=host, port=port)(fn)
 
-    return plot(label=label, section=section, host=host, port=port)(fn)
+    return view(label=label, section=section, host=host, port=port)(fn)
 
 
 def publish_tables(

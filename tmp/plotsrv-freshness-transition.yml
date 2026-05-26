@@ -1,0 +1,30 @@
+limits:
+  watched_files:
+    max_bytes: 5000000
+  render:
+    text: 1000000
+    html: off
+    markdown: off
+  tables:
+    max_rows: 10000
+    max_columns: 200
+
+table-settings:
+  table_view_mode: rich
+
+storage-settings:
+  enabled: true
+  root_dir: .plotsrv/store
+  default_keep_last: 5
+  max_snapshot_size_mb: 20
+
+freshness-settings:
+  enabled: true
+  expected_every: 5s
+  warn_after: 8s
+  overdue_after: 12s
+  views:
+    freshness-demo:one-shot:
+      expected_every: 5s
+      warn_after: 8s
+      overdue_after: 12s

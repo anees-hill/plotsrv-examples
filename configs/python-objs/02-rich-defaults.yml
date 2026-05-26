@@ -1,0 +1,69 @@
+table-settings:
+  table_view_mode: rich
+  max_table_rows_simple: 200
+  max_table_rows_rich: inf
+
+artifact-render-settings:
+  html_sanitize: false
+  markdown_sanitize: true
+
+render-settings:
+  default:
+    plot_dpi: 200
+    plot_default_figsize_in: "12,6"
+    plot_bbox_tight: true
+    plot_pad_inches: 0.10
+
+limits:
+  watched_files:
+    max_bytes: 5000000
+
+  render:
+    text: 1000000
+    html: off
+    markdown: off
+
+  tables:
+    max_rows: 10000
+    max_columns: 200
+
+view-order-settings:
+  sections:
+    - static-files
+    - simple plots
+    - another-section
+    - traceback-tests
+    - default
+
+  labels:
+    static-files:
+      - text-head
+      - text-tail
+      - long-log
+      - md
+      - jpg
+      - ini
+      - toml
+      - yml
+      - yaml
+      - json
+      - html-simple
+      - html-complex
+      - csv-very-large
+      - csv-large-head
+      - csv-large-tail
+      - csv-small
+
+    simple plots:
+      - planet gravity (matplotlib)
+      - planet temperature (plotnine)
+
+    default:
+      - titanic
+      - planets (nested dict)
+      - weather_observations (nested list)
+      - computer_resources (nested dict)
+      - satellites (nested list)
+      - planet_metrics (pl.df)
+      - mixed_objects (nested list)
+      - random array (np.array)

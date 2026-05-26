@@ -1,20 +1,33 @@
+# plotsrv.yml
+#
+# Starter configuration for plotsrv.
+# Use this file to control limits, rendering, storage, freshness, and security.
+
+limits:
+  watched_files:
+    # Maximum bytes read from watched files.
+    # Use "off" to read whole files.
+    max_bytes: 5000000
+
+  render:
+    # Display limits for text-like rendered views.
+    # Use "off" to disable render truncation.
+    text: 1000000
+    html: off
+    markdown: off
+
+  tables:
+    max_rows: 1000
+    max_columns: 200
+
 table-settings:
   table_view_mode: rich
   max_table_rows_simple: 200
-  max_table_rows_rich: inf
-
-# ui-settings:
-#   default:
-#     header_text: "DEFAULT CONFIG: default name"
-#   instances:
-#     smoke:
-#       header_text: "DEFAULT CONFIG: NAMED name"
-#       favicon: "www/free-png1.png"
-#       page_title: "The Test App 1"
-#       logo: "www/free-png.png"
+  max_table_rows_rich: 67
 
 artifact-render-settings:
   html_sanitize: false
+  markdown_sanitize: true
 
 render-settings:
   default:
@@ -23,43 +36,17 @@ render-settings:
     plot_bbox_tight: true
     plot_pad_inches: 0.10
 
-view-order-settings:
-  sections: [static-files]
-  labels:
-    plotnine: ["MEM-USED", "CPU%%"]
-
-truncation:
-  default:
-      text: 55000
-      html: off
-      markdown: off
-
-# Disk Storage ----------
-# No storage
-# storage-settings:
-#   enabled: false
-
-# 2 max storage
 storage-settings:
   enabled: true
   root_dir: .plotsrv/store
   default_keep_last: 2
   max_snapshot_size_mb: 20
 
-# Time-limited storage
-# storage-settings:
-#   enabled: true
-#   root_dir: .plotsrv/store
-#   default_keep_last: 10
-#   default_min_store_interval: 1h
-
-# Freshness -------------
 freshness-settings:
-  enabled: true
+  enabled: false
   expected_every: 60s
   warn_after: 90s
-  error_after: 180s
+  overdue_after: 180s
 
-# Security settings -------
 security-settings:
-  tracebacks_enabled: false
+  tracebacks_enabled: true

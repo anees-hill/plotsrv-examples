@@ -1,0 +1,18 @@
+{
+  "snapshot_id": "20260512T155322.590842Z",
+  "view_id": "default:planet_metrics (pl.df)",
+  "section": null,
+  "label": "planet_metrics (pl.df)",
+  "kind": "table",
+  "created_at": "2026-05-12T15:53:22.590842+00:00",
+  "payload_filename": "20260512T155322.590842Z__payload.csv",
+  "payload_format": "csv",
+  "size_bytes": 114,
+  "path_payload": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__planet_metrics__pl.df/20260512T155322.590842Z__payload.csv",
+  "path_meta": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__planet_metrics__pl.df/20260512T155322.590842Z__meta.json",
+  "payload_exists": true,
+  "extra": {
+    "total_rows": 3,
+    "returned_rows": 3
+  }
+}

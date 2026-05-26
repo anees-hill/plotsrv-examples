@@ -1,0 +1,12 @@
+limits:
+  watched_files:
+    max_bytes: 500000
+
+  render:
+    text: 10
+    html: off
+    markdown: off
+
+  tables:
+    max_rows: 100000
+    max_columns: 200

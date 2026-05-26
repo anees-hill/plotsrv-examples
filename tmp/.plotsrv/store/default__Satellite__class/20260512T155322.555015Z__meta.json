@@ -1,0 +1,15 @@
+{
+  "snapshot_id": "20260512T155322.555015Z",
+  "view_id": "default:Satellite (class)",
+  "section": null,
+  "label": "Satellite (class)",
+  "kind": "json",
+  "created_at": "2026-05-12T15:53:22.555015+00:00",
+  "payload_filename": "20260512T155322.555015Z__payload.json",
+  "payload_format": "json",
+  "size_bytes": 8211,
+  "path_payload": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__Satellite__class/20260512T155322.555015Z__payload.json",
+  "path_meta": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__Satellite__class/20260512T155322.555015Z__meta.json",
+  "payload_exists": true,
+  "extra": {}
+}

@@ -1,0 +1,15 @@
+{
+  "snapshot_id": "20260512T091659.654002Z",
+  "view_id": "default:mixed_objects (nested list)",
+  "section": null,
+  "label": "mixed_objects (nested list)",
+  "kind": "json",
+  "created_at": "2026-05-12T09:16:59.654002+00:00",
+  "payload_filename": "20260512T091659.654002Z__payload.json",
+  "payload_format": "json",
+  "size_bytes": 20937,
+  "path_payload": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__mixed_objects__nested__list/20260512T091659.654002Z__payload.json",
+  "path_meta": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__mixed_objects__nested__list/20260512T091659.654002Z__meta.json",
+  "payload_exists": true,
+  "extra": {}
+}

@@ -1,0 +1,85 @@
+{
+  "type": "plotsrv_json_document",
+  "version": 1,
+  "source_format": "python_object",
+  "raw_text": null,
+  "pretty_text": "[\n  \"<__main__.Satellite object at 0x78f843569be0>\",\n  \"<__main__.Satellite object at 0x78f842472350>\"\n]",
+  "root": {
+    "id": "root",
+    "path": [],
+    "depth": 0,
+    "label": "root",
+    "display_key": "root",
+    "node_kind": "container",
+    "value_kind": "list",
+    "type_label": "list",
+    "icon_key": "json",
+    "summary": "2 items",
+    "preview": null,
+    "full_value": null,
+    "preview_truncated": false,
+    "child_count": 2,
+    "descendant_count": 2,
+    "descendant_layer_count": 1,
+    "expandable": true,
+    "children": [
+      {
+        "id": "root/[0]",
+        "path": [
+          0
+        ],
+        "depth": 1,
+        "label": "[0]",
+        "display_key": "[0]",
+        "node_kind": "leaf_artifact",
+        "value_kind": "python",
+        "type_label": "Satellite",
+        "icon_key": "python",
+        "summary": "<__main__.Satellite object at 0x78f843569be0>",
+        "preview": "<__main__.Satellite object at 0x78f843569be0>",
+        "full_value": "<__main__.Satellite object at 0x78f843569be0>",
+        "preview_truncated": false,
+        "child_count": 0,
+        "descendant_count": 0,
+        "descendant_layer_count": 0,
+        "expandable": false,
+        "children": [],
+        "truncated": false,
+        "truncation_reason": null
+      },
+      {
+        "id": "root/[1]",
+        "path": [
+          1
+        ],
+        "depth": 1,
+        "label": "[1]",
+        "display_key": "[1]",
+        "node_kind": "leaf_artifact",
+        "value_kind": "python",
+        "type_label": "Satellite",
+        "icon_key": "python",
+        "summary": "<__main__.Satellite object at 0x78f842472350>",
+        "preview": "<__main__.Satellite object at 0x78f842472350>",
+        "full_value": "<__main__.Satellite object at 0x78f842472350>",
+        "preview_truncated": false,
+        "child_count": 0,
+        "descendant_count": 0,
+        "descendant_layer_count": 0,
+        "expandable": false,
+        "children": [],
+        "truncated": false,
+        "truncation_reason": null
+      }
+    ],
+    "truncated": false,
+    "truncation_reason": null
+  },
+  "meta": {
+    "node_count": 3,
+    "max_depth_seen": 1,
+    "truncated": false,
+    "hit": null,
+    "source_filename": null
+  }
+}

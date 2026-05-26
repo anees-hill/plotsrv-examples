@@ -1,0 +1,72 @@
+table-settings:
+  table_view_mode: rich
+  max_table_rows_simple: 200
+  max_table_rows_rich: inf
+
+artifact-render-settings:
+  html_sanitize: false
+  markdown_sanitize: true
+
+limits:
+  watched_files:
+    # Global input safety limit for watched files.
+    # Keep this high enough that normal smoke fixtures are read.
+    max_bytes: 5000000
+
+  render:
+    text: 1000000
+    html: off
+    markdown: off
+
+  tables:
+    # Needs to be >6000 for mock-files/6000_20.csv.
+    max_rows: 10000
+    max_columns: 200
+
+  views:
+    static-files:text-head:
+      render:
+        text: 60000
+
+    static-files:text-tail:
+      render:
+        text: 60000
+
+    static-files:long-log:
+      render:
+        text: off
+
+    static-files:md:
+      render:
+        markdown: off
+
+    static-files:html-simple:
+      render:
+        html: 1
+
+    static-files:html-complex:
+      render:
+        html: off
+
+view-order-settings:
+  sections:
+    - static-files
+
+  labels:
+    static-files:
+      - text-head
+      - text-tail
+      - long-log
+      - md
+      - jpg
+      - ini
+      - toml
+      - yml
+      - yaml
+      - json
+      - html-simple
+      - html-complex
+      - csv-very-large
+      - csv-large-head
+      - csv-large-tail
+      - csv-small

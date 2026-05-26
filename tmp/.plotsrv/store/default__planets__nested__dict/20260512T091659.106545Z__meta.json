@@ -1,0 +1,15 @@
+{
+  "snapshot_id": "20260512T091659.106545Z",
+  "view_id": "default:planets (nested dict)",
+  "section": null,
+  "label": "planets (nested dict)",
+  "kind": "json",
+  "created_at": "2026-05-12T09:16:59.106545+00:00",
+  "payload_filename": "20260512T091659.106545Z__payload.json",
+  "payload_format": "json",
+  "size_bytes": 39685,
+  "path_payload": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__planets__nested__dict/20260512T091659.106545Z__payload.json",
+  "path_meta": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__planets__nested__dict/20260512T091659.106545Z__meta.json",
+  "payload_exists": true,
+  "extra": {}
+}

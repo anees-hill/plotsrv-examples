@@ -1,0 +1,15 @@
+{
+  "snapshot_id": "20260512T155356.650985Z",
+  "view_id": "freshness-demo:one-shot",
+  "section": "freshness-demo",
+  "label": "one-shot",
+  "kind": "json",
+  "created_at": "2026-05-12T15:53:56.650985+00:00",
+  "payload_filename": "20260512T155356.650985Z__payload.json",
+  "payload_format": "json",
+  "size_bytes": 2200,
+  "path_payload": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/freshness-demo__one-shot/20260512T155356.650985Z__payload.json",
+  "path_meta": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/freshness-demo__one-shot/20260512T155356.650985Z__meta.json",
+  "payload_exists": true,
+  "extra": {}
+}

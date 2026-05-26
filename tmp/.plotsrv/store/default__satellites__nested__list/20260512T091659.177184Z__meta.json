@@ -1,0 +1,15 @@
+{
+  "snapshot_id": "20260512T091659.177184Z",
+  "view_id": "default:satellites (nested list)",
+  "section": null,
+  "label": "satellites (nested list)",
+  "kind": "json",
+  "created_at": "2026-05-12T09:16:59.177184+00:00",
+  "payload_filename": "20260512T091659.177184Z__payload.json",
+  "payload_format": "json",
+  "size_bytes": 2371,
+  "path_payload": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__satellites__nested__list/20260512T091659.177184Z__payload.json",
+  "path_meta": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/default__satellites__nested__list/20260512T091659.177184Z__meta.json",
+  "payload_exists": true,
+  "extra": {}
+}

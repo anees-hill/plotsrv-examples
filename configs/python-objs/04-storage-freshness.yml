@@ -1,0 +1,135 @@
+table-settings:
+  table_view_mode: rich
+  max_table_rows_simple: 200
+  max_table_rows_rich: inf
+
+artifact-render-settings:
+  html_sanitize: false
+  markdown_sanitize: true
+
+limits:
+  watched_files:
+    max_bytes: 5000000
+
+  render:
+    text: 1000000
+    html: off
+    markdown: off
+
+  tables:
+    max_rows: 10000
+    max_columns: 200
+
+storage-settings:
+  enabled: true
+  watch_enabled: true
+  root_dir: .plotsrv/store
+  default_keep_last: 2
+  max_snapshot_size_mb: 20
+  default_min_store_interval: null
+
+  views:
+    static-files:long-log:
+      enabled: true
+      watch_enabled: true
+      keep_last: 5
+      min_store_interval: 30s
+
+    static-files:html-simple:
+      enabled: true
+      watch_enabled: true
+      keep_last: 3
+
+    static-files:html-complex:
+      enabled: true
+      watch_enabled: true
+      keep_last: 3
+
+    static-files:csv-very-large:
+      enabled: true
+      watch_enabled: true
+      keep_last: 2
+      max_snapshot_size_mb: 50
+
+    default:titanic:
+      enabled: true
+      keep_last: 5
+
+    simple plots:planet gravity (matplotlib):
+      enabled: true
+      keep_last: 5
+
+    simple plots:planet temperature (plotnine):
+      enabled: true
+      keep_last: 5
+
+freshness-settings:
+  enabled: true
+  expected_every: 60s
+  warn_after: 90s
+  overdue_after: 180s
+
+  views:
+    static-files:long-log:
+      expected_every: 10s
+      warn_after: 30s
+      overdue_after: 60s
+
+    static-files:html-simple:
+      expected_every: 5m
+      warn_after: 10m
+      overdue_after: 20m
+
+    static-files:html-complex:
+      expected_every: 5m
+      warn_after: 10m
+      overdue_after: 20m
+
+    static-files:csv-very-large:
+      expected_every: 5m
+      warn_after: 10m
+      overdue_after: 30m
+
+    default:titanic:
+      expected_every: 60s
+      warn_after: 90s
+      overdue_after: 180s
+
+    simple plots:planet gravity (matplotlib):
+      expected_every: 60s
+      warn_after: 90s
+      overdue_after: 180s
+
+    simple plots:planet temperature (plotnine):
+      expected_every: 60s
+      warn_after: 90s
+      overdue_after: 180s
+
+view-order-settings:
+  sections:
+    - static-files
+    - simple plots
+    - default
+    - traceback-tests
+
+  labels:
+    static-files:
+      - text-head
+      - text-tail
+      - long-log
+      - md
+      - jpg
+      - ini
+      - toml
+      - yml
+      - yaml
+      - json
+      - html-simple
+      - html-complex
+      - csv-very-large
+      - csv-large-head
+      - csv-large-tail
+      - csv-small
+
+security-settings:
+  tracebacks_enabled: false

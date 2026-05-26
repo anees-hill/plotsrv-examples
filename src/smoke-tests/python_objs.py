@@ -8,7 +8,7 @@ import pandas as pd
 import polars as pl
 from plotnine import aes, geom_col, ggplot, labs, theme_minimal
 
-from plotsrv import plotsrv
+from plotsrv import view
 
 HOST = os.getenv("PLOTSRV_HOST", os.getenv("HOST", "127.0.0.1"))
 PORT = int(os.getenv("PLOTSRV_PORT", os.getenv("PORT", "8101")))
@@ -33,7 +33,7 @@ def make_deep_nested_dict(depth: int = 20) -> dict:
     return root
 
 
-@plotsrv(label="planets (nested dict)", host=HOST, port=PORT)
+@view(label="planets (nested dict)", host=HOST, port=PORT)
 def get_planets():
     planets = {
         "earth": {
@@ -88,7 +88,7 @@ def get_planets():
     return planets
 
 
-@plotsrv(label="weather_observations (nested list)", host=HOST, port=PORT)
+@view(label="weather_observations (nested list)", host=HOST, port=PORT)
 def get_weather_observations():
     weather_observations = [
         {
@@ -122,7 +122,7 @@ def get_weather_observations():
     return weather_observations
 
 
-@plotsrv(label="computer_resources (nested dict)", host=HOST, port=PORT)
+@view(label="computer_resources (nested dict)", host=HOST, port=PORT)
 def get_computer_resources():
     computer_resources = {
         "servers": {
@@ -157,7 +157,7 @@ def get_computer_resources():
     return computer_resources
 
 
-@plotsrv(label="Satellite (class)", host=HOST, port=PORT)
+@view(label="Satellite (class)", host=HOST, port=PORT)
 class Satellite:
     def __init__(self, name, planet, altitude_km, instruments):
         self.name = name
@@ -179,13 +179,13 @@ class Satellite:
         }
 
 
-@plotsrv(label="random array (np.array)", host=HOST, port=PORT)
+@view(label="random array (np.array)", host=HOST, port=PORT)
 def get_random_np():
     arr = np.random.randn(5000, 10)
     return arr
 
 
-@plotsrv(label="satellites (nested list)", host=HOST, port=PORT)
+@view(label="satellites (nested list)", host=HOST, port=PORT)
 def get_satellites_list():
     satellites = [
         Satellite(
@@ -205,7 +205,7 @@ def get_satellites_list():
     return satellites
 
 
-@plotsrv(label="planet_metrics (pl.df)", host=HOST, port=PORT)
+@view(label="planet_metrics (pl.df)", host=HOST, port=PORT)
 def get_planet_metrics_df():
     planet_metrics = pl.DataFrame(
         {
@@ -219,9 +219,7 @@ def get_planet_metrics_df():
     return planet_metrics
 
 
-@plotsrv(
-    label="planet gravity (matplotlib)", section="simple plots", host=HOST, port=PORT
-)
+@view(label="planet gravity (matplotlib)", section="simple plots", host=HOST, port=PORT)
 def get_planet_gravity_matplotlib():
     planets = ["Earth", "Mars", "Jupiter"]
     gravity = [9.81, 3.71, 24.79]
@@ -236,7 +234,7 @@ def get_planet_gravity_matplotlib():
     return fig
 
 
-@plotsrv(
+@view(
     label="planet temperature (plotnine)", section="simple plots", host=HOST, port=PORT
 )
 def get_planet_temperature_plotnine():
@@ -261,7 +259,7 @@ def get_planet_temperature_plotnine():
     return plot
 
 
-@plotsrv(label="mixed_objects (nested list)", host=HOST, port=PORT)
+@view(label="mixed_objects (nested list)", host=HOST, port=PORT)
 def get_mixed_objects_list():
     mixed_objects = [
         planets["earth"],

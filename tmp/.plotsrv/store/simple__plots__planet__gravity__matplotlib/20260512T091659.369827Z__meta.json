@@ -1,0 +1,15 @@
+{
+  "snapshot_id": "20260512T091659.369827Z",
+  "view_id": "simple plots:planet gravity (matplotlib)",
+  "section": "simple plots",
+  "label": "planet gravity (matplotlib)",
+  "kind": "plot",
+  "created_at": "2026-05-12T09:16:59.369827+00:00",
+  "payload_filename": "20260512T091659.369827Z__payload.png",
+  "payload_format": "png",
+  "size_bytes": 31538,
+  "path_payload": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/simple__plots__planet__gravity__matplotlib/20260512T091659.369827Z__payload.png",
+  "path_meta": "/home/samane/Projects/plotsrv-examples/tmp/.plotsrv/store/simple__plots__planet__gravity__matplotlib/20260512T091659.369827Z__meta.json",
+  "payload_exists": true,
+  "extra": {}
+}

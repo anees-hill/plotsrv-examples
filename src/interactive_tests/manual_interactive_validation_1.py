@@ -81,10 +81,10 @@ stop_server()
 
 # Decorator-based tests =========================
 
-from plotsrv import plotsrv
+from plotsrv import view
 
 
-@plotsrv(label="dict", section="testing", port=8000)
+@view(label="dict", section="testing", port=8000)
 def show_dict():
     return {"a": 1, "b": [1, 2, 3], "msg": "hi"}
 
@@ -92,7 +92,7 @@ def show_dict():
 show_dict()
 
 
-@plotsrv(label="str", section="testing", port=8000)
+@view(label="str", section="testing", port=8000)
 def show_str():
     text = """
     Hello World!

@@ -1,0 +1,4 @@
+planet,gravity_m_s2,escape_velocity_km_s,mean_temp_c
+Earth,9.81,11.2,15
+Mars,3.71,5.0,-63
+Jupiter,24.79,59.5,-110

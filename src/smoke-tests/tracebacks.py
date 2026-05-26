@@ -2,7 +2,7 @@ import time
 import numpy as np
 from plotsrv.tracebacks import publish_traceback  # traceback type A1 (explicit in try)
 from plotsrv.capture import capture_exceptions  # traceback type A2 (wrapper)
-from plotsrv.decorators import plotsrv  # traceback type B1 (iautomatic in decorator)
+from plotsrv.decorators import view  # traceback type B1 (iautomatic in decorator)
 
 
 def run_a1():
@@ -46,7 +46,7 @@ def run_a2():
         time.sleep(1)
 
 
-@plotsrv(
+@view(
     label="B1 - decorator on_error",
     section="traceback-tests",
     host="0.0.0.0",
