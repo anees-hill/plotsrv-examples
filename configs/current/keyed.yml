@@ -1,0 +1,9 @@
+# Set EXAMPLE_INGEST_KEY to a synthetic value for this example.
+server-settings:
+  bind: {host: 127.0.0.1, port: 8000}
+  ingestion:
+    bearer_token_env: EXAMPLE_INGEST_KEY
+  admission:
+    mode: dynamic
+storage-settings:
+  enabled: false

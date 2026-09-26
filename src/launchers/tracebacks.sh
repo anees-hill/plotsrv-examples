@@ -1,1 +1,4 @@
-plotsrv run smoke-tests.tracebacks --host 0.0.0.0 --port 8101
+#!/usr/bin/env bash
+set -euo pipefail
+echo "Use examples/exceptions.py with an explicitly configured receiver; see assurance/manual-checklist.md and assurance/gallery.md." >&2
+exit 2

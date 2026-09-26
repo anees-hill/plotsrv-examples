@@ -1,0 +1,20 @@
+# A small UI example for the gallery's existing view IDs.
+storage-settings:
+  enabled: false
+security-settings:
+  tracebacks_enabled: true
+ui-settings:
+  page_title: "plotsrv examples gallery"
+  header_text: "Examples gallery"
+  featured_views:
+    - view: example-pandas
+      title: "Planet table"
+      caption: "Sort, filter, and plot the synthetic planet data"
+    - view: example-matplotlib
+      title: "Planet plot"
+      caption: "Inspect and resize a published image"
+  compact_views:
+    - view: gallery-html
+      title: "HTML document"
+    - view: gallery-text
+      title: "Text document"

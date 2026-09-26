@@ -1,0 +1,12 @@
+# Current, memory-only configuration. Select this file explicitly with --config.
+storage-settings:
+  enabled: false
+limits:
+  watched_files:
+    max_mb: 2
+  truncate_after:
+    text: 12000
+    html: 12000
+    markdown: 12000
+    table_rows: 100
+    table_columns: 20

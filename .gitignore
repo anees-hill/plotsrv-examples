@@ -9,8 +9,25 @@ wheels/
 # plotsrv snapshots
 .plotsrv/*
 
+# Owned generated run state (configs, stores, logs, and generated fixtures)
+/.plotsrv-runs/
+
+# Retired tracked runtime outputs and generated fixtures; preserve local copies
+/tmp/
+/mock-files/100_20.csv
+/mock-files/1000_20.csv
+/mock-files/6000_20.csv
+/mock-files/long_text.txt
+/mock-files/uvicorn.log
+
 # Virtual environments
 .venv
+.env
+.env.*
+!.env.example
+.pytest_cache/
+/.prider/
+/.codex/
 .vscode/settings.json
 
 # ptop

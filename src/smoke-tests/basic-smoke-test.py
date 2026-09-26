@@ -72,113 +72,10 @@ def quote_command(cmd: list[str]) -> str:
 
 
 def build_plotsrv_command(args: argparse.Namespace) -> list[str]:
-    cmd = [
-        "plotsrv",
-        "run",
-        "src/smoke-tests/python_objs.py",
-        "--config",
-        args.config,
-        "--host",
-        str(args.host),
-        "--port",
-        str(args.port),
-        "--watch",
-        "mock-files/long_text.txt",
-        "--watch-label",
-        "text-head",
-        "--watch-section",
-        "static-files",
-        "--watch-head",
-        "--watch",
-        "mock-files/long_text.txt",
-        "--watch-label",
-        "text-tail",
-        "--watch-section",
-        "static-files",
-        "--watch-tail",
-        "--watch",
-        "README.md",
-        "--watch-label",
-        "md",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "mock-files/small_image.jpg",
-        "--watch-label",
-        "jpeg",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "configs/old_plotsrv.ini",
-        "--watch-label",
-        "ini",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "pyproject.toml",
-        "--watch-label",
-        "toml",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "plotsrv.yml",
-        "--watch-label",
-        "yml",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "mock-files/yaml-1.yaml",
-        "--watch-label",
-        "yaml",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "mock-files/json-1.json",
-        "--watch-label",
-        "json",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "mock-files/html-simple-1.html",
-        "--watch-label",
-        "html-simple",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "mock-files/html-complex-1.html",
-        "--watch-label",
-        "html-complex",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "mock-files/6000_20.csv",
-        "--watch-label",
-        "csv-very-large",
-        "--watch-section",
-        "static-files",
-        "--watch",
-        "mock-files/1000_20.csv",
-        "--watch-label",
-        "csv-large-head",
-        "--watch-section",
-        "static-files",
-        "--watch-head",
-        "--watch",
-        "mock-files/1000_20.csv",
-        "--watch-label",
-        "csv-large-tail",
-        "--watch-section",
-        "static-files",
-        "--watch-tail",
-        "--watch",
-        "mock-files/100_20.csv",
-        "--watch-label",
-        "csv-small",
-        "--watch-section",
-        "static-files",
-    ]
-
-    return cmd
+    # Compatibility service only; release assurance belongs to check release.
+    return [sys.executable, "-m", "plotsrv.cli_entry", "serve",
+            "--config", args.config, "--host", str(args.host),
+            "--port", str(args.port)]
 
 
 def build_publisher_command(args: argparse.Namespace) -> list[str]:
@@ -188,11 +85,9 @@ def build_publisher_command(args: argparse.Namespace) -> list[str]:
             args.publisher_script,
         ]
 
-    return [
-        sys.executable,
-        "-m",
-        args.publisher_module,
-    ]
+    if args.publisher_module in ("smoke_tests.python_objs", "smoke-tests.python_objs"):
+        return [sys.executable, str(repo_root_from_script() / "src/smoke-tests/python_objs.py")]
+    return [sys.executable, "-m", args.publisher_module]
 
 
 def terminate_process(process: subprocess.Popen[bytes], name: str) -> None:
@@ -217,9 +112,12 @@ def main() -> int:
     os.chdir(root)
 
     env = os.environ.copy()
-    env["PLOTSRV_HOST"] = str(args.host)
+    publisher_host = "127.0.0.1" if args.host == "0.0.0.0" else str(args.host)
+    env["PLOTSRV_CONFIG"] = str(Path(args.config).resolve())
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    env["PLOTSRV_HOST"] = publisher_host
     env["PLOTSRV_PORT"] = str(args.port)
-    env["HOST"] = str(args.host)
+    env["HOST"] = publisher_host
     env["PORT"] = str(args.port)
 
     plotsrv_cmd = build_plotsrv_command(args)

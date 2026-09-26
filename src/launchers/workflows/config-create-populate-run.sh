@@ -3,7 +3,6 @@ set -euo pipefail
 
 HOST="${PLOTSRV_HOST:-0.0.0.0}"
 PORT="${PLOTSRV_PORT:-8101}"
-CONFIG_PATH="${PLOTSRV_CONFIG_PATH:-tmp/plotsrv-generated.yml}"
 TARGET="${PLOTSRV_TARGET:-src/smoke-tests}"
 PUBLISH_DELAY="${PLOTSRV_PUBLISH_DELAY:-4}"
 KEEP_ALIVE="${PLOTSRV_KEEP_ALIVE:-1}"
@@ -26,10 +25,12 @@ trap cleanup EXIT INT TERM
 
 require_repo_root
 
-mkdir -p "$(dirname "${CONFIG_PATH}")"
-
-echo "[INFO] Removing existing generated config: ${CONFIG_PATH}"
-rm -f "${CONFIG_PATH}"
+if [[ -n "${PLOTSRV_CONFIG_PATH:-}" ]]; then
+  echo "[ERROR] This workflow creates an owned config; PLOTSRV_CONFIG_PATH is unsupported." >&2
+  exit 2
+fi
+RUN_DIR="$(python -B -m plotsrv_examples workspace-create)"
+CONFIG_PATH="${RUN_DIR}/plotsrv.yml"
 
 echo "[INFO] Creating config"
 plotsrv config create --config "${CONFIG_PATH}"
@@ -72,9 +73,9 @@ plotsrv run "${TARGET}" \
   --config "${CONFIG_PATH}" \
   --host "${HOST}" \
   --port "${PORT}" \
-  --watch mock-files/long_text.txt --watch-label text-head --watch-section static-files --watch-head \
-  --watch mock-files/long_text.txt --watch-label text-tail --watch-section static-files --watch-tail \
-  --watch mock-files/uvicorn.log --watch-label long-log --watch-section static-files --watch-tail \
+  --watch "${PLOTSRV_FIXTURE_DIR:?Run fixtures-create and export PLOTSRV_FIXTURE_DIR}/long_text.txt" --watch-label text-head --watch-section static-files --watch-head \
+  --watch "${PLOTSRV_FIXTURE_DIR:?Run fixtures-create and export PLOTSRV_FIXTURE_DIR}/long_text.txt" --watch-label text-tail --watch-section static-files --watch-tail \
+  --watch "${PLOTSRV_FIXTURE_DIR:?Run fixtures-create and export PLOTSRV_FIXTURE_DIR}/uvicorn.log" --watch-label long-log --watch-section static-files --watch-tail \
   --watch README.md --watch-label md --watch-section static-files \
   --watch mock-files/small_image.jpg --watch-label jpg --watch-section static-files \
   --watch pyproject.toml --watch-label toml --watch-section static-files \
@@ -83,10 +84,10 @@ plotsrv run "${TARGET}" \
   --watch mock-files/json-1.json --watch-label json --watch-section static-files \
   --watch mock-files/html-simple-1.html --watch-label html-simple --watch-section static-files \
   --watch mock-files/html-complex-1.html --watch-label html-complex --watch-section static-files \
-  --watch mock-files/6000_20.csv --watch-label csv-very-large --watch-section static-files \
-  --watch mock-files/1000_20.csv --watch-label csv-large-head --watch-section static-files --watch-head \
-  --watch mock-files/1000_20.csv --watch-label csv-large-tail --watch-section static-files --watch-tail \
-  --watch mock-files/100_20.csv --watch-label csv-small --watch-section static-files \
+  --watch "${PLOTSRV_FIXTURE_DIR:?Run fixtures-create and export PLOTSRV_FIXTURE_DIR}/6000_20.csv" --watch-label csv-very-large --watch-section static-files \
+  --watch "${PLOTSRV_FIXTURE_DIR:?Run fixtures-create and export PLOTSRV_FIXTURE_DIR}/1000_20.csv" --watch-label csv-large-head --watch-section static-files --watch-head \
+  --watch "${PLOTSRV_FIXTURE_DIR:?Run fixtures-create and export PLOTSRV_FIXTURE_DIR}/1000_20.csv" --watch-label csv-large-tail --watch-section static-files --watch-tail \
+  --watch "${PLOTSRV_FIXTURE_DIR:?Run fixtures-create and export PLOTSRV_FIXTURE_DIR}/100_20.csv" --watch-label csv-small --watch-section static-files \
   &
 SERVER_PID="$!"
 

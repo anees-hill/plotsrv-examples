@@ -6,7 +6,7 @@ import argparse
 from datetime import datetime, timezone
 import json
 from pathlib import Path
-import runpy
+from importlib import import_module
 from tempfile import TemporaryDirectory
 import time
 
@@ -23,8 +23,9 @@ def main() -> None:
     if not 0 <= args.interval < float("inf"):
         parser.error("--interval must be finite and non-negative")
 
-    # Execute the original entry point so its views and shared globals stay intact.
-    objects = runpy.run_module("smoke-tests.python_objs", run_name="__main__")
+    # Explicit object entry point; no execution-order globals are required.
+    objects = import_module("smoke-tests.python_objs")
+    objects.main()
 
     with TemporaryDirectory(prefix="plotsrv-smoke-stream-") as directory:
         source = Path(directory) / "python-objs.jsonl"
@@ -32,10 +33,10 @@ def main() -> None:
             source=source,
             label="python objects log",
             section="streams",
-            host=objects["HOST"],
-            port=objects["PORT"],
+            host=objects.HOST,
+            port=objects.PORT,
         )
-        print(f"Streaming {args.records} log records to {objects['HOST']}:{objects['PORT']} (streams / python objects log)", flush=True)
+        print(f"Streaming {args.records} log records to {objects.HOST}:{objects.PORT} (streams / python objects log)", flush=True)
         try:
             # Missing sources are observed from byte zero when they appear.
             with source.open("w", encoding="utf-8") as log:

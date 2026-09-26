@@ -1,0 +1,10 @@
+# Complete synthetic allowlist; no discovery or bootstrap is required.
+server-settings:
+  bind: {host: 127.0.0.1, port: 8000}
+  ingestion:
+    bearer_token_env: EXAMPLE_INGEST_KEY
+  admission:
+    mode: catalogue-locked
+    allowed_ids: [allowed:sample]
+storage-settings:
+  enabled: false

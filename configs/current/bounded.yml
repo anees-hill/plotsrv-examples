@@ -1,0 +1,36 @@
+# Representative current keys; disk persistence remains opt-in.
+render-settings:
+  table_view_mode: simple
+  plot_dpi: 120
+  html_sanitize: true
+  markdown_sanitize: true
+watch-settings:
+  materialization: auto
+  file_threshold_mb: 1
+  active_loads:
+    max_concurrent: 1
+    wait_timeout_s: 0.5
+limits:
+  published_objects:
+    max_table_rows: 500
+    max_table_columns: 30
+    max_artifact_text_chars: 24000
+  watched_files:
+    max_mb: 2
+  truncate_after:
+    text: 12000
+    html: 12000
+    markdown: 12000
+    table_rows: 100
+    table_columns: 20
+storage-settings:
+  enabled: false
+  default_keep_last: 3
+  max_snapshot_size_mb: 2
+freshness-settings:
+  enabled: true
+  expected_every: 15s
+  warn_after: 30s
+  overdue_after: 60s
+security-settings:
+  tracebacks_enabled: false
