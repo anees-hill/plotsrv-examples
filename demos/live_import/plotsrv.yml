@@ -1,0 +1,23 @@
+server-settings:
+  bind: {host: 127.0.0.1, port: 8102}
+  ingestion: {bearer_token_env: PLOTSRV_LIVE_TOKEN, allow_remote_without_key: false}
+  admission: {mode: catalogue-locked, allowed_ids: ["live:imports"]}
+publisher-settings:
+  destination: {url: "http://127.0.0.1:8102", bearer_token_env: PLOTSRV_LIVE_TOKEN}
+security-settings:
+  docs_enabled: false
+  openapi_enabled: false
+  shutdown_enabled: false
+  tracebacks_enabled: false
+  control_local_only: true
+  views_local_only: true
+  status_local_only: false
+  history_local_only: true
+storage-settings: {enabled: false}
+stream-settings:
+  retention: {max_raw_records: 1000, max_raw_mb: 2, max_total_raw_mb: 4, max_noteworthy_items: 64}
+ui-settings:
+  page_title: "Live imports · plotsrv demo"
+  header_text: "Live file imports"
+  featured_views:
+    - {view: "live:imports", title: "Live import log", caption: "Watch records pass validation in real time"}
