@@ -17,6 +17,7 @@ def make_scan(path, number, day):
     draw = ImageDraw.Draw(image)
     draw.rectangle((48, 36, 592, 414), outline="#aaa9a4", width=2)
     draw.text((80, 70), f"NORTHSTAR ARCHIVE / SHEET {number:02d}", fill="#343839")
+    draw.text((80, 90), f"Audit date: {day.isoformat()}", fill="#343839")
     for row in range(5):
         y = 125 + row * 27
         draw.text((85, y), f"Field {row+1}: Synthetic document sample {number:02d}", fill="#4c5151")

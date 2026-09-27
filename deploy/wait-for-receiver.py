@@ -25,7 +25,8 @@ def wait_for_receiver(port, token, timeout=60):
                 raw = response.read(65537)
                 if len(raw) <= 65536:
                     data = json.loads(raw)
-                    if isinstance(data, dict) and "publish" in data.get("capabilities", []):
+                    capabilities = data.get("capabilities") if isinstance(data, dict) else None
+                    if isinstance(capabilities, list) and "publish" in capabilities:
                         return
         except (OSError, ValueError, urllib.error.URLError):
             pass

@@ -29,6 +29,10 @@ def test_readiness_retries_and_never_follows_redirects():
             elif len(seen) == 1:
                 self.send_response(503)
                 self.end_headers()
+            elif len(seen) == 2:
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b'{"capabilities":null}')
             else:
                 self.send_response(200)
                 self.end_headers()
@@ -39,7 +43,7 @@ def test_readiness_retries_and_never_follows_redirects():
     thread.start()
     try:
         module.wait_for_receiver(server.server_port, "test-only", timeout=2)
-        assert len(seen) == 2
+        assert len(seen) == 3
         redirect = True
         with pytest.raises(RuntimeError):
             module.wait_for_receiver(server.server_port, "test-only", timeout=.1)
