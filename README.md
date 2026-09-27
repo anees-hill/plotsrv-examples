@@ -71,8 +71,8 @@ prints a local URL and stays available for 30 seconds; extend with
 
 Live weather is explicit and never falls back to sample data. Two-machine
 networking, live external sources, browser/TUI checks and prolonged monitor
-sessions remain separate manual obligations. No browser automation, benchmark
-thresholds, deployment or publication is provided.
+sessions remain separate manual obligations for the release assurance suite.
+The public demo templates below have not been deployed or published.
 
 ## Configuration, fixtures and retained compatibility
 
