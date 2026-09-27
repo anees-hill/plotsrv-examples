@@ -28,7 +28,6 @@ def test_retail_data_is_reproducible_and_has_explorable_patterns():
 
 
 def test_return_rate_counts_orders_independently_of_quantity(monkeypatch):
-    import sys
     directory = Path(__file__).resolve().parents[2] / "demos/retail"
     monkeypatch.syspath_prepend(str(directory))
     spec = importlib.util.spec_from_file_location("retail_app", directory / "app.py")

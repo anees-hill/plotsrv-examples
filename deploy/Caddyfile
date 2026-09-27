@@ -1,6 +1,7 @@
 # Reference origin configuration for Cloudflare-proxied demo.plotsrv.com.
 # The origin certificate must cover demo.plotsrv.com and the three *-demo.plotsrv.com hosts.
 # The firewall must admit HTTPS only from Cloudflare's current origin-pull ranges.
+# SSE lifetime/admission is enforced by plotsrv browser-update-settings, not stream_timeout.
 {
 	servers {
 		timeouts {
@@ -47,9 +48,38 @@ demo.plotsrv.com {
 retail-demo.plotsrv.com {
 	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
 	import demo_headers
+	# Cold-cache conference arrivals must not consume the dynamic-read budget.
+	@static {
+		method GET HEAD
+		path /static/* /assets/*
+	}
+	handle @static {
+		route {
+			rate_limit {
+				sweep_interval 15s
+				zone retail_static_client {
+					key {http.request.header.Cf-Connecting-Ip}
+					events 2400
+					window 10s
+				}
+				zone retail_static_total {
+					key retail_static
+					events 4800
+					window 10s
+				}
+			}
+			reverse_proxy 127.0.0.1:8101 {
+				unhealthy_request_count 128
+				header_up -Authorization
+				header_up -Cookie
+				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
+				header_up X-Forwarded-Proto https
+			}
+		}
+	}
 	@read {
 		method GET HEAD
-		path / /plot /artifact /table/data /table/export /status /updates /static/* /assets/*
+		path / /plot /artifact /table/data /table/export /status /updates
 	}
 	handle @read {
 		route {
@@ -58,7 +88,7 @@ retail-demo.plotsrv.com {
 				sweep_interval 15s
 				zone retail_client {
 					key {http.request.header.Cf-Connecting-Ip}
-					events 300
+					events 900
 					window 10s
 				}
 				zone retail_total {
@@ -69,7 +99,6 @@ retail-demo.plotsrv.com {
 			}
 			reverse_proxy 127.0.0.1:8101 {
 				unhealthy_request_count 128
-				flush_interval -1
 				header_up -Authorization
 				header_up -Cookie
 				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
@@ -85,9 +114,38 @@ retail-demo.plotsrv.com {
 live-demo.plotsrv.com {
 	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
 	import demo_headers
+	# Cold-cache conference arrivals must not consume the dynamic-read budget.
+	@static {
+		method GET HEAD
+		path /static/* /assets/*
+	}
+	handle @static {
+		route {
+			rate_limit {
+				sweep_interval 15s
+				zone live_static_client {
+					key {http.request.header.Cf-Connecting-Ip}
+					events 2400
+					window 10s
+				}
+				zone live_static_total {
+					key live_static
+					events 4800
+					window 10s
+				}
+			}
+			reverse_proxy 127.0.0.1:8102 {
+				unhealthy_request_count 128
+				header_up -Authorization
+				header_up -Cookie
+				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
+				header_up X-Forwarded-Proto https
+			}
+		}
+	}
 	@read {
 		method GET HEAD
-		path / /artifact /status /updates /stream/data /stream/status /stream/summary /static/* /assets/*
+		path / /artifact /status /updates /stream/data /stream/status /stream/summary
 	}
 	handle @read {
 		route {
@@ -95,7 +153,7 @@ live-demo.plotsrv.com {
 				sweep_interval 15s
 				zone live_client {
 					key {http.request.header.Cf-Connecting-Ip}
-					events 300
+					events 900
 					window 10s
 				}
 				zone live_total {
@@ -106,9 +164,6 @@ live-demo.plotsrv.com {
 			}
 			reverse_proxy 127.0.0.1:8102 {
 				unhealthy_request_count 128
-				flush_interval -1
-				# Browsers reconnect after this finite lifetime; test with Cloudflare.
-				stream_timeout 10m
 				header_up -Authorization
 				header_up -Cookie
 				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
@@ -124,9 +179,38 @@ live-demo.plotsrv.com {
 scans-demo.plotsrv.com {
 	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
 	import demo_headers
+	# Cold-cache conference arrivals must not consume the dynamic-read budget.
+	@static {
+		method GET HEAD
+		path /static/* /assets/*
+	}
+	handle @static {
+		route {
+			rate_limit {
+				sweep_interval 15s
+				zone scans_static_client {
+					key {http.request.header.Cf-Connecting-Ip}
+					events 2400
+					window 10s
+				}
+				zone scans_static_total {
+					key scans_static
+					events 4800
+					window 10s
+				}
+			}
+			reverse_proxy 127.0.0.1:8103 {
+				unhealthy_request_count 128
+				header_up -Authorization
+				header_up -Cookie
+				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
+				header_up X-Forwarded-Proto https
+			}
+		}
+	}
 	@read {
 		method GET HEAD
-		path / /artifact /table/data /table/export /status /updates /history/navigation /history/month /history /compare/latest /static/* /assets/*
+		path / /artifact /table/data /table/export /status /updates /history/navigation /history/month /history /compare/latest
 	}
 	handle @read {
 		route {
@@ -134,7 +218,7 @@ scans-demo.plotsrv.com {
 				sweep_interval 15s
 				zone scans_client {
 					key {http.request.header.Cf-Connecting-Ip}
-					events 300
+					events 900
 					window 10s
 				}
 				zone scans_total {
@@ -145,7 +229,6 @@ scans-demo.plotsrv.com {
 			}
 			reverse_proxy 127.0.0.1:8103 {
 				unhealthy_request_count 128
-				flush_interval -1
 				header_up -Authorization
 				header_up -Cookie
 				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}

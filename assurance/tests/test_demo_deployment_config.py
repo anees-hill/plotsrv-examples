@@ -27,6 +27,10 @@ def test_receivers_are_separate_locked_and_loopback_only():
         assert cfg["security-settings"]["docs_enabled"] is False
         assert cfg["security-settings"]["openapi_enabled"] is False
         assert cfg["security-settings"]["shutdown_enabled"] is False
+        assert cfg["browser-update-settings"] == {
+            "max_connections": 96, "max_connections_per_client": 64,
+            "max_connection_seconds": 600,
+        }
     live = yaml.safe_load((ROOT / "demos/live_import/plotsrv.yml").read_text())
     scans = yaml.safe_load((ROOT / "demos/scan_audit/plotsrv.yml").read_text())
     assert live["storage-settings"]["enabled"] is False

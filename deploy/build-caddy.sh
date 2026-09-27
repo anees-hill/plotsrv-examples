@@ -3,11 +3,11 @@
 set -eu
 : "${1:?usage: build-caddy.sh /path/to/output-binary}"
 
-CADDY_VERSION=v2.10.2
+CADDY_VERSION=v2.11.4
 RATELIMIT_COMMIT=5625512f24f6f59d6f64fb3aafe5eecff0b286db
 XCADDY_VERSION=v0.4.5
 
-command -v go >/dev/null || { echo 'Go 1.25 or newer is required' >&2; exit 1; }
+command -v go >/dev/null || { echo 'A patched Go toolchain (minimum 1.25.1) is required' >&2; exit 1; }
 builder_dir=$(mktemp -d)
 trap 'rm -rf "$builder_dir"' EXIT
 GOBIN="$builder_dir/bin" go install "github.com/caddyserver/xcaddy/cmd/xcaddy@$XCADDY_VERSION"

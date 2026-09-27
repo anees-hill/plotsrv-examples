@@ -39,3 +39,8 @@ ui-settings:
   featured_views:
     - {view: "retail:orders", title: "Explore orders", caption: "Sort and filter fictional customer orders"}
     - {view: "retail:sales", title: "Sales through time", caption: "Look for seasonal and promotional changes"}
+
+browser-update-settings:
+  max_connections: 96
+  max_connections_per_client: 64
+  max_connection_seconds: 600

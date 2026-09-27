@@ -21,3 +21,8 @@ ui-settings:
   header_text: "Live file imports"
   featured_views:
     - {view: "live:imports", title: "Live import log", caption: "Watch records pass validation in real time"}
+
+browser-update-settings:
+  max_connections: 96
+  max_connections_per_client: 64
+  max_connection_seconds: 600

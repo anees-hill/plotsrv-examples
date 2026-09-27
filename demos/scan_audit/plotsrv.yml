@@ -36,3 +36,14 @@ ui-settings:
   featured_views:
     - {view: "scans:changes", title: "Since previous run", caption: "What changed while you were away"}
     - {view: "scans:results", title: "Scan results", caption: "Inspect the quality flags for each synthetic JPEG"}
+
+freshness-settings:
+  enabled: true
+  expected_every: 24h
+  warn_after: 26h
+  overdue_after: 48h
+
+browser-update-settings:
+  max_connections: 96
+  max_connections_per_client: 64
+  max_connection_seconds: 600
