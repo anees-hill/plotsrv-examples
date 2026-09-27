@@ -1,0 +1,33 @@
+[Unit]
+Description=plotsrv public demo receiver (%i)
+After=network.target
+
+[Service]
+Type=simple
+User=plotsrv-demo
+Group=plotsrv-demo
+EnvironmentFile=/etc/plotsrv-demo/%i.env
+WorkingDirectory=/var/lib/plotsrv-demo/%i
+StateDirectory=plotsrv-demo/%i
+ExecStart=/opt/plotsrv-examples/.venv/bin/plotsrv serve --config /opt/plotsrv-examples/demos/%i/plotsrv.yml
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/plotsrv-demo/%i
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictNamespaces=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+CapabilityBoundingSet=
+LockPersonality=true
+UMask=0077
+TasksMax=64
+LimitNOFILE=1024
+MemoryMax=320M
+
+[Install]
+WantedBy=multi-user.target

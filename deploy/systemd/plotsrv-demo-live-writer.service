@@ -1,0 +1,28 @@
+[Unit]
+Description=Generate synthetic import events
+Requires=plotsrv-demo-live-follower.service
+After=plotsrv-demo-live-follower.service
+
+[Service]
+Type=simple
+User=plotsrv-demo
+Group=plotsrv-demo
+WorkingDirectory=/var/lib/plotsrv-demo/live_import
+ExecStart=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/demos/live_import/generate_events.py --log /var/lib/plotsrv-demo/live_import/import.jsonl
+Restart=always
+RestartSec=5s
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/plotsrv-demo/live_import
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+CapabilityBoundingSet=
+UMask=0077
+MemoryMax=64M
+
+[Install]
+WantedBy=multi-user.target

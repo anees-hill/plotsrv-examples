@@ -1,0 +1,28 @@
+[Unit]
+Description=Publish daily synthetic JPEG scan audit
+Requires=plotsrv-demo@scan_audit.service
+After=plotsrv-demo@scan_audit.service
+
+[Service]
+Type=oneshot
+User=plotsrv-demo
+Group=plotsrv-demo
+EnvironmentFile=/etc/plotsrv-demo/scan_audit.env
+Environment=PLOTSRV_DEBUG=1
+WorkingDirectory=/var/lib/plotsrv-demo/scan_audit
+ExecStart=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/demos/scan_audit/run_audit.py
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/plotsrv-demo/scan_audit
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+CapabilityBoundingSet=
+UMask=0077
+MemoryMax=320M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,30 @@
+[Unit]
+Description=Publish synthetic retail demo views
+Requires=plotsrv-demo@retail.service
+After=plotsrv-demo@retail.service
+
+[Service]
+Type=oneshot
+User=plotsrv-demo
+Group=plotsrv-demo
+EnvironmentFile=/etc/plotsrv-demo/retail.env
+Environment=PLOTSRV_DEBUG=1
+WorkingDirectory=/var/lib/plotsrv-demo/retail
+ExecStart=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/demos/retail/app.py
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/plotsrv-demo/retail
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+CapabilityBoundingSet=
+UMask=0077
+MemoryMax=320M
+
+[Install]
+WantedBy=multi-user.target

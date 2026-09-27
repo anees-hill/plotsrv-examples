@@ -1,0 +1,30 @@
+[Unit]
+Description=Follow synthetic import log into plotsrv
+Requires=plotsrv-demo@live_import.service
+After=plotsrv-demo@live_import.service
+
+[Service]
+Type=simple
+User=plotsrv-demo
+Group=plotsrv-demo
+EnvironmentFile=/etc/plotsrv-demo/live_import.env
+Environment=PLOTSRV_DEBUG=1
+WorkingDirectory=/var/lib/plotsrv-demo/live_import
+ExecStart=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/demos/live_import/follow.py --log /var/lib/plotsrv-demo/live_import/import.jsonl
+Restart=always
+RestartSec=5s
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/plotsrv-demo/live_import
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+CapabilityBoundingSet=
+UMask=0077
+MemoryMax=160M
+
+[Install]
+WantedBy=multi-user.target

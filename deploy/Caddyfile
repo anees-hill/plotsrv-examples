@@ -1,0 +1,159 @@
+# Reference origin configuration for Cloudflare-proxied demo.plotsrv.com.
+# The origin certificate must cover demo.plotsrv.com and *.demo.plotsrv.com.
+# The firewall must admit HTTPS only from Cloudflare's current origin-pull ranges.
+{
+	servers {
+		timeouts {
+			read_header 10s
+			read_body 10s
+			idle 60s
+		}
+		max_header_size 16KB
+		strict_sni_host on
+	}
+}
+
+(demo_headers) {
+	header X-Content-Type-Options nosniff
+	header Referrer-Policy no-referrer
+	header Permissions-Policy "camera=(), microphone=(), geolocation=()"
+}
+
+demo.plotsrv.com {
+	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+	import demo_headers
+	header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+
+	@retail path /retail /retail/
+	redir @retail https://retail.demo.plotsrv.com/ 302
+	@live path /live /live/
+	redir @live https://live.demo.plotsrv.com/ 302
+	@scans path /scans /scans/
+	redir @scans https://scans.demo.plotsrv.com/ 302
+
+	@site {
+		method GET HEAD
+		path / /styles.css /assets/*
+	}
+	handle @site {
+		root * /opt/plotsrv-examples/site
+		file_server
+	}
+	handle {
+		respond 404
+	}
+}
+
+retail.demo.plotsrv.com {
+	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+	import demo_headers
+	@read {
+		method GET HEAD
+		path / /plot /artifact /table/data /table/export /status /updates /static/* /assets/*
+	}
+	handle @read {
+		route {
+			# The key is trustworthy only while direct origin access is blocked.
+			rate_limit {
+				sweep_interval 15s
+				zone retail_client {
+					key {http.request.header.Cf-Connecting-Ip}
+					events 300
+					window 10s
+				}
+				zone retail_total {
+					key retail
+					events 1200
+					window 10s
+				}
+			}
+			reverse_proxy 127.0.0.1:8101 {
+				unhealthy_request_count 128
+				flush_interval -1
+				header_up -Authorization
+				header_up -Cookie
+				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
+				header_up X-Forwarded-Proto https
+			}
+		}
+	}
+	handle {
+		respond 404
+	}
+}
+
+live.demo.plotsrv.com {
+	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+	import demo_headers
+	@read {
+		method GET HEAD
+		path / /artifact /status /updates /stream/data /stream/status /stream/summary /static/* /assets/*
+	}
+	handle @read {
+		route {
+			rate_limit {
+				sweep_interval 15s
+				zone live_client {
+					key {http.request.header.Cf-Connecting-Ip}
+					events 300
+					window 10s
+				}
+				zone live_total {
+					key live
+					events 1200
+					window 10s
+				}
+			}
+			reverse_proxy 127.0.0.1:8102 {
+				unhealthy_request_count 128
+				flush_interval -1
+				# Browsers reconnect after this finite lifetime; test with Cloudflare.
+				stream_timeout 10m
+				header_up -Authorization
+				header_up -Cookie
+				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
+				header_up X-Forwarded-Proto https
+			}
+		}
+	}
+	handle {
+		respond 404
+	}
+}
+
+scans.demo.plotsrv.com {
+	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+	import demo_headers
+	@read {
+		method GET HEAD
+		path / /artifact /table/data /table/export /status /updates /history/navigation /history/month /history /compare/latest /static/* /assets/*
+	}
+	handle @read {
+		route {
+			rate_limit {
+				sweep_interval 15s
+				zone scans_client {
+					key {http.request.header.Cf-Connecting-Ip}
+					events 300
+					window 10s
+				}
+				zone scans_total {
+					key scans
+					events 1200
+					window 10s
+				}
+			}
+			reverse_proxy 127.0.0.1:8103 {
+				unhealthy_request_count 128
+				flush_interval -1
+				header_up -Authorization
+				header_up -Cookie
+				header_up X-Forwarded-For {http.request.header.Cf-Connecting-Ip}
+				header_up X-Forwarded-Proto https
+			}
+		}
+	}
+	handle {
+		respond 404
+	}
+}
