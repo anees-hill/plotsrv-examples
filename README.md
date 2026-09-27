@@ -64,6 +64,10 @@ prints a local URL and stays available for 30 seconds; extend with
 | Checks and bounded local webhook delivery | [Checks/webhooks](assurance/checks-webhook.md) |
 | Finite real psutil monitor | [Resource monitor](examples/resource_monitor/README.md) |
 | Weather shared pipeline, local synthetic sample by default | [Weather demo](demos/public_weather/README.md) |
+| Deterministic retail orders, table and four plots | [Retail exploration](demos/retail/README.md) |
+| Bounded JSONL validation worker and live suggested views | [Live imports](demos/live_import/README.md) |
+| Daily generated JPEGs, observed summary and explicit change report | [Scan audit](demos/scan_audit/README.md) |
+| Minimal local `plotsrv watch docs/` example | [Markdown directory](demos/markdown_docs/README.md) |
 
 Live weather is explicit and never falls back to sample data. Two-machine
 networking, live external sources, browser/TUI checks and prolonged monitor
@@ -87,6 +91,11 @@ stream companion can be run against an explicitly started receiver with
 destination is loopback port 8101. See its `--help` for finite record bounds.
 
 ## Owned local state
+
+The [static landing page](site/README.md) and [deployment templates](deploy/README.md)
+are the starting point for a public demo suite. They have not been deployed by
+this repository. Representative VM memory, streaming behavior through Cloudflare
+and conference capacity must be measured before public launch.
 
 Scenarios retain diagnostics in ignored `.plotsrv-runs/run-*` directories:
 

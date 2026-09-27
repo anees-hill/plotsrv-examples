@@ -35,6 +35,7 @@ limits:
 ui-settings:
   page_title: "Northstar Outdoors · plotsrv demo"
   header_text: "Northstar Outdoors"
+  show_history_controls: false
   featured_views:
     - {view: "retail:orders", title: "Explore orders", caption: "Sort and filter fictional customer orders"}
     - {view: "retail:sales", title: "Sales through time", caption: "Look for seasonal and promotional changes"}
