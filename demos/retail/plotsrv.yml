@@ -1,0 +1,40 @@
+server-settings:
+  bind: {host: 127.0.0.1, port: 8101}
+  ingestion: {bearer_token_env: PLOTSRV_RETAIL_TOKEN, allow_remote_without_key: false}
+  admission:
+    mode: catalogue-locked
+    allowed_ids: ["retail:orders", "retail:sales", "retail:categories", "retail:returns", "retail:fulfillment", "retail:guide", "retail:summary"]
+publisher-settings:
+  destination: {url: "http://127.0.0.1:8101", bearer_token_env: PLOTSRV_RETAIL_TOKEN}
+security-settings:
+  docs_enabled: false
+  openapi_enabled: false
+  shutdown_enabled: false
+  tracebacks_enabled: false
+  control_local_only: true
+  views_local_only: true
+  status_local_only: false
+  history_local_only: true
+render-settings:
+  table_view_mode: rich
+  plot_dpi: 105
+  html_sanitize: false
+  html_sandbox: ""
+  markdown_sanitize: true
+storage-settings:
+  enabled: true
+  root_dir: .plotsrv/retail
+  default_keep_last: 1
+  max_snapshot_size_mb: 3
+  max_pending_tasks: 12
+  max_pending_mb: 24
+  latest: {enabled: true, max_size_mb: 3, min_store_interval_s: 1}
+limits:
+  published_objects: {max_plot_bytes: 1572864, max_table_rows: 1800, max_table_columns: 20, max_artifact_text_chars: 12000, max_json_container_items: 2000}
+  truncate_after: {table_rows: 1800, table_columns: 20, text: 12000, markdown: 12000}
+ui-settings:
+  page_title: "Northstar Outdoors · plotsrv demo"
+  header_text: "Northstar Outdoors"
+  featured_views:
+    - {view: "retail:orders", title: "Explore orders", caption: "Sort and filter fictional customer orders"}
+    - {view: "retail:sales", title: "Sales through time", caption: "Look for seasonal and promotional changes"}
