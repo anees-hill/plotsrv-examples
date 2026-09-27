@@ -96,9 +96,9 @@ def read_previous(path, day):
 
 def comparison(metrics, previous):
     if previous is None:
-        return "# Change since previous audit\n\nFirst completed run. A comparison will appear tomorrow."
+        return f"# Audit {metrics['run_date']}\n\nFirst completed run. A comparison will appear tomorrow."
     change = metrics["review_count"] - previous["review_count"]
-    return ("# Change since previous audit\n\n"
+    return (f"# Audit {metrics['run_date']}\n\n"
             f"Compared with {previous['run_date']}: **{metrics['review_count']}** scans need "
             f"review ({change:+d} compared with the previous run). "
             f"Mean brightness changed by {metrics['mean_brightness'] - previous['mean_brightness']:+.1f}.\n\n"
@@ -110,40 +110,72 @@ def publish(rows, metrics, change_note, example):
     import pandas as pd
     import plotsrv as ps
 
+    # This standalone job must fail if a synchronous publication fails.
+    os.environ["PLOTSRV_DEBUG"] = "1"
+    run_date = metrics["run_date"]
     options = dict(launch_server=False, section="Document scan audit")
-    ps.publish_view(pd.DataFrame(rows), view_id="scans:results", label="Scan results",
+    ps.publish_view(pd.DataFrame(rows), view_id="scans:results", label=f"Scan results · {run_date}",
                     async_=False, **options)
-    ps.publish_view(example, view_id="scans:example", label="Example scan",
+    ps.publish_view(example, view_id="scans:example", label=f"{example.stem.upper()} · {run_date}",
                     async_=False, **options)
-    ps.publish_view(metrics, view_id="scans:observed", label="Observed run summary",
+    ps.publish_view(metrics, view_id="scans:observed", label=f"Observed run · {run_date}",
                     observe=True, **options)
-    ps.publish_view(change_note, view_id="scans:changes", label="Since previous run",
-                    kind="artifact", artifact_kind="markdown", async_=False, **options)
     if not ps.flush_views(timeout=15):
         raise RuntimeError("observation delivery did not drain")
     error = ps.get_observation_stats().get("last_error")
     if error:
         raise RuntimeError(f"observation delivery failed: {error}")
+    # The completion view is updated last, after observation delivery finishes.
+    ps.publish_view(change_note, view_id="scans:changes", label=f"Completed audit · {run_date}",
+                    kind="artifact", artifact_kind="markdown", async_=False, **options)
+
+
+def write_json(path, value):
+    pending = path.with_suffix(".tmp")
+    pending.write_text(json.dumps(value))
+    os.replace(pending, path)
+
+
+def prune_runs(output, day):
+    # Only this job's dated batches belong to us. Never follow symlinks or
+    # remove unrelated directories supplied beneath --output.
+    runs = []
+    for path in output.iterdir():
+        if path.is_symlink() or not path.is_dir() or path.name == day.isoformat():
+            continue
+        try:
+            if date.fromisoformat(path.name).isoformat() == path.name:
+                runs.append(path)
+        except ValueError:
+            pass
+    for old in sorted(runs, key=lambda p: p.name)[:-2]:
+        shutil.rmtree(old)
 
 
 def complete(day, output):
     output.mkdir(parents=True, exist_ok=True)
     state_path = output / "state.json"
-    previous = read_previous(state_path, day)
-    rows, metrics, run_dir = make_report(day, output)
-    example_id = next((row["scan_id"] for row in rows if row["quality"] == "review"), rows[0]["scan_id"])
-    example = run_dir / (example_id.lower() + ".jpg")
-    publish(rows, metrics, comparison(metrics, previous), example)
-    # Advance state only after successful publication; a same-day rerun keeps
-    # its original prior-run comparison instead of comparing the day to itself.
-    pending = state_path.with_suffix(".tmp")
-    pending.write_text(json.dumps({"current": metrics, "previous": previous}))
-    os.replace(pending, state_path)
-    runs = sorted((p for p in output.iterdir() if p.is_dir() and p.name != day.isoformat()),
-                  key=lambda p: p.name)
-    for old in runs[:-2]:
-        shutil.rmtree(old)
-    return metrics
+    status_path = output / "job-status.json"
+    status = {"run_date": day.isoformat(), "status": "running",
+              "started_at": datetime.now(timezone.utc).isoformat()}
+    write_json(status_path, status)
+    try:
+        previous = read_previous(state_path, day)
+        # Prune before creating another batch, including after a previous crash.
+        prune_runs(output, day)
+        rows, metrics, run_dir = make_report(day, output)
+        example_id = next((row["scan_id"] for row in rows if row["quality"] == "review"), rows[0]["scan_id"])
+        example = run_dir / (example_id.lower() + ".jpg")
+        publish(rows, metrics, comparison(metrics, previous), example)
+        # Same-day retries keep the original prior-run comparison.
+        write_json(state_path, {"current": metrics, "previous": previous})
+    except Exception as error:
+        write_json(status_path, {**status, "status": "failed", "error_type": type(error).__name__})
+        raise
+    else:
+        write_json(status_path, {**status, "status": "succeeded",
+                                "finished_at": datetime.now(timezone.utc).isoformat()})
+        return metrics
 
 
 if __name__ == "__main__":

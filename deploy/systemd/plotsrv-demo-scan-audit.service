@@ -3,6 +3,9 @@ Description=Publish daily synthetic JPEG scan audit
 Requires=plotsrv-demo@scan_audit.service
 After=plotsrv-demo@scan_audit.service
 
+StartLimitIntervalSec=2h
+StartLimitBurst=4
+
 [Service]
 Type=oneshot
 User=plotsrv-demo
@@ -10,6 +13,10 @@ Group=plotsrv-demo
 EnvironmentFile=/etc/plotsrv-demo/scan_audit.env
 Environment=PLOTSRV_DEBUG=1
 WorkingDirectory=/var/lib/plotsrv-demo/scan_audit
+ExecStartPre=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/deploy/wait-for-receiver.py --port 8103 --token-env PLOTSRV_SCANS_TOKEN
+Restart=on-failure
+RestartSec=5min
+TimeoutStartSec=2min
 ExecStart=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/demos/scan_audit/run_audit.py
 NoNewPrivileges=true
 ProtectSystem=strict

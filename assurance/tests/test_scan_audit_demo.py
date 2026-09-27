@@ -39,3 +39,57 @@ def test_skew_tracks_rotation_not_footer_or_brightness(tmp_path):
                 assert abs(row["skew_degrees"] - (4 if rotated else 0)) < 0.5
             if not rotated:
                 assert "skewed" not in row["flags"]
+
+
+def test_failed_runs_are_bounded_and_same_day_retry_preserves_comparison(tmp_path, monkeypatch):
+    import json
+    from datetime import timedelta
+    import pytest
+    module = _module()
+    published = []
+    monkeypatch.setattr(module, "publish", lambda *args: published.append(args))
+    first = date(2026, 9, 27)
+    module.complete(first, tmp_path)
+    state = (tmp_path / "state.json").read_text()
+    unrelated = tmp_path / "important"
+    unrelated.mkdir()
+    (unrelated / "keep.txt").write_text("keep")
+
+    def fail(*args):
+        raise RuntimeError("injected publication failure")
+
+    monkeypatch.setattr(module, "publish", fail)
+    for offset in range(1, 6):
+        with pytest.raises(RuntimeError):
+            module.complete(first + timedelta(days=offset), tmp_path)
+        assert len(list(tmp_path.glob("????-??-??"))) <= 3
+        assert (tmp_path / "state.json").read_text() == state
+        assert json.loads((tmp_path / "job-status.json").read_text())["status"] == "failed"
+    assert (unrelated / "keep.txt").read_text() == "keep"
+    monkeypatch.setattr(module, "publish", lambda *args: published.append(args))
+    day = first + timedelta(days=5)
+    module.complete(day, tmp_path)
+    note = published[-1][2]
+    module.complete(day, tmp_path)
+    assert published[-1][2] == note
+    assert "2026-09-27" in note
+    assert json.loads((tmp_path / "job-status.json").read_text())["status"] == "succeeded"
+
+
+def test_completion_view_waits_for_successful_observation(tmp_path, monkeypatch):
+    import plotsrv
+    import pytest
+    module = _module()
+    calls = []
+    monkeypatch.setenv("PLOTSRV_DEBUG", "0")
+    monkeypatch.setattr(plotsrv, "publish_view", lambda obj, **kw: calls.append(kw))
+    monkeypatch.setattr(plotsrv, "flush_views", lambda **kw: True)
+    monkeypatch.setattr(plotsrv, "get_observation_stats", lambda: {"last_error": "delivery_failed"})
+    metrics = {"run_date": "2026-09-27"}
+    with pytest.raises(RuntimeError):
+        module.publish([], metrics, "done", tmp_path / "sheet-01.jpg")
+    assert "scans:changes" not in [call["view_id"] for call in calls]
+    monkeypatch.setattr(plotsrv, "get_observation_stats", lambda: {"last_error": None})
+    module.publish([], metrics, "done", tmp_path / "sheet-01.jpg")
+    assert calls[-1]["view_id"] == "scans:changes"
+    assert all("2026-09-27" in call["label"] for call in calls)
