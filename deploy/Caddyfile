@@ -1,5 +1,5 @@
 # Reference origin configuration for Cloudflare-proxied demo.plotsrv.com.
-# The origin certificate must cover demo.plotsrv.com and *.demo.plotsrv.com.
+# The origin certificate must cover demo.plotsrv.com and the three *-demo.plotsrv.com hosts.
 # The firewall must admit HTTPS only from Cloudflare's current origin-pull ranges.
 {
 	servers {
@@ -25,11 +25,11 @@ demo.plotsrv.com {
 	header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
 
 	@retail path /retail /retail/
-	redir @retail https://retail.demo.plotsrv.com/ 302
+	redir @retail https://retail-demo.plotsrv.com/ 302
 	@live path /live /live/
-	redir @live https://live.demo.plotsrv.com/ 302
+	redir @live https://live-demo.plotsrv.com/ 302
 	@scans path /scans /scans/
-	redir @scans https://scans.demo.plotsrv.com/ 302
+	redir @scans https://scans-demo.plotsrv.com/ 302
 
 	@site {
 		method GET HEAD
@@ -44,7 +44,7 @@ demo.plotsrv.com {
 	}
 }
 
-retail.demo.plotsrv.com {
+retail-demo.plotsrv.com {
 	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
 	import demo_headers
 	@read {
@@ -82,7 +82,7 @@ retail.demo.plotsrv.com {
 	}
 }
 
-live.demo.plotsrv.com {
+live-demo.plotsrv.com {
 	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
 	import demo_headers
 	@read {
@@ -121,7 +121,7 @@ live.demo.plotsrv.com {
 	}
 }
 
-scans.demo.plotsrv.com {
+scans-demo.plotsrv.com {
 	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
 	import demo_headers
 	@read {
