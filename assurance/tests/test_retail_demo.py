@@ -25,3 +25,19 @@ def test_retail_data_is_reproducible_and_has_explorable_patterns():
     west = [row["fulfillment_days"] for row in rows if row["region"] == "West"]
     other = [row["fulfillment_days"] for row in rows if row["region"] != "West"]
     assert sum(west) / len(west) > sum(other) / len(other) + 1
+
+
+def test_return_rate_counts_orders_independently_of_quantity(monkeypatch):
+    import sys
+    directory = Path(__file__).resolve().parents[2] / "demos/retail"
+    monkeypatch.syspath_prepend(str(directory))
+    spec = importlib.util.spec_from_file_location("retail_app", directory / "app.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    rows = _orders()[:2]
+    for row, quantity, returned in zip(rows, [9, 1], [True, False]):
+        row.update(product="Test product", quantity=quantity, returned=returned)
+    _, _, products, _ = module.analyse(rows)
+    units, returns, orders = products["Test product"]
+    assert units == 10
+    assert 100 * returns / orders == 50

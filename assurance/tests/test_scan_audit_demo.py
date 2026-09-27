@@ -24,3 +24,18 @@ def test_synthetic_jpegs_and_day_comparison(tmp_path):
     _, second, _ = module.make_report(date(2026, 9, 28), tmp_path)
     assert "Compared with 2026-09-27" in module.comparison(second, first)
     assert first["review_count"] != second["review_count"]
+
+
+def test_skew_tracks_rotation_not_footer_or_brightness(tmp_path):
+    from datetime import timedelta
+    module = _module()
+    for offset in range(14):
+        day = date(2026, 9, 27) + timedelta(days=offset)
+        rows, _, _ = module.make_report(day, tmp_path)
+        for number, row in enumerate(rows, 1):
+            rotated = (day.toordinal() * 3 + number * 7) % 17 == 0
+            # Low-contrast scans may have no measurable registration line.
+            if row["skew_degrees"] is not None:
+                assert abs(row["skew_degrees"] - (4 if rotated else 0)) < 0.5
+            if not rotated:
+                assert "skewed" not in row["flags"]

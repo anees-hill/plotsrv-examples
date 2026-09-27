@@ -12,13 +12,14 @@ from generate_data import make_orders
 def analyse(rows):
     by_month = defaultdict(float)
     by_category = defaultdict(float)
-    by_product = defaultdict(lambda: [0, 0])
+    by_product = defaultdict(lambda: [0, 0, 0])
     by_region = defaultdict(list)
     for row in rows:
         by_month[row["order_date"][:7]] += row["order_value_gbp"]
         by_category[row["category"]] += row["order_value_gbp"]
         by_product[row["product"]][0] += row["quantity"]
         by_product[row["product"]][1] += int(row["returned"])
+        by_product[row["product"]][2] += 1
         by_region[row["region"]].append(row["fulfillment_days"])
     return by_month, by_category, by_product, by_region
 
@@ -49,11 +50,11 @@ def make_plots(rows):
     figures.append(("retail:categories", "Category performance", fig))
 
     fig, ax = plt.subplots(figsize=(8, 4.4))
-    for name, (units, returns) in by_product.items():
-        ax.scatter(units, 100 * returns / max(units, 1), s=65, color=green)
-        ax.annotate(name, (units, 100 * returns / max(units, 1)),
+    for name, (units, returns, orders) in by_product.items():
+        ax.scatter(units, 100 * returns / max(orders, 1), s=65, color=green)
+        ax.annotate(name, (units, 100 * returns / max(orders, 1)),
                     xytext=(5, 4), textcoords="offset points", fontsize=7)
-    ax.set(title="Popular products and returns", xlabel="Units sold", ylabel="Returned orders / units (%)")
+    ax.set(title="Popular products and returns", xlabel="Units sold", ylabel="Orders returned (%)")
     ax.grid(alpha=0.2)
     fig.tight_layout()
     figures.append(("retail:returns", "Sales versus return rate", fig))
@@ -68,6 +69,8 @@ def make_plots(rows):
 
 
 def publish(rows):
+    import matplotlib
+    matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     import pandas as pd
     import plotsrv as ps

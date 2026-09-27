@@ -40,8 +40,9 @@ def audit(path):
         brightness, contrast = (round(x, 1) for x in (ImageStat.Stat(gray).mean[0],
                                                        ImageStat.Stat(gray).stddev[0]))
         points = []
+        # Measure the registration line, excluding the footer below it.
         for x in range(110, 530, 4):
-            matches = [y for y in range(280, 380) if gray.getpixel((x, y)) < 115]
+            matches = [y for y in range(305, 350) if gray.getpixel((x, y)) < 115]
             if matches:
                 points.append((x, statistics.median(matches)))
         if len(points) > 30:
