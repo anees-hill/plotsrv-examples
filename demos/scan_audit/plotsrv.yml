@@ -1,11 +1,26 @@
 server-settings:
-  bind: {host: 127.0.0.1, port: 8103}
-  ingestion: {bearer_token_env: PLOTSRV_SCANS_TOKEN, allow_remote_without_key: false}
+  bind:
+    host: 127.0.0.1
+    port: 8103
+  ingestion:
+    bearer_token_env: PLOTSRV_SCANS_TOKEN
+    allow_remote_without_key: false
   admission:
     mode: catalogue-locked
-    allowed_ids: ["scans:results", "scans:example", "scans:observed", "scans:changes"]
+    allowed_ids:
+    - scans:results
+    - scans:example
+    - scans:observed
+    - scans:changes
+    - scans:metrics
+    - scans:source:run_audit-py
+    - scans:source:plotsrv-yml
+    - scans:source:publishing-py
+    - scans:source:restore-py
 publisher-settings:
-  destination: {url: "http://127.0.0.1:8103", bearer_token_env: PLOTSRV_SCANS_TOKEN}
+  destination:
+    url: http://127.0.0.1:8103
+    bearer_token_env: PLOTSRV_SCANS_TOKEN
 security-settings:
   docs_enabled: false
   openapi_enabled: false
@@ -18,7 +33,9 @@ security-settings:
 render-settings:
   table_view_mode: rich
   html_sanitize: false
-  html_sandbox: ""
+  html_sandbox: ''
+  plot_dpi: 105
+  markdown_sanitize: true
 storage-settings:
   enabled: true
   root_dir: .plotsrv/scans-receiver
@@ -27,23 +44,80 @@ storage-settings:
   max_snapshot_size_mb: 2
   max_pending_tasks: 8
   max_pending_mb: 16
-  latest: {enabled: true, max_size_mb: 2, min_store_interval_s: 1}
+  latest:
+    enabled: true
+    max_size_mb: 2
+    min_store_interval_s: 1
+  views:
+    scans:source:run_audit-py:
+      enabled: false
+      latest_enabled: false
+    scans:source:plotsrv-yml:
+      enabled: false
+      latest_enabled: false
+    scans:source:publishing-py:
+      enabled: false
+      latest_enabled: false
+    scans:source:restore-py:
+      enabled: false
+      latest_enabled: false
 limits:
-  published_objects: {max_plot_bytes: 1048576, max_table_rows: 20, max_table_columns: 12, max_artifact_text_chars: 12000, max_json_container_items: 200}
+  published_objects:
+    max_plot_bytes: 1048576
+    max_table_rows: 20
+    max_table_columns: 20
+    max_artifact_text_chars: 131072
+    max_json_container_items: 2000
+  truncate_after:
+    table_rows: 20
+    table_columns: 20
+    text: 65536
+    markdown: 131072
+    html: 131072
 ui-settings:
-  page_title: "Document scans · plotsrv demo"
-  header_text: "Document scan audit"
+  page_title: Document scans · plotsrv demo
+  header_text: Document scan audit
   featured_views:
-    - {view: "scans:changes", title: "Since previous run", caption: "What changed while you were away"}
-    - {view: "scans:results", title: "Scan results", caption: "Inspect the quality flags for each synthetic JPEG"}
-
+  - view: scans:changes
+    title: Since previous run
+    caption: What changed while you were away
+  - view: scans:results
+    title: Scan results
+    caption: Inspect the quality flags for each synthetic JPEG
+  icon_url: https://plotsrv.com
+  show_history_controls: true
 freshness-settings:
   enabled: true
   expected_every: 24h
   warn_after: 26h
   overdue_after: 48h
-
+  views:
+    scans:source:run_audit-py:
+      enabled: false
+    scans:source:plotsrv-yml:
+      enabled: false
+    scans:source:publishing-py:
+      enabled: false
+    scans:source:restore-py:
+      enabled: false
 browser-update-settings:
   max_connections: 96
   max_connections_per_client: 64
   max_connection_seconds: 600
+code-settings:
+  views:
+    scans:source:plotsrv-yml:
+      language: yaml
+      style: code
+checks-settings:
+  enabled: true
+  rules:
+  - id: scans-need-review
+    name: Scans require review
+    source: scans:metrics
+    kind: state
+    path:
+    - review_count
+    op: gt
+    value: 0
+    severity: warning

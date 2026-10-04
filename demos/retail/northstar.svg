@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="48" viewBox="0 0 240 48" role="img" aria-label="Northstar, fictional business">
+  <path d="m24 3 5.3 15.7L45 24l-15.7 5.3L24 45l-5.3-15.7L3 24l15.7-5.3Z" fill="#23634f"/>
+  <path d="m24 14 2.5 7.5L34 24l-7.5 2.5L24 34l-2.5-7.5L14 24l7.5-2.5Z" fill="#b1daca"/>
+  <text x="58" y="33" font-family="Arial, sans-serif" font-size="29" font-weight="600" letter-spacing="-.7" fill="#234d40">northstar</text>
+</svg>

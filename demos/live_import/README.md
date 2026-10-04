@@ -20,4 +20,28 @@ uv run --no-sync python -B demos/live_import/generate_events.py --log .plotsrv/l
 
 Open `http://127.0.0.1:8102/`. Start the follower before the writer if you want the first records: plotsrv begins at the current end of an existing file. A new visitor may wait up to three seconds for the next event. `Since Last` needs a previous visit from that same browser.
 
-The active log rotates at 1 MiB and keeps two older files, so disk use stays below about 3 MiB plus metadata. plotsrv follows the active pathname and can report uncertain continuity at rotation; old rotated files are not replayed. Receiver storage is disabled; stream history is deliberately short-lived. The `--count`, `--interval` and `--max-bytes` options support finite local checks.
+The active log rotates at 1 MiB and keeps two older files, so disk use stays below about 3 MiB plus metadata. plotsrv follows the active pathname and can report uncertain continuity at rotation; old rotated files are not replayed. Stream persistence is disabled; the live log remains short-lived. Snapshot storage is enabled only for the prepared report views described below. The `--count`, `--interval` and `--max-bytes` options support finite local checks.
+
+## Prepared import operations workspace
+
+Run once, with the same receiver token:
+
+```sh
+PLOTSRV_DEBUG=1 uv run --no-sync python -B demos/live_import/reports.py
+```
+
+This publishes recent-import and exception tables, a nested manifest, two plots and
+a colourful HTML operations report. It seeds three reproducible **illustrative
+batches**: initial issues, partial improvement and the current example. They are
+separate from the live log; report labels and provenance explain this. Processing
+durations are simulated, not measurements of plotsrv or the VM.
+
+The six report views each retain three snapshots with genuine capture timestamps.
+Seeding is resumable, using confirmed receiver history and a small publisher journal
+under `.plotsrv/demo-publishing`. Repeat the command after editing reports; unchanged
+content is reused. There is **no recurring report job** and no growing archive.
+
+The HTML report uses trusted rendering with bundled styles, no external fonts or
+scripts, and escaped data values. The default plotsrv header logo links to
+https://plotsrv.com. **Demo source code** includes the generator, follower, reports,
+shared publishing helpers and portable config; it never substitutes token values.

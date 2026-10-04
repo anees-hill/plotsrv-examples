@@ -1,17 +1,21 @@
 """Small synthetic import worker; validates each record and writes bounded JSONL logs."""
 
 import argparse
-from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path
 import random
 import time
+from datetime import UTC, datetime
+from pathlib import Path
 
 
 def candidate(index, rng):
-    row = {"record_id": f"IMP-{index:07d}", "sku": rng.choice(("PACK", "SHELL", "LAMP")),
-           "quantity": rng.randint(1, 5), "price_gbp": rng.choice((19, 32, 48, 84, 115))}
+    row = {
+        "record_id": f"IMP-{index:07d}",
+        "sku": rng.choice(("PACK", "SHELL", "LAMP")),
+        "quantity": rng.randint(1, 5),
+        "price_gbp": rng.choice((19, 32, 48, 84, 115)),
+    }
     if index % 23 == 0:
         row["quantity"] = -1
     if index % 47 == 0:
@@ -32,12 +36,22 @@ def event(index, rng, *, now=None):
     issue = validate(row)
     duration = round(35 + 0.7 * (index % 90) + rng.random() * 16, 1)
     return {
-        "timestamp": (now or datetime.now(timezone.utc)).isoformat(),
+        "timestamp": (now or datetime.now(UTC)).isoformat(),
         "level": "WARNING" if issue else "INFO",
         "logger": "importer.validation" if issue else "importer.records",
-        "message": f"Rejected {row['record_id']}: {issue}" if issue else f"Imported {row['record_id']}",
-        "record_id": row["record_id"], "sku": row["sku"],
-        "quantity": row["quantity"], "duration_ms": duration,
+        "message": f"Rejected {row['record_id']}: {issue}"
+        if issue
+        else f"Imported {row['record_id']}",
+        "record_id": row["record_id"],
+        "sku": row["sku"],
+        "source_file": (
+            "catalogue.csv",
+            "stock-east.csv",
+            "stock-west.csv",
+            "prices.csv",
+        )[(index - 1) % 4],
+        "quantity": row["quantity"],
+        "duration_ms": duration,
         "validation_issue": issue,
     }
 
@@ -54,7 +68,7 @@ def append_rotating(path, record, *, max_bytes=1_048_576, backups=2):
         for n in range(backups - 1, 0, -1):
             earlier = path.with_name(path.name + f".{n}")
             if earlier.exists():
-                os.replace(earlier, path.with_name(path.name + f".{n+1}"))
+                os.replace(earlier, path.with_name(path.name + f".{n + 1}"))
         os.replace(path, path.with_name(path.name + ".1"))
     with path.open("ab") as output:
         output.write(line)

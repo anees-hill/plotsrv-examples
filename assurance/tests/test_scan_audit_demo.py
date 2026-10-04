@@ -23,7 +23,8 @@ def test_synthetic_jpegs_and_day_comparison(tmp_path):
     assert any("skewed" in row["flags"] for row in rows)
     _, second, _ = module.make_report(date(2026, 9, 28), tmp_path)
     assert "Compared with 2026-09-27" in module.comparison(second, first)
-    assert first["review_count"] != second["review_count"]
+    assert first["review_count"] >= 1 and second["review_count"] >= 1
+    assert f"{second['review_count']-first['review_count']:+.1f}" in module.comparison(second, first)
 
 
 def test_skew_tracks_rotation_not_footer_or_brightness(tmp_path):

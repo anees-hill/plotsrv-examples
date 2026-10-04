@@ -25,3 +25,19 @@ Open `http://127.0.0.1:8103/`. The generated files live under `.plotsrv/scans-ou
 `job-status.json` records running, succeeded or failed locally. The systemd job waits for receiver readiness and retries failures at five-minute intervals (at most four starts in two hours). Check `systemctl status plotsrv-demo-scan-audit` and its journal after a failure. The dashboard marks results stale after 26 hours and overdue after 48 hours; inspect the completed-audit view because a partly published table may have a newer timestamp.
 
 The measurements are simple rules for demonstrating episodic work, not a real document-quality standard. No model, dataset or external image is downloaded.
+
+## Visible quality check
+
+SHEET-01 is an intentionally dim calibration image. The real pixel audit detects
+it, and the `Scans require review` state check evaluates `review_count > 0` in the
+published `scans:metrics` JSON view. The warning is intentional; successful job
+completion means all scans were inspected, not that every image passed.
+
+The completed report contains scan/flag and comparison tables, review priorities
+and measurement thresholds. The first report remains useful before a previous run
+exists. The daily schedule and seven-snapshot retention are unchanged.
+
+The **Demo source code** section displays the scripts and portable config without
+credentials. The plotsrv logo links to https://plotsrv.com. On receiver restart,
+`demos/restore.py scan_audit` resubmits the last successful metrics so the check can
+re-evaluate actual evidence; restored snapshots alone do not trigger checks.

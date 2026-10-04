@@ -1,9 +1,30 @@
 server-settings:
-  bind: {host: 127.0.0.1, port: 8102}
-  ingestion: {bearer_token_env: PLOTSRV_LIVE_TOKEN, allow_remote_without_key: false}
-  admission: {mode: catalogue-locked, allowed_ids: ["live:imports"]}
+  bind:
+    host: 127.0.0.1
+    port: 8102
+  ingestion:
+    bearer_token_env: PLOTSRV_LIVE_TOKEN
+    allow_remote_without_key: false
+  admission:
+    mode: catalogue-locked
+    allowed_ids:
+    - live:imports
+    - live:recent
+    - live:exceptions
+    - live:manifest
+    - live:outcomes
+    - live:durations
+    - live:report
+    - live:source:follow-py
+    - live:source:generate_events-py
+    - live:source:reports-py
+    - live:source:plotsrv-yml
+    - live:source:publishing-py
+    - live:source:restore-py
 publisher-settings:
-  destination: {url: "http://127.0.0.1:8102", bearer_token_env: PLOTSRV_LIVE_TOKEN}
+  destination:
+    url: http://127.0.0.1:8102
+    bearer_token_env: PLOTSRV_LIVE_TOKEN
 security-settings:
   docs_enabled: false
   openapi_enabled: false
@@ -12,17 +33,107 @@ security-settings:
   control_local_only: true
   views_local_only: true
   status_local_only: false
-  history_local_only: true
-storage-settings: {enabled: false}
+  history_local_only: false
+storage-settings:
+  enabled: true
+  views:
+    live:source:follow-py:
+      enabled: false
+      latest_enabled: false
+    live:source:generate_events-py:
+      enabled: false
+      latest_enabled: false
+    live:source:reports-py:
+      enabled: false
+      latest_enabled: false
+    live:source:plotsrv-yml:
+      enabled: false
+      latest_enabled: false
+    live:source:publishing-py:
+      enabled: false
+      latest_enabled: false
+    live:recent:
+      enabled: true
+      keep_last: 3
+    live:exceptions:
+      enabled: true
+      keep_last: 3
+    live:manifest:
+      enabled: true
+      keep_last: 3
+    live:outcomes:
+      enabled: true
+      keep_last: 3
+    live:durations:
+      enabled: true
+      keep_last: 3
+    live:report:
+      enabled: true
+      keep_last: 3
+    live:imports:
+      enabled: false
+      latest_enabled: false
+    live:source:restore-py:
+      enabled: false
+      latest_enabled: false
+  default_keep_last: 3
+  default_min_store_interval: null
+  max_snapshot_size_mb: 3
+  max_pending_tasks: 12
+  max_pending_mb: 24
+  root_dir: .plotsrv/import-reports
+  latest:
+    enabled: true
+    max_size_mb: 3
+    min_store_interval_s: 0
+  streams:
+    enabled: false
 stream-settings:
-  retention: {max_raw_records: 1000, max_raw_mb: 2, max_total_raw_mb: 4, max_noteworthy_items: 64}
+  retention:
+    max_raw_records: 1000
+    max_raw_mb: 2
+    max_total_raw_mb: 4
+    max_noteworthy_items: 64
 ui-settings:
-  page_title: "Live imports · plotsrv demo"
-  header_text: "Live file imports"
+  page_title: Live imports · plotsrv demo
+  header_text: Live file imports
   featured_views:
-    - {view: "live:imports", title: "Live import log", caption: "Watch records pass validation in real time"}
-
+  - view: live:imports
+    title: Live import log
+    caption: New validation events every three seconds
+  - view: live:report
+    title: Import operations
+    caption: A colourful report with three illustrative editions
+  - view: live:recent
+    title: Explore imports
+    caption: Follow records from incoming files to validation outcomes
+  icon_url: https://plotsrv.com
+  show_history_controls: true
 browser-update-settings:
   max_connections: 96
   max_connections_per_client: 64
   max_connection_seconds: 600
+render-settings:
+  table_view_mode: rich
+  plot_dpi: 105
+  html_sanitize: false
+  html_sandbox: ''
+  markdown_sanitize: true
+limits:
+  published_objects:
+    max_plot_bytes: 1048576
+    max_table_rows: 1000
+    max_table_columns: 20
+    max_artifact_text_chars: 131072
+    max_json_container_items: 2000
+  truncate_after:
+    table_rows: 1000
+    table_columns: 20
+    text: 65536
+    markdown: 131072
+    html: 131072
+code-settings:
+  views:
+    live:source:plotsrv-yml:
+      language: yaml
+      style: code
