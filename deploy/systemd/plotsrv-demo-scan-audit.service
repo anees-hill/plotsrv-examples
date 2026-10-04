@@ -13,6 +13,7 @@ Group=plotsrv-demo
 EnvironmentFile=/etc/plotsrv-demo/scan_audit.env
 Environment=PLOTSRV_DEBUG=1
 WorkingDirectory=/var/lib/plotsrv-demo/scan_audit
+Environment=MPLCONFIGDIR=/var/lib/plotsrv-demo/scan_audit/.cache/matplotlib
 ExecStartPre=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/deploy/wait-for-receiver.py --port 8103 --token-env PLOTSRV_SCANS_TOKEN
 Restart=on-failure
 RestartSec=5min

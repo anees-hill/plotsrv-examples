@@ -8,6 +8,7 @@ Type=simple
 User=plotsrv-demo
 Group=plotsrv-demo
 WorkingDirectory=/var/lib/plotsrv-demo/live_import
+Environment=MPLCONFIGDIR=/var/lib/plotsrv-demo/live_import/.cache/matplotlib
 ExecStart=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/demos/live_import/generate_events.py --log /var/lib/plotsrv-demo/live_import/import.jsonl
 Restart=always
 RestartSec=5s

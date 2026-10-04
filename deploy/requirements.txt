@@ -1,0 +1,5 @@
+# Resolve the current PyPI release; no plotsrv checkout or commit required.
+plotsrv
+pandas
+matplotlib>=3.9
+pillow

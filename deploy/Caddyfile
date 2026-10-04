@@ -1,5 +1,5 @@
-# Reference origin configuration for Cloudflare-proxied demo.plotsrv.com.
-# The origin certificate must cover demo.plotsrv.com and the three *-demo.plotsrv.com hosts.
+# Cloudflare-proxied website and demo origins. Caddy manages public certificates.
+# Set CF_API_TOKEN in the proxy service environment, scoped to the plotsrv.com zone.
 # The firewall must admit HTTPS only from Cloudflare's current origin-pull ranges.
 # SSE lifetime/admission is enforced by plotsrv browser-update-settings, not stream_timeout.
 {
@@ -14,16 +14,40 @@
 	}
 }
 
+(managed_tls) {
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+		resolvers 1.1.1.1 1.0.0.1
+	}
+}
+
 (demo_headers) {
 	header X-Content-Type-Options nosniff
 	header Referrer-Policy no-referrer
 	header Permissions-Policy "camera=(), microphone=(), geolocation=()"
 }
 
-demo.plotsrv.com {
-	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+plotsrv.com {
+	import managed_tls
 	import demo_headers
-	header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+	header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+	@site {
+		method GET HEAD
+		path / /index.html /styles.css /shared.css /app.js /navigation.js /demos /demos/ /demos/index.html /demos/styles.css /assets/*
+	}
+	handle @site {
+		root * /opt/plotsrv-homepage
+		file_server
+	}
+	handle {
+		respond 404
+	}
+}
+
+demo.plotsrv.com {
+	import managed_tls
+	import demo_headers
+	header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
 
 	@retail path /retail /retail/
 	redir @retail https://retail-demo.plotsrv.com/ 302
@@ -34,10 +58,11 @@ demo.plotsrv.com {
 
 	@site {
 		method GET HEAD
-		path / /styles.css /assets/*
+		path / /demos/ /demos/index.html /demos/styles.css /shared.css /navigation.js /assets/favicon.png /assets/logo.png /assets/demos/*
 	}
 	handle @site {
-		root * /opt/plotsrv-examples/site
+		root * /opt/plotsrv-homepage
+		rewrite / /demos/index.html
 		file_server
 	}
 	handle {
@@ -46,7 +71,7 @@ demo.plotsrv.com {
 }
 
 retail-demo.plotsrv.com {
-	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+	import managed_tls
 	import demo_headers
 	# Cold-cache conference arrivals must not consume the dynamic-read budget.
 	@static {
@@ -79,7 +104,7 @@ retail-demo.plotsrv.com {
 	}
 	@read {
 		method GET HEAD
-		path / /plot /artifact /table/data /table/export /status /updates
+		path / /plot /artifact /table/data /table/export /status /checks /updates /history/navigation /history/month /history /compare/latest
 	}
 	handle @read {
 		route {
@@ -112,7 +137,7 @@ retail-demo.plotsrv.com {
 }
 
 live-demo.plotsrv.com {
-	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+	import managed_tls
 	import demo_headers
 	# Cold-cache conference arrivals must not consume the dynamic-read budget.
 	@static {
@@ -145,7 +170,7 @@ live-demo.plotsrv.com {
 	}
 	@read {
 		method GET HEAD
-		path / /artifact /status /updates /stream/data /stream/status /stream/summary
+		path / /plot /artifact /table/data /table/export /status /checks /updates /stream/data /stream/status /stream/summary /history/navigation /history/month /history /compare/latest
 	}
 	handle @read {
 		route {
@@ -177,7 +202,7 @@ live-demo.plotsrv.com {
 }
 
 scans-demo.plotsrv.com {
-	tls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key
+	import managed_tls
 	import demo_headers
 	# Cold-cache conference arrivals must not consume the dynamic-read budget.
 	@static {
@@ -210,7 +235,7 @@ scans-demo.plotsrv.com {
 	}
 	@read {
 		method GET HEAD
-		path / /artifact /table/data /table/export /status /updates /history/navigation /history/month /history /compare/latest
+		path / /artifact /table/data /table/export /status /checks /updates /history/navigation /history/month /history /compare/latest
 	}
 	handle @read {
 		route {

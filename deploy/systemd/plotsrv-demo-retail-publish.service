@@ -10,6 +10,7 @@ Group=plotsrv-demo
 EnvironmentFile=/etc/plotsrv-demo/retail.env
 Environment=PLOTSRV_DEBUG=1
 WorkingDirectory=/var/lib/plotsrv-demo/retail
+Environment=MPLCONFIGDIR=/var/lib/plotsrv-demo/retail/.cache/matplotlib
 ExecStartPre=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/deploy/wait-for-receiver.py --port 8101 --token-env PLOTSRV_RETAIL_TOKEN
 ExecStart=/opt/plotsrv-examples/.venv/bin/python -B /opt/plotsrv-examples/demos/retail/app.py
 Restart=on-failure

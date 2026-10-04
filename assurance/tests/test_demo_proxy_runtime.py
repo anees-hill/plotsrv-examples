@@ -43,7 +43,7 @@ def test_proxy_preserves_reads_when_sse_is_full_and_releases_expired_clients(tmp
     # Keep the production retail allowlist, rates and upstream directives.
     production = (ROOT / "deploy/Caddyfile").read_text()
     retail = production.split("\nretail-demo.plotsrv.com {", 1)[1].split("\nlive-demo.plotsrv.com {", 1)[0]
-    retail = retail.replace("\ttls /etc/plotsrv-demo/origin.crt /etc/plotsrv-demo/origin.key\n", "")
+    retail = retail.replace("\timport managed_tls\n", "")
     retail = retail.replace("\timport demo_headers\n", "").replace("127.0.0.1:8101", f"127.0.0.1:{port}")
     # Shrink only the static budget to prove it is separate without load.
     retail = retail.replace("events 2400", "events 1")
@@ -96,9 +96,14 @@ def test_proxy_preserves_reads_when_sse_is_full_and_releases_expired_clients(tmp
             with request("/table/data?view=retail:orders") as response:
                 assert response.status == 200
                 assert json.load(response)
+            with request("/checks?view=retail:orders") as response:
+                assert response.status == 200
             with request("/status?view=retail:orders") as response:
                 assert response.status == 200
-            for path, method in (("/publish", "POST"), ("/docs", "GET"), ("/history", "GET")):
+            with request("/history?view=retail:orders&limit=3") as response:
+                assert response.status == 200
+                assert "snapshots" in json.load(response)
+            for path, method in (("/publish", "POST"), ("/docs", "GET")):
                 with pytest.raises(urllib.error.HTTPError) as blocked:
                     request(path, method=method)
                 assert blocked.value.code == 404
