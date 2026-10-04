@@ -1,0 +1,42 @@
+schema_version = 1
+name = "Plotsrv demo rehearsal"
+command = ["python3", "visitor.py"]
+sample_seconds = 1
+stop_on_operation_error = true
+
+# Replace the host alias/path with your existing SSH setup. Split this section
+# across VMs if receivers and proxy are deployed on different machines.
+[monitors.demo]
+ssh = "prod1"
+command = ["/home/samane/.venvs/ptop-rehearsal/bin/ptop"]
+units = ["plotsrv-demo@retail.service", "plotsrv-demo@live_import.service", "plotsrv-demo@scan_audit.service", "plotsrv-demo-proxy.service"]
+
+[[phases]]
+name = "idle-before"
+seconds = 60
+users = 0
+
+[[phases]]
+name = "one-visitor"
+seconds = 120
+users = 1
+
+[[phases]]
+name = "normal"
+seconds = 300
+users = 6
+
+[[phases]]
+name = "burst"
+seconds = 60
+users = 20
+
+[[phases]]
+name = "recovery"
+seconds = 720
+users = 6
+
+[[phases]]
+name = "idle-after"
+seconds = 300
+users = 0
