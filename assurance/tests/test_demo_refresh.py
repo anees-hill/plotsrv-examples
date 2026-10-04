@@ -186,3 +186,57 @@ def test_known_scan_defect_is_measured_and_reported(tmp_path, monkeypatch):
         assert metrics["review_count"] >= 1
         note = audit.comparison(metrics, None, rows)
         assert "| Scan |" in note and "SHEET-01" in note and "calibration" in note
+
+
+def test_invalid_later_payload_cannot_partially_publish_a_batch(tmp_path, monkeypatch):
+    import plotsrv
+
+    publisher = Publisher("live_import", state_dir=tmp_path)
+    calls = []
+    monkeypatch.setattr(
+        plotsrv, "publish_view", lambda *args, **kwargs: calls.append(args)
+    )
+
+    def content(revision):
+        yield "live:recent", "Good", {"revision": revision}, "json"
+        yield "live:report", "Oversized", "x" * (128 * 1024 + 1), "html"
+
+    with pytest.raises(ValueError, match="128 KiB"):
+        publisher.current(content)
+    assert not calls
+
+
+def test_retail_freshness_transitions_use_real_publication_time(tmp_path):
+    import os
+    import subprocess
+
+    script = """
+from datetime import datetime,timedelta,timezone
+from plotsrv import store
+store.set_artifact(obj='report',kind='markdown',view_id='retail:guide')
+store.set_artifact(obj='source',kind='text',view_id='retail:source:app-py')
+base=datetime.fromisoformat(store.get_status(view_id='retail:guide')['last_updated'])
+class Clock(datetime):
+    offset=0
+    @classmethod
+    def now(cls,tz=None):return base+timedelta(seconds=cls.offset)
+store.datetime=Clock
+for seconds,state in [(0,'ok'),(601,'warn'),(901,'error')]:
+    Clock.offset=seconds
+    assert store.get_freshness(view_id='retail:guide')['state']==state
+    assert store.get_freshness(view_id='retail:source:app-py')['state']=='disabled'
+assert store.get_status(view_id='retail:guide')['last_updated']==base.isoformat()
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        cwd=tmp_path,
+        env={
+            **os.environ,
+            "PLOTSRV_CONFIG": str(ROOT / "demos/retail/plotsrv.yml"),
+            "PLOTSRV_RETAIL_TOKEN": "fixture-only-token",
+        },
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr

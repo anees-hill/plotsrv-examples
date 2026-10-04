@@ -148,12 +148,11 @@ class Publisher:
         histories = {view: self.history(view) for view in view_ids}
         completed = self.state.setdefault("seeded", [])
         for view in view_ids:
-            if any(
+            if view not in completed and any(
                 "Illustrative revision 3/3" in (r.get("label") or "")
                 for r in histories[view]
             ):
-                if view not in completed:
-                    completed.append(view)
+                completed.append(view)
         for revision in (1, 2, 3):
             wanted = {
                 view
@@ -166,26 +165,40 @@ class Publisher:
             }
             if not wanted:
                 continue
-            for view, label, obj, kind in factory(revision):
-                try:
+            with prepared(factory, revision) as items:
+                for view, label, obj, kind in items:
                     if view in wanted:
                         title = f"{label} · Illustrative revision {revision}/3"
                         self.publish(view, title, obj, kind, snapshot=True)
                         if revision == 3:
                             completed.append(view)
                             self.save()
-                finally:
-                    close_figure(obj)
         self.save()
+
+    def current(self, factory):
+        with prepared(factory, 3) as items:
+            for view, label, obj, kind in items:
+                self.publish(
+                    view,
+                    label + " · Illustrative revision 3/3",
+                    obj,
+                    kind,
+                    snapshot=True,
+                )
 
     def publish(self, view, label, obj, kind, *, snapshot=False, section=None):
         import plotsrv as ps
 
         digest = fingerprint(obj, kind)
         hashes = self.state.setdefault("hashes", {})
-        if hashes.get(view) == digest and self.present(view):
-            if not snapshot or any(r.get("label") == label for r in self.history(view)):
-                return
+        if (
+            hashes.get(view) == digest
+            and self.present(view)
+            and (
+                not snapshot or any(r.get("label") == label for r in self.history(view))
+            )
+        ):
+            return
         # The label carries the seed revision; all snapshot timestamps are real.
         options = {
             "view_id": view,
@@ -250,3 +263,17 @@ def close_figure(obj):
         import matplotlib.pyplot as plt
 
         plt.close(obj)
+
+
+@contextmanager
+def prepared(factory, revision):
+    """Validate every payload before changing any view; always release figures."""
+    items = []
+    try:
+        for item in factory(revision):
+            items.append(item)
+            fingerprint(item[2], item[3])
+        yield items
+    finally:
+        for _, _, obj, _ in items:
+            close_figure(obj)

@@ -84,6 +84,9 @@ ui-settings:
   - view: scans:results
     title: Scan results
     caption: Inspect the quality flags for each synthetic JPEG
+  - view: scans:metrics
+    title: Quality check
+    caption: A measured calibration defect triggers a warning
   icon_url: https://plotsrv.com
   show_history_controls: true
 freshness-settings:

@@ -273,18 +273,29 @@ class Visitor:
                 ("plot", endpoint("/plot", "retail:sales"), "png"),
                 ("markdown", endpoint("/artifact", "retail:guide"), "json"),
                 ("summary", endpoint("/artifact", "retail:summary"), "json"),
+                ("history", endpoint("/history", "retail:orders", limit=3), "json"),
+                ("source", endpoint("/artifact", "retail:source:plotsrv-yml"), "json"),
             ]
         if self.demo == "live":
             return [
                 ("stream", endpoint("/stream/data", self.view, limit=100), "json"),
                 ("stream_status", endpoint("/stream/status", self.view), "json"),
                 ("stream_summary", endpoint("/stream/summary", self.view), "json"),
+                ("recent", endpoint("/table/data", "live:recent"), "json"),
+                ("exceptions", endpoint("/table/data", "live:exceptions"), "json"),
+                ("manifest", endpoint("/artifact", "live:manifest"), "json"),
+                ("outcomes", endpoint("/plot", "live:outcomes"), "png"),
+                ("durations", endpoint("/plot", "live:durations"), "png"),
+                ("report", endpoint("/artifact", "live:report"), "json"),
+                ("history", endpoint("/history", "live:recent", limit=3), "json"),
+                ("source", endpoint("/artifact", "live:source:reports-py"), "json"),
             ]
         return [
             ("table", endpoint("/table/data", self.view), "json"),
             ("image", endpoint("/artifact", "scans:example"), "json"),
             ("observation", endpoint("/artifact", "scans:observed"), "json"),
             ("changes", endpoint("/artifact", "scans:changes"), "json"),
+            ("checks", endpoint("/checks", "scans:metrics"), "json"),
             ("history", endpoint("/history", self.view, limit=5), "json"),
         ]
 
@@ -313,7 +324,19 @@ class Visitor:
             index = 0
             while not self.stop.is_set() and time.monotonic() < deadline:
                 name, path, kind = actions[index % len(actions)]
-                self.request(name, path, kind)
+                result = self.request(name, path, kind)
+                if (
+                    name == "history"
+                    and result
+                    and result.get("snapshots")
+                    and not self.stop.is_set()
+                ):
+                    view = "live:recent" if self.demo == "live" else self.view
+                    snapshot = result["snapshots"][-1]["snapshot_id"]
+                    self.request(
+                        "snapshot_table",
+                        endpoint("/table/data", view, snapshot=snapshot),
+                    )
                 # Each visitor remains paced even if the receiver publishes rapidly.
                 self.stop.wait(
                     min(

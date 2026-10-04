@@ -68,7 +68,14 @@ def origin():
                 kind = "text/javascript"
             else:
                 body = json.dumps(
-                    {"records": [], "data": [], "snapshots": [], "count": 0}
+                    {
+                        "records": [],
+                        "data": [],
+                        "snapshots": [{"snapshot_id": "fixture-1"}]
+                        if route == "/history"
+                        else [],
+                        "count": 0,
+                    }
                 ).encode()
                 kind = "application/json"
             self.send_header("Content-Type", kind)
@@ -99,7 +106,9 @@ def visitor(origin, demo="retail", *extra):
             origin,
             "--allow-http",
             "--duration",
-            ".3",
+            ".7",
+            "--sse-lifetime",
+            ".4",
             "--pause-min",
             ".01",
             "--pause-max",
@@ -117,7 +126,22 @@ def visitor(origin, demo="retail", *extra):
     "demo,expected",
     [
         ("retail", {"table", "plot", "markdown", "summary"}),
-        ("live", {"stream", "stream_status", "stream_summary"}),
+        (
+            "live",
+            {
+                "stream",
+                "stream_status",
+                "stream_summary",
+                "recent",
+                "exceptions",
+                "manifest",
+                "outcomes",
+                "durations",
+                "report",
+                "history",
+                "source",
+            },
+        ),
         ("scans", {"table", "image", "observation", "changes", "history"}),
     ],
 )

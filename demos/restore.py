@@ -43,7 +43,6 @@ def main():
     from publishing import Publisher
 
     with Publisher("scan_audit").locked() as publisher:
-        publisher.sources()
         state = Path(".plotsrv/scans-output/state.json")
         if state.exists():
             if state.stat().st_size > 16384:
@@ -63,6 +62,7 @@ def main():
             )
             if not ps.flush_views(timeout=15):
                 raise RuntimeError("Check evidence publication did not drain")
+            publisher.sources()
 
 
 if __name__ == "__main__":

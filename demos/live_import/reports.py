@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from generate_events import candidate, validate
-from publishing import Publisher, close_figure
+from publishing import Publisher
 
 HISTORY_VIEWS = (
     "live:recent",
@@ -154,7 +154,7 @@ def html_report(rows, info):
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>Import operations</title>
 <style>
-*{{box-sizing:border-box}}body{{margin:0;background:#f1f5fa;color:#20324c;font:15px/1.6 system-ui,sans-serif}}
+*{{box-sizing:border-box}}body{{overflow-wrap:anywhere;margin:0;background:#f1f5fa;color:#20324c;font:15px/1.6 system-ui,sans-serif}}
 main{{max-width:1080px;margin:auto;padding:32px 24px}}header{{background:#163552;color:white;border-radius:18px;padding:30px}}
 .eyebrow{{letter-spacing:.16em;text-transform:uppercase;font-size:11px;font-weight:700;color:#8edacc}}
 h1{{font-size:clamp(26px,4vw,42px);line-height:1.15;margin:12px 0}}h2{{font-size:21px;margin:0 0 12px}}h3{{font-size:15px}}
@@ -162,7 +162,7 @@ header p{{color:#d4e3ee;max-width:650px}}.tag{{display:inline-block;border:1px s
 .cards{{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin:20px 0}}
 .card,section{{background:white;border:1px solid #dce5ef;border-radius:14px;padding:22px}}
 .card strong{{display:block;font-size:32px;color:#176b68}}.card.warn strong{{color:#a6641b}}.card small{{color:#607086}}
-.grid{{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px}}section{{margin-bottom:20px;min-width:0}}
+.grid>div{{min-width:0}}.grid{{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px}}section{{margin-bottom:20px;min-width:0}}
 .bar{{height:18px;display:flex;border-radius:9px;overflow:hidden;background:#f4c580;margin:16px 0}}.bar span{{background:#279c8a}}
 ul{{padding-left:20px}}.issues{{list-style:none;padding:0}}.issues li{{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e8edf4}}
 .scroll{{overflow:auto}}table{{width:100%;border-collapse:collapse;font-size:13px}}th,td{{text-align:left;padding:11px 10px;border-bottom:1px solid #e6edf4;white-space:nowrap}}th{{color:#48647f;background:#f3f7fb}}
@@ -260,17 +260,7 @@ def content(revision):
 def publish():
     with Publisher("live_import").locked() as publisher:
         publisher.seeded(HISTORY_VIEWS, content)
-        for view, label, obj, kind in content(3):
-            try:
-                publisher.publish(
-                    view,
-                    label + " · Illustrative revision 3/3",
-                    obj,
-                    kind,
-                    snapshot=True,
-                )
-            finally:
-                close_figure(obj)
+        publisher.current(content)
         publisher.sources()
 
 

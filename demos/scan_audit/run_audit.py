@@ -302,5 +302,5 @@ if __name__ == "__main__":
         "PLOTSRV_CONFIG", str(Path(__file__).with_name("plotsrv.yml"))
     )
     with Publisher("scan_audit").locked() as publisher:
-        publisher.sources()
         print(json.dumps(complete(args.date, args.output)))
+        publisher.sources()

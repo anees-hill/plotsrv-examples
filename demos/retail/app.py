@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from generate_data import make_orders
-from publishing import Publisher, close_figure
+from publishing import Publisher
 
 
 def analyse(rows):
@@ -273,17 +273,7 @@ def publish(rows):
             HISTORY_VIEWS,
             lambda revision: content(make_orders(len(rows), revision=revision)),
         )
-        for view, label, obj, kind in content(rows):
-            try:
-                publisher.publish(
-                    view,
-                    label + " · Illustrative revision 3/3",
-                    obj,
-                    kind,
-                    snapshot=True,
-                )
-            finally:
-                close_figure(obj)
+        publisher.current(lambda _: content(rows))
         publisher.publish(
             "retail:summary",
             "Dataset summary",

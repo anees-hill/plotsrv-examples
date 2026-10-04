@@ -62,9 +62,13 @@ stable worker number. Each loads a demo page plus up to 40 same-origin static as
 holds one `/updates` connection, and repeatedly reads demo content with a random
 2–5 second pause between operations:
 
-- **Retail:** table, PNG plot, Markdown guide and JSON summary.
-- **Live:** stream data, status and summary.
-- **Scans:** table, image artifact, observation, change note and bounded history.
+- **Retail:** table, PNG plot, Markdown report, JSON summary, source code and snapshots.
+- **Live:** stream data/status/summary, prepared import tables, JSON manifest, plots, HTML report, source code and snapshots.
+- **Scans:** table, image artifact, observation, completed report, quality checks and bounded history.
+
+History reads also open the oldest retained table snapshot when available. The
+intentional scan warning and retail overdue badges are expected demo states; HTTP
+or transport failures still fail the rehearsal.
 
 Each visitor owns separate HTTP/SSE connections. SSE update and heartbeat events
 are recorded; expected connection expiry reconnects with the last revision.
