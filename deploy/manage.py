@@ -96,7 +96,8 @@ def extract(archive, destination, kind):
                 raise ValueError(f'Unexpected archive file: {member.name}')
         required = set(WEBSITE_FILES) if kind == 'website' else {
             'deploy/requirements.txt', 'deploy/check-install.py', 'deploy/wait-for-receiver.py',
-            'deploy/systemd/plotsrv-demo@.service', 'demos/retail/app.py',
+            'deploy/systemd/plotsrv-demo@.service',
+            'deploy/systemd/plotsrv-demo-content@.service', 'demos/retail/app.py',
             'demos/live_import/follow.py', 'demos/live_import/generate_events.py',
             'demos/scan_audit/run_audit.py', 'demos/live_import/reports.py', 'demos/publishing.py',
             'demos/restore.py', 'demos/retail/northstar.svg', *[f'demos/{d}/plotsrv.yml' for d in TOKENS]}
@@ -199,8 +200,15 @@ def prepare_python(release, requirements):
     (release / 'deployed-python-packages.txt').write_text(result.stdout)
 
 
+def prepared_content_available():
+    return ((EXAMPLES / 'demos/restore.py').is_file() and
+            (UNITS / 'plotsrv-demo-content@.service').is_file())
+
+
 def stop_demo(name):
-    run('systemctl', 'disable', '--now', *JOBS[name], f'plotsrv-demo-content@{name}.service', f'plotsrv-demo@{name}.service')
+    content = ([f'plotsrv-demo-content@{name}.service']
+               if (UNITS / 'plotsrv-demo-content@.service').is_file() else [])
+    run('systemctl', 'disable', '--now', *JOBS[name], *content, f'plotsrv-demo@{name}.service')
 
 
 def start_demo(name, restart=False, publish=False):
@@ -212,13 +220,15 @@ def start_demo(name, restart=False, publish=False):
     env[TOKENS[name]] = value
     run(EXAMPLES / '.venv/bin/python', '-B', EXAMPLES / 'deploy/wait-for-receiver.py',
         '--port', PORTS[name], '--token-env', TOKENS[name], env=env)
-    # Receiver startup wants this oneshot; start also waits for it to finish.
-    run('systemctl', 'start', f'plotsrv-demo-content@{name}.service')
+    prepared = prepared_content_available()
+    if prepared:
+        # Receiver startup wants this oneshot; start also waits for it to finish.
+        run('systemctl', 'start', f'plotsrv-demo-content@{name}.service')
     if name == 'live_import':
         for job in reversed(JOBS[name]):
             run('systemctl', 'enable', job)
             run('systemctl', 'restart' if restart else 'start', job)
-    elif publish and name != 'retail':
+    elif (name == 'retail' and not prepared and (publish or restart)) or (publish and name != 'retail'):
         run('systemctl', 'start', JOBS[name][-1])
     if name == 'scan_audit':
         run('systemctl', 'enable', '--now', JOBS[name][0])
@@ -228,6 +238,8 @@ def check_data(name):
     paths = {'retail': ['/table/data?view=retail:orders'],
              'live_import': ['/stream/status?view=live:imports', '/artifact?view=live:report'],
              'scan_audit': ['/artifact?view=scans:example', '/checks?view=scans:metrics']}
+    if not prepared_content_available():
+        paths['live_import'] = ['/stream/status?view=live:imports']
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     for _ in range(60):
         try:
@@ -275,7 +287,10 @@ def deploy(args):
                     fd = os.open(token, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
                     with os.fdopen(fd, 'w') as output:
                         output.write(f'{TOKENS[name]}={secrets.token_urlsafe(32)}\n')
-        units = {p.name: p.read_bytes() for p in (HERE / 'systemd').glob('*')
+        # A profile-only change must keep the installed release's service files.
+        # New tooling may otherwise install jobs that older demo code cannot run.
+        unit_source = (release or EXAMPLES) / 'deploy/systemd' if args.kind == 'demos' else HERE / 'systemd'
+        units = {p.name: p.read_bytes() for p in unit_source.glob('*')
                  if args.kind == 'demos' or p.name == PROXY}
         old_units = {name: (UNITS / name).read_bytes()
                      if (UNITS / name).exists() else None for name in units}

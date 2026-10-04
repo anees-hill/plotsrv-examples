@@ -82,3 +82,30 @@ Systemd unit syntax and dependency ordering also passed `systemd-analyze verify`
 using temporary unit copies with `/usr/bin/true` as the executable. This checks the
 receiver/content-job relationships without starting services. The optional real
 Caddy acceptance test was skipped because no `CADDY_DEMO_BINARY` was supplied.
+
+### Deployment review follow-up
+
+The installer now selects service files from the release being installed (or the
+already installed release for a profile-only change). Rollback recognises older
+releases without the prepared-content job and restores the original retail
+publisher. Regression tests inject a failed deployment and verify this old-release
+recovery. Archives missing the new content service are rejected before extraction.
+
+Always re-extract `tooling/deploy` from the new archive before running the VM
+installer, as described in `demos/DEPLOY-DEMO-VM.md`. Reusing old installer code
+will not correctly install the new content jobs and assets.
+
+A clean PyPI environment currently resolves **plotsrv 0.8.0**. Real receiver tests
+passed publication, retained snapshots and restart restoration for all three demos
+using that released package. It does **not** include the recent table-response and
+encoded-artifact caching changes in the local plotsrv checkout. A demo bundle does
+not ship plotsrv itself: publish a plotsrv release containing those changes before
+expecting the VM update to gain their performance benefits. The earlier load
+numbers above used the local checkout and must not be attributed to PyPI 0.8.0.
+
+Publisher peak RSS measured separately with the clean PyPI environment was about
+161 MiB for retail, 135 MiB for imports and 115 MiB for scans during initial
+preparation. Repeated startup used approximately 128, 111 and 108 MiB respectively.
+These are process RSS measurements, not a test of the VM's 320 MiB cgroup limits.
+The real bundled Caddy binary also passed local proxy tests for bounded SSE,
+continued ordinary reads, blocked write routes and static-site restrictions.
