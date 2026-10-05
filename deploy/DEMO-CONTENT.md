@@ -91,11 +91,12 @@ releases without the prepared-content job and restores the original retail
 publisher. Regression tests inject a failed deployment and verify this old-release
 recovery. Archives missing the new content service are rejected before extraction.
 
-Always re-extract `tooling/deploy` from the new archive before running the VM
-installer, as described in `demos/DEPLOY-DEMO-VM.md`. Reusing old installer code
-will not correctly install the new content jobs and assets.
+New bundles include `deploy-plotsrv.sh` and ready-to-use `tooling/deploy`. Transfer
+the complete bundle and follow `deploy/DEPLOYMENT-GUIDE.md`. The guide also covers
+older bundles that need manual tooling extraction. Never reuse an old installer
+against a newer archive.
 
-A clean PyPI environment currently resolves **plotsrv 0.8.0**. Real receiver tests
+At the October 4 review, a clean PyPI environment resolved **plotsrv 0.8.0**. Real receiver tests
 passed publication, retained snapshots and restart restoration for all three demos
 using that released package. It does **not** include the recent table-response and
 encoded-artifact caching changes in the local plotsrv checkout. A demo bundle does

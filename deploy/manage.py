@@ -177,26 +177,85 @@ def restore_link(link, target):
         switch_link(link, target)
 
 
+def installed_version(release):
+    python = release / '.venv/bin/python'
+    if not python.exists():
+        return 'not installed'
+    return run(python, '-I', '-c',
+               "from importlib.metadata import version; print(version('plotsrv'))",
+               capture_output=True, text=True).stdout.strip()
+
+
+def latest_plotsrv():
+    """Select the highest stable, non-yanked release, independent of VM Python."""
+    request = urllib.request.Request('https://pypi.org/pypi/plotsrv/json',
+                                     headers={'Cache-Control': 'no-cache'})
+    with urllib.request.urlopen(request, timeout=30) as response:
+        data = response.read(16 * 1024 * 1024 + 1)
+    if len(data) > 16 * 1024 * 1024:
+        raise ValueError('PyPI metadata exceeds 16 MiB')
+    document = json.loads(data)
+    releases = document.get('releases') if isinstance(document, dict) else None
+    if not isinstance(releases, dict):
+        raise ValueError('PyPI metadata does not contain a release listing')
+    candidates = []
+    for version, files in releases.items():
+        # Stable PEP 440 releases, including epochs and post releases. Ignore
+        # development/pre/local releases; never fall back for Python compatibility.
+        match = re.fullmatch(r'(?:(\d+)!)?(\d+(?:\.\d+)*)(?:\.post(\d+))?', version)
+        if not match or not isinstance(files, list) or not any(
+                isinstance(item, dict) and not item.get('yanked', False) for item in files):
+            continue
+        parts = tuple(map(int, match[2].split('.')))
+        while len(parts) > 1 and parts[-1] == 0:
+            parts = parts[:-1]
+        key = (int(match[1] or 0), parts, int(match[3]) if match[3] else -1)
+        candidates.append((key, version))
+    if not candidates:
+        raise ValueError('PyPI returned no stable, non-yanked plotsrv release')
+    return max(candidates)[1]
+
+
 def prepare_python(release, requirements):
+    previous_version = installed_version(EXAMPLES)
+    req = requirements or release / 'deploy/requirements.txt'
+    if requirements:
+        lines = [line.strip() for line in req.read_text().splitlines()
+                 if line.strip() and not line.lstrip().startswith('#')]
+        if any(not re.fullmatch(r'[A-Za-z0-9_.-]+==[A-Za-z0-9_.+!-]+', line) for line in lines):
+            raise ValueError('Package manifest must contain only name==version entries')
+        pinned = [line.split('==', 1)[1] for line in lines
+                  if line.split('==', 1)[0].lower() == 'plotsrv']
+        if len(pinned) != 1:
+            raise ValueError('Package manifest must pin plotsrv exactly once')
+        target = pinned[0]
+        print(f'Using pinned package manifest; plotsrv target: {target}', flush=True)
+    else:
+        target = latest_plotsrv()
+        print(f'Latest stable plotsrv on PyPI: {target}', flush=True)
+    print(f'Previously installed plotsrv: {previous_version}', flush=True)
+    # User uv/pip settings must not redirect a production install to another
+    # index, an offline cache, or a local editable checkout.
+    env = {k: v for k, v in os.environ.items()
+           if not k.startswith(('UV_', 'PIP_')) and k not in {'PYTHONPATH', 'PYTHONHOME', 'VIRTUAL_ENV'}}
+    env.update(UV_NO_CONFIG='true', UV_PYTHON_DOWNLOADS='never', PIP_CONFIG_FILE=os.devnull)
     if not (TOOLS / 'bin/uv').exists():
         if TOOLS.exists():
             raise ValueError(f'{TOOLS} exists without uv; repair it before retrying')
-        run('/usr/bin/python3', '-m', 'venv', TOOLS)
-        run(TOOLS / 'bin/pip', 'install', '--index-url', 'https://pypi.org/simple', 'uv')
+        run('/usr/bin/python3', '-m', 'venv', TOOLS, env=env)
+        run(TOOLS / 'bin/pip', 'install', '--index-url', 'https://pypi.org/simple', 'uv', env=env)
     uv = TOOLS / 'bin/uv'
     run(uv, 'venv', '--python', '/usr/bin/python3', release / '.venv',
-        env={**os.environ, 'UV_PYTHON_DOWNLOADS': 'never'})
-    req = requirements or release / 'deploy/requirements.txt'
-    if requirements:
-        # Reproduction manifests must contain only pinned PyPI distributions.
-        for line in req.read_text().splitlines():
-            if line.strip() and not line.startswith('#') and not re.fullmatch(r'[A-Za-z0-9_.-]+==[A-Za-z0-9_.+!-]+', line):
-                raise ValueError('Package manifest must contain only name==version entries')
-    run(uv, 'pip', 'install', '--index-url', 'https://pypi.org/simple', '--python',
-        release / '.venv/bin/python', '-r', req)
-    run(release / '.venv/bin/python', '-B', release / 'deploy/check-install.py')
-    run(release / '.venv/bin/plotsrv', 'serve', '--help', stdout=subprocess.DEVNULL)
-    result = run(uv, 'pip', 'freeze', '--python', release / '.venv/bin/python', capture_output=True, text=True)
+        env=env)
+    run(uv, 'pip', 'install', '--refresh', '--upgrade', '--index-url', 'https://pypi.org/simple', '--python',
+        release / '.venv/bin/python', '-r', req, f'plotsrv=={target}', env=env)
+    actual = installed_version(release)
+    if actual != target:
+        raise RuntimeError(f'Expected plotsrv {target}, installed {actual}; refusing activation')
+    print(f'Prepared plotsrv: {actual} (previous: {previous_version})', flush=True)
+    run(release / '.venv/bin/python', '-B', release / 'deploy/check-install.py', env=env)
+    run(release / '.venv/bin/plotsrv', 'serve', '--help', stdout=subprocess.DEVNULL, env=env)
+    result = run(uv, 'pip', 'freeze', '--python', release / '.venv/bin/python', capture_output=True, text=True, env=env)
     (release / 'deployed-python-packages.txt').write_text(result.stdout)
 
 
@@ -368,6 +427,7 @@ def deploy(args):
         print('Caddy certificate issuance is asynchronous. Verify HTTPS before changing DNS.')
         print('State:', STATE)
         if args.kind == 'demos':
+            print('Installed plotsrv:', installed_version(EXAMPLES))
             print('Installed PyPI versions:', EXAMPLES / 'deployed-python-packages.txt')
 
 
