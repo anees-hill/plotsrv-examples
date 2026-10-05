@@ -47,7 +47,10 @@ def check_core_features():
     import plotsrv
     import plotsrv.config as config
     import plotsrv.runtime as runtime
+    from plotsrv.ui_config import UISettings
     missing = []
+    if 'show_view_descriptions' not in UISettings.__dataclass_fields__:
+        missing.append('independent dropdown description visibility')
     for name in ('publish_view', 'stream_view', 'flush_views'):
         if not callable(getattr(plotsrv, name, None)):
             missing.append(name)

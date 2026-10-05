@@ -48,3 +48,10 @@ Source-code views have been removed. Only the manifest deliberately expects a
 refresh every five minutes, warns after ten and becomes overdue after fifteen.
 The featured views have freshness checks disabled. The fixed manifest is left
 unchanged to demonstrate freshness; no extra recurring work is introduced.
+
+Dropdown descriptions are hidden while the **i / About this view** explanations
+remain available. Current titles omit revision suffixes; earlier seeded snapshots
+use batch-stage labels. An update from older labels publishes the clean current
+title once, retaining the existing history bound and earlier snapshot metadata.
+Prepared reports may show Restored after a restart; the independent live stream
+updates as new events arrive. The outcomes legend sits above the data bars.

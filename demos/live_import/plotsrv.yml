@@ -71,20 +71,18 @@ stream-settings:
     max_total_raw_mb: 4
     max_noteworthy_items: 64
 ui-settings:
+  show_view_descriptions: false
   page_title: Live imports · plotsrv demo
   header_text: Live file imports
   featured_views:
   - view: live:imports
     title: Live import log
-    caption: New validation events every three seconds
     thumbnail: previews/imports.png
   - view: live:report
     title: Import operations
-    caption: Batch status, source performance and follow-up actions
     thumbnail: previews/report.png
   - view: live:recent
     title: Explore imports
-    caption: Follow records from incoming files to validation outcomes
     thumbnail: previews/recent.png
   icon_url: https://demo.plotsrv.com
   show_history_controls: true

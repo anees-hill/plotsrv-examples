@@ -174,7 +174,7 @@ def trading_report(rows):
         group = [r for r in rows if r["category"] == name]
         revenue = sum(r["order_value_gbp"] for r in group)
         categories.append(
-            f"| {name} | {len(group):,} | £{revenue:,.2f} | £{sum(r['margin_gbp'] for r in group):,.2f} | {100 * sum(r['returned'] for r in group) / len(group):.1f}% |"
+            f"| {name} | £{revenue:,.2f} |"
         )
     revision = rows[0]["report_revision"] if rows else 3
     period = {1: "December 2025", 2: "March 2026", 3: "June 2026"}[revision]
@@ -182,7 +182,7 @@ def trading_report(rows):
     return f"""# Northstar Outdoors
 ## Trading review · through {period}
 
-**Prepared for the trading and operations team** · Illustrative report edition {revision}/3
+**Prepared for the trading and operations team**
 
 > Build equipment people trust, and an experience that brings them back.
 
@@ -195,11 +195,12 @@ serve different customer needs, so the mix matters as much as the headline total
 
 ### Category scorecard
 
-| Category | Orders | Booked sales | Gross profit¹ | Returned orders |
-| --- | ---: | ---: | ---: | ---: |
+| Category | Sales (£) |
+| --- | ---: |
 {chr(10).join(categories)}
 
-¹ Revenue less product cost; before refunds, shipping, overheads and tax.
+Booked sales are before returns. Use the orders register for category-level
+order counts, gross profit and returns.
 
 ### Commercial observations
 

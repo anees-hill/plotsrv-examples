@@ -39,6 +39,17 @@ screenshots and freshness checks disabled. Source-code views have been removed.
 Republish with the command above after editing content; unchanged live/restored
 views are reused.
 
+View titles use plain business names. Earlier seeded snapshots identify their
+reporting period; updating an older bundle publishes the clean current title once
+without reseeding its history. Existing historical labels are left intact.
+After an ordinary restart, unchanged prepared views can correctly show Restored
+until they are published again; no recurring job runs just to clear that badge.
+
+Dropdown descriptions are hidden with `ui-settings.show_view_descriptions: false`.
+The **i / About this view** button retains the longer coworker explanations,
+including on featured entries. The trading review uses a two-column category/sales
+table that fits a narrow mobile screen.
+
 ## Operations logs
 
 `serve.py` registers two static watched files in the receiver process: order

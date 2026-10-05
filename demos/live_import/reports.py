@@ -233,7 +233,8 @@ def content(revision):
             xlabel="Fictional batch time (UTC)",
             ylabel="Records per 90-second window",
         )
-        ax.legend(frameon=False)
+        ax.legend(frameon=False, loc="lower left", bbox_to_anchor=(0, 1.02), ncol=2)
+        ax.set_title("Validation outcomes over time", pad=38)
         ax.tick_params(axis="x", rotation=45)
         yield "live:outcomes", "Import outcomes", fig, "plot"
 

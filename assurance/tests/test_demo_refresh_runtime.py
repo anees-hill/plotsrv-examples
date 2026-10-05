@@ -139,9 +139,9 @@ def test_history_logs_and_restart(receiver):
         before = {v: r.get("/history", view=v)["snapshots"] for v in HISTORY[r.demo]}
         for rows in before.values():
             assert len(rows) == 3
-            assert {
-                row["label"].split("Illustrative revision ")[-1] for row in rows
-            } == {"1/3", "2/3", "3/3"}
+            assert len({row["label"] for row in rows}) == 3
+            assert all("Illustrative revision" not in row["label"] for row in rows)
+        assert all("Illustrative revision" not in v["label"] for v in r.get("/views"))
         r.publish()
         assert before == {
             v: r.get("/history", view=v)["snapshots"] for v in HISTORY[r.demo]
@@ -206,6 +206,12 @@ def test_browser_branding_reports_and_logs(receiver):
                 )
                 assert page.locator("h1").count() >= 1
             page.locator(".ps-viewselect__btn").click()
+            visible_descriptions = page.locator(".ps-viewselect__description:visible")
+            if r.demo == "scan_audit":
+                assert visible_descriptions.count() > 0
+            else:
+                assert visible_descriptions.count() == 0
+                assert page.locator(".ps-viewselect__feature-caption:visible").count() == 0
             catalogue = {v["view_id"] for v in r.get("/views")}
             featured = [
                 v
@@ -225,6 +231,9 @@ def test_browser_branding_reports_and_logs(receiver):
                 not in page.locator(".ps-viewselect__menu").inner_text()
             )
             page.keyboard.press("Escape")
+            page.locator("#view-about > summary").click()
+            assert page.locator("#view-about-text").inner_text() == r.cfg["description-settings"]["views"][view]
+            page.keyboard.press("Escape")
             if r.demo == "scan_audit":
                 page.goto(r.base + "/?" + urlencode({"view": "scans:metrics"}))
                 page.locator("#header-status-button").click()
@@ -239,6 +248,10 @@ def test_browser_branding_reports_and_logs(receiver):
                 )
             page.screenshot(path=str(r.directory / "mobile.png"), full_page=True)
             if r.demo == "retail":
+                table = page.locator(".plotsrv-markdown table").first
+                assert table.locator("thead th").count() == 2
+                assert table.evaluate("e => e.scrollWidth <= e.clientWidth + 1")
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
                 page.goto(r.base + "/?" + urlencode({"view": "retail:summary"}))
                 page.wait_for_selector(".ps-json-rich-head", state="attached")
                 assert "TRUNCATED" not in page.locator("body").inner_text()
@@ -249,3 +262,47 @@ def test_browser_branding_reports_and_logs(receiver):
                 assert page.locator("pre").inner_text().count("GET /warehouse") == 5
         finally:
             browser.close()
+
+
+@pytest.mark.parametrize('demo', ['retail', 'live_import'])
+def test_upgrade_renames_current_views_once_without_reseeding(tmp_path, demo):
+    r = Receiver(demo, tmp_path)
+    script = ROOT / 'demos' / demo / ('app.py' if demo == 'retail' else 'reports.py')
+    # Reproduce the previous bundle's labels with identical current payloads.
+    legacy = '''
+import runpy, sys
+from pathlib import Path
+script = Path(sys.argv[1])
+sys.path[:0] = [str(script.parent), str(script.parent.parent)]
+from publishing import Publisher
+Publisher.seed_label = lambda self, label, revision: f"{label} · Illustrative revision {revision}/3"
+current = Publisher.current
+def old_current(self, factory):
+    def labelled(revision):
+        for view, label, obj, kind in factory(revision):
+            yield view, label + " · Illustrative revision 3/3", obj, kind
+    return current(self, labelled)
+Publisher.current = old_current
+sys.argv = [str(script)]
+runpy.run_path(str(script), run_name='__main__')
+'''
+    try:
+        r.start()
+        result = subprocess.run([sys.executable, '-c', legacy, str(script)],
+            cwd=tmp_path, env=r.env, capture_output=True, text=True, timeout=120)
+        assert result.returncode == 0, result.stdout + result.stderr
+        before = {v: r.get('/history', view=v)['snapshots'] for v in HISTORY[demo]}
+        assert all(len(rows) == 3 for rows in before.values())
+        r.stop()
+        r.start()
+        r.publish(restore=True)
+        after = {v: r.get('/history', view=v)['snapshots'] for v in HISTORY[demo]}
+        for view in HISTORY[demo]:
+            assert len(after[view]) == 3
+            assert 'Illustrative revision' not in after[view][0]['label']
+            assert [row['snapshot_id'] for row in after[view][1:]] == [row['snapshot_id'] for row in before[view][:2]]
+        assert all('Illustrative revision' not in v['label'] for v in r.get('/views'))
+        r.publish(restore=True)
+        assert after == {v: r.get('/history', view=v)['snapshots'] for v in HISTORY[demo]}
+    finally:
+        r.stop()

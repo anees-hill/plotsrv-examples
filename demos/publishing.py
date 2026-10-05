@@ -106,29 +106,41 @@ class Publisher:
                 view
                 for view in view_ids
                 if view not in completed
-                and not any(
-                    f"Illustrative revision {revision}/3" in (row.get("label") or "")
-                    for row in histories[view]
-                )
             }
             if not wanted:
                 continue
             with prepared(factory, revision) as items:
                 for view, label, obj, kind in items:
                     if view in wanted:
-                        title = f"{label} · Illustrative revision {revision}/3"
-                        self.publish(view, title, obj, kind, snapshot=True)
+                        title = self.seed_label(label, revision)
+                        # Recognise old bundles as well as the new business labels.
+                        # History confirms a write even if the journal save failed.
+                        if not any(
+                            row.get("label") == title
+                            or f"Illustrative revision {revision}/3" in (row.get("label") or "")
+                            for row in histories[view]
+                        ):
+                            self.publish(view, title, obj, kind, snapshot=True)
                         if revision == 3:
                             completed.append(view)
                             self.save()
         self.save()
+
+    def seed_label(self, label, revision):
+        if revision == 3:
+            return label
+        period = {
+            "retail": ("through December 2025", "through March 2026"),
+            "live_import": ("Initial validation", "Corrections applied"),
+        }[self.demo][revision - 1]
+        return f"{label} · {period}"
 
     def current(self, factory):
         with prepared(factory, 3) as items:
             for view, label, obj, kind in items:
                 self.publish(
                     view,
-                    label + " · Illustrative revision 3/3",
+                    label,
                     obj,
                     kind,
                     snapshot=True,
@@ -147,7 +159,7 @@ class Publisher:
             )
         ):
             return
-        # The label carries the seed revision; all snapshot timestamps are real.
+        # Historical labels describe the business period; capture times are real.
         options = {
             "view_id": view,
             "label": label,

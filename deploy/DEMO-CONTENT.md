@@ -17,6 +17,20 @@ latest content without repeating the history. A changed content hash permits an
 explicit updated publication. Source-code views are no longer published or admitted;
 the previous bundle disabled their persistence, so they disappear on restart.
 
+Current retail/import titles no longer carry an illustrative-revision suffix.
+New seed snapshots use reporting periods or batch stages for earlier editions.
+The publisher recognises old revision labels during upgrades, publishes each clean
+current title once, and keeps the three-snapshot bound. Older retained snapshot
+metadata is not rewritten. Unchanged prepared views may correctly show Restored
+after a subsequent restart; the live import stream refreshes on incoming events.
+No extra startup publication loop or recurring report job was added.
+
+Retail and imports set `ui-settings.show_view_descriptions: false`: their dropdowns
+stay compact and the i button retains the full source explanation. Featured captions
+are omitted so About this view uses that explanation too. Scan audit keeps its
+dropdown descriptions. This option requires the matching plotsrv PyPI release;
+the installation feature check rejects versions that lack it.
+
 On scan restart, the startup job republishes the latest successful metrics from
 `.plotsrv/scans-output/state.json`. This restores the check's evidence without
 running another image audit. On first setup there is no previous state; the normal

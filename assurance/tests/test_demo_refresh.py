@@ -98,6 +98,7 @@ def test_configs_bound_history_and_keep_featured_views_fresh():
         ("scan_audit", None),
     ]:
         config = yaml.safe_load((ROOT / "demos" / demo / "plotsrv.yml").read_text())
+        assert config["ui-settings"].get("show_view_descriptions", True) == (demo == "scan_audit")
         assert config["ui-settings"]["icon_url"] == "https://demo.plotsrv.com"
         ids = config["server-settings"]["admission"]["allowed_ids"]
         assert not any(":source:" in view for view in ids)
@@ -219,6 +220,58 @@ def test_seeding_resumes_after_snapshot_write_before_state_save(tmp_path, monkey
     publisher.seeded(["retail:guide"], factory)
     assert len(published) == 3 and len(history) == 3
     assert json.loads(publisher.path.read_text())["seeded"] == ["retail:guide"]
+
+
+@pytest.mark.parametrize("demo,view", [("retail", "retail:guide"), ("live_import", "live:manifest")])
+def test_legacy_history_gets_one_clean_title_without_reseeding(tmp_path, monkeypatch, demo, view):
+    import plotsrv
+    from publishing import fingerprint
+
+    publisher = Publisher(demo, state_dir=tmp_path)
+    value = {"revision": 3}
+    publisher.state = {"hashes": {view: fingerprint(value, "json")}}
+    history = [
+        {"label": f"Report · Illustrative revision {revision}/3", "snapshot_id": str(revision)}
+        for revision in (3, 2, 1)
+    ]
+    published = []
+    monkeypatch.setattr(publisher, "history", lambda _: list(history))
+    monkeypatch.setattr(publisher, "present", lambda _: True)
+    monkeypatch.setattr(plotsrv, "flush_views", lambda **_: True)
+
+    def publish(obj, **kwargs):
+        published.append((obj, kwargs["label"]))
+        history.insert(0, {"label": kwargs["label"], "snapshot_id": "4"})
+        del history[3:]
+
+    monkeypatch.setattr(plotsrv, "publish_view", publish)
+
+    def no_reseed(_):
+        raise AssertionError("completed legacy history must not be seeded again")
+
+    factory = lambda _: [(view, "Report", value, "json")]
+    publisher.seeded([view], no_reseed)
+    publisher.current(factory)
+    publisher.current(factory)
+    assert published == [(value, "Report")]
+    assert [row["snapshot_id"] for row in history] == ["4", "3", "2"]
+    assert publisher.state["seeded"] == [view]
+
+
+def test_import_outcomes_legend_is_outside_data_and_title(monkeypatch):
+    from publishing import prepared
+
+    reports = module("live_import", "reports.py", monkeypatch)
+    with prepared(reports.content, 3) as items:
+        figure = next(obj for view, _, obj, _ in items if view == "live:outcomes")
+        figure.canvas.draw()
+        axes = figure.axes[0]
+        renderer = figure.canvas.get_renderer()
+        legend = axes.get_legend().get_window_extent(renderer)
+        assert not legend.overlaps(axes.get_window_extent(renderer))
+        assert not legend.overlaps(axes.title.get_window_extent(renderer))
+        assert figure.bbox.contains(legend.x0, legend.y0)
+        assert figure.bbox.contains(legend.x1, legend.y1)
 
 
 def test_known_scan_defect_is_measured_and_reported(tmp_path, monkeypatch):
