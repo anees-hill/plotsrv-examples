@@ -91,6 +91,16 @@ Do not clear production storage to reseed the examples.
 
 ### Presentation update verification (October 5)
 
+Final polish checks cover a real upgrade from legacy revision titles on both
+retail and imports: one new current snapshot, earlier retained snapshot IDs
+preserved, and no further publication on repeat. The 27 focused demo checks pass,
+including actual receiver/browser checks for hidden dropdown text and retained
+About explanations, restart stability, and a two-column report table. Separate
+browser captures verify the retail table fits at 320 and 390 pixels. The import
+legend is outside both the plotted data and chart title. Updated thumbnail and
+website captures use these actual local views. Core configuration, UI editor,
+description-browser and HTML/asset checks pass (110 checks).
+
 A follow-up browser review caught and corrected a truncated field-name preview in
 the Northstar summary and an import chart title that incorrectly described source
 files instead of time windows. The summary now groups field names by purpose and

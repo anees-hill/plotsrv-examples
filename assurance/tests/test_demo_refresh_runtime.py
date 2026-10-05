@@ -289,7 +289,7 @@ runpy.run_path(str(script), run_name='__main__')
     try:
         r.start()
         result = subprocess.run([sys.executable, '-c', legacy, str(script)],
-            cwd=tmp_path, env=r.env, capture_output=True, text=True, timeout=120)
+            cwd=tmp_path, env=r.env, capture_output=True, text=True, timeout=120, check=False)
         assert result.returncode == 0, result.stdout + result.stderr
         before = {v: r.get('/history', view=v)['snapshots'] for v in HISTORY[demo]}
         assert all(len(rows) == 3 for rows in before.values())
