@@ -374,41 +374,160 @@ conference load. Rehearse with the expected browser count before the event.
 
 ## 5. Split demos across prod1, prod2 and prod3
 
-Prepare prod2 and prod3 using section 4 (bootstrap, complete bundle, Caddy, token,
-firewall). Keep prod1 serving traffic until their HTTPS checks pass. Use separate
-zone-restricted Cloudflare tokens where practical.
+**Yes: create/bootstrap two VMs → copy the bundle → install one demo on each →
+check them → change the two Cloudflare DNS destinations → reduce prod1 to retail.**
+The bootstrap runs on the new Droplet's first boot; it does not create the Droplet.
+Do not reduce prod1's selection until the new hosts are working and traffic has moved.
 
-To reproduce prod1's packages, **workstation**:
+| VM | What it will run | Public hostnames |
+| --- | --- | --- |
+| prod1 (existing) | Website, demo landing page and Northstar retail | `plotsrv.com`, `demo.plotsrv.com`, `retail-demo.plotsrv.com` |
+| prod2 (new) | File-import demo only | `live-demo.plotsrv.com` |
+| prod3 (new) | Scan-audit demo only | `scans-demo.plotsrv.com` |
+
+Use the same demo bundle on all three VMs. A bundle containing the website does
+not install it unless you run `website` or `both`. On prod2/prod3 use **`demos`**.
+Leave `docs.plotsrv.com` on its existing hosting throughout.
+
+### 5A. Create prod2 and prod3 in DigitalOcean
+
+**Workstation:** open this file and copy its complete contents, including the
+first `#!/usr/bin/env bash` line:
+
+```text
+/home/samane/Projects/plotsrv-homepage/plotsrv-upload/tooling/deploy/bootstrap-vm.sh
+```
+
+**DigitalOcean dashboard — repeat for each new Droplet:**
+
+1. Choose **Create → Droplets**, name it `prod2` or `prod3`, and select an Ubuntu
+   image with Python 3.11+ (for example Ubuntu 24.04 LTS). Use the same CPU
+   architecture shown by `target` in the bundle's `BUILD-INFO.json` (`linux/amd64`
+   means x86-64).
+2. Select your existing **SSH key** for authentication. The bootstrap copies that
+   key from root to the `samane` account; it needs the key selected at creation.
+3. Under the additional options, enable **Startup scripts / user data** and paste
+   the entire bootstrap script. Create the Droplet and note its public IPv4 address.
+4. Attach your Cloudflare-only web firewall to each new Droplet, with SSH allowed
+   from your admin IP. If reusing prod1's firewall, ensure prod2/prod3 are actually
+   attached. Do not expose ports 8101–8103 or 2019.
+
+DigitalOcean documents [startup scripts/user data](https://docs.digitalocean.com/products/droplets/how-to/provide-user-data/).
+Do not rerun the bootstrap on prod1 or paste it into an ordinary non-root shell.
+
+**Workstation — wait for each new VM's bootstrap to finish:**
 
 ```bash
+ssh root@PROD2_IP 'cloud-init status --wait && cat /var/lib/plotsrv-vm-bootstrap-complete'
+ssh root@PROD3_IP 'cloud-init status --wait && cat /var/lib/plotsrv-vm-bootstrap-complete'
+ssh samane@PROD2_IP 'python3 --version && uname -m'
+ssh samane@PROD3_IP 'python3 --version && uname -m'
+```
+
+Expect the completion marker, Python 3.11+ and the matching architecture. If the
+marker is missing, inspect `/var/log/plotsrv-vm-bootstrap.log` as root and fix the
+reported failure before continuing. The `samane` login may not exist until the
+bootstrap has progressed far enough.
+
+### 5B. Copy the complete bundle to both new VMs
+
+**Workstation — create a fresh upload archive from the current bundle:**
+
+```bash
+set -e
+tar -C /home/samane/Projects/plotsrv-homepage -czf /home/samane/Projects/plotsrv-homepage/plotsrv-upload.tar.gz plotsrv-upload
+scp /home/samane/Projects/plotsrv-homepage/plotsrv-upload.tar.gz samane@PROD2_IP:/home/samane/
+scp /home/samane/Projects/plotsrv-homepage/plotsrv-upload.tar.gz samane@PROD3_IP:/home/samane/
+```
+
+**On prod2, then separately on prod3 — SSH in as `samane` and run this block:**
+
+```bash
+set -e
+cd /home/samane
+test ! -e plotsrv-upload
+tar --no-same-owner -xzf plotsrv-upload.tar.gz
+cd /home/samane/plotsrv-upload
+sha256sum --check SHA256SUMS
+sudo install -o root -g root -m 0755 caddy-plotsrv /usr/local/bin/caddy-plotsrv
+```
+
+All checksum lines must say **OK**. The `test` deliberately stops if that directory
+already exists; for a retry, use section 1A's backup-and-unpack block instead of
+overlaying an older bundle. No manual `tooling` extraction is needed.
+
+### 5C. Give each new VM its HTTPS credential
+
+**Cloudflare dashboard:** create a separate token for each new VM, scoped to
+`plotsrv.com` with **Zone / DNS / Edit** and **Zone / Zone / Read**, as described
+under [Configure automatic HTTPS](#configure-automatic-https-once-per-vm).
+The token allows Caddy to obtain certificates; it does not move the demo's DNS
+record to the new IP. Keep the public A records pointing at prod1 for now.
+
+**On prod2, then separately on prod3:**
+
+```bash
+sudo install -d -o root -g root -m 0755 /etc/plotsrv-demo
+sudo touch /etc/plotsrv-demo/cloudflare.env
+sudo chown root:root /etc/plotsrv-demo/cloudflare.env
+sudo chmod 0600 /etc/plotsrv-demo/cloudflare.env
+sudo nano /etc/plotsrv-demo/cloudflare.env
+```
+
+Put exactly `CF_API_TOKEN=YOUR_ACTUAL_TOKEN` on one line, replacing the placeholder
+with that VM's token, without quotes or spaces around `=`. Save and exit. Never put
+this file into the upload bundle. Confirm the new VMs' firewall attachments using
+[Configure ingress and Cloudflare](#configure-ingress-and-cloudflare). The existing
+zone's Full (strict), demo cache bypass and other settings carry over; they do not
+need duplicating per VM.
+
+### 5D. Install imports on prod2 and scans on prod3
+
+Keep the package versions equal to prod1 during the move, so this is a hosting
+change rather than a simultaneous package upgrade. **Workstation:**
+
+```bash
+set -e
 scp samane@PROD1_IP:/opt/plotsrv-examples/deployed-python-packages.txt /tmp/prod1-packages.txt
 scp /tmp/prod1-packages.txt samane@PROD2_IP:/home/samane/prod1-packages.txt
 scp /tmp/prod1-packages.txt samane@PROD3_IP:/home/samane/prod1-packages.txt
 ```
 
-**prod2:**
+**prod2 — imports only:**
 
 ```bash
+set -e
 cd /home/samane/plotsrv-upload
 sudo ./deploy-plotsrv.sh demos live --requirements /home/samane/prod1-packages.txt
 sudo ./deploy-plotsrv.sh status
+curl --fail --resolve live-demo.plotsrv.com:443:127.0.0.1 'https://live-demo.plotsrv.com/artifact?view=live:report' -o /dev/null
 ```
 
-**prod3:**
+**prod3 — scans only:**
 
 ```bash
+set -e
 cd /home/samane/plotsrv-upload
 sudo ./deploy-plotsrv.sh demos scans --requirements /home/samane/prod1-packages.txt
 sudo ./deploy-plotsrv.sh status
+curl --fail --resolve scans-demo.plotsrv.com:443:127.0.0.1 'https://scans-demo.plotsrv.com/checks?view=scans:metrics'
 ```
 
-Omit `--requirements` only if you deliberately want the latest PyPI packages on
-the new VMs. Validate their selected hosts with section 3's local HTTPS checks.
-Live imports can begin with fresh synthetic records. Its prepared report history
-is illustrative and can be seeded independently. Existing scan history transfers
-as follows; do not copy private receiver tokens between VMs.
+These `curl --resolve` checks exercise the new local HTTPS origins while public
+DNS still points at prod1. Wait for certificate issuance if necessary and inspect
+`sudo journalctl -u plotsrv-demo-proxy -n 60 --no-pager` on that VM if it fails.
+Do not continue to the DNS switch until these checks succeed.
 
-### Transfer scan history while writers are stopped
+If you deliberately want latest PyPI plotsrv instead of matching prod1, omit
+`--requirements /home/samane/prod1-packages.txt` from either install command.
+The installer then selects and verifies the latest stable release.
+
+Imports can start with fresh synthetic records and illustrative report history.
+For scans, **preserve the existing history using 5E**. If you explicitly prefer
+fresh scan history on prod3, skip 5E and continue to 5F; the new demo is already
+seeded. Do not copy `/etc/plotsrv-demo` or receiver credentials between VMs.
+
+### 5E. Preserve scan history while writers are stopped
 
 On **both prod1 and prod3**, stop scans before copying:
 
@@ -420,6 +539,7 @@ sudo systemctl stop plotsrv-demo-scan-audit.service plotsrv-demo@scan_audit.serv
 **prod1:**
 
 ```bash
+set -e
 sudo tar -C /var/lib/plotsrv-demo -czf /var/lib/plotsrv-demo/scan-transfer.tar.gz scan_audit
 sudo install -o samane -g samane -m 0600 /var/lib/plotsrv-demo/scan-transfer.tar.gz /home/samane/plotsrv-upload/scan-transfer.tar.gz
 sudo rm /var/lib/plotsrv-demo/scan-transfer.tar.gz
@@ -428,8 +548,9 @@ sudo rm /var/lib/plotsrv-demo/scan-transfer.tar.gz
 **Workstation:**
 
 ```bash
-scp samane@PROD1_IP:/home/samane/plotsrv-upload/scan-transfer.tar.gz /home/samane/Projects/plotsrv-homepage/plotsrv-upload/
-scp /home/samane/Projects/plotsrv-homepage/plotsrv-upload/scan-transfer.tar.gz samane@PROD3_IP:/home/samane/plotsrv-upload/
+set -e
+scp samane@PROD1_IP:/home/samane/plotsrv-upload/scan-transfer.tar.gz /tmp/scan-transfer.tar.gz
+scp /tmp/scan-transfer.tar.gz samane@PROD3_IP:/home/samane/plotsrv-upload/
 ```
 
 **prod3:** choose a fresh backup name if `scan_audit.before-move` already exists.
@@ -453,6 +574,16 @@ propagation; leave its job and timer stopped:
 sudo systemctl start plotsrv-demo@scan_audit.service
 ```
 
+**prod3 — recheck the restored history before switching traffic:**
+
+```bash
+cd /home/samane/plotsrv-upload
+sudo ./deploy-plotsrv.sh status
+curl --fail --resolve scans-demo.plotsrv.com:443:127.0.0.1 'https://scans-demo.plotsrv.com/history?view=scans:example&limit=3'
+```
+
+### 5F. Switch just the two demo DNS records in Cloudflare
+
 **Cloudflare dashboard → plotsrv.com → DNS → Records:**
 
 1. Search for `live-demo`, click **Edit** on its A record, replace the IPv4 address
@@ -465,16 +596,40 @@ sudo systemctl start plotsrv-demo@scan_audit.service
    `https://scans-demo.plotsrv.com/`. With proxying on, DNS lookups show Cloudflare
    addresses; inspect the record in the dashboard to confirm the origin IP.
 
-Then, **prod1**:
+Update any existing AAAA records for these two names as well, or remove them if
+you are not configuring IPv6 on the new VMs. An old AAAA destination must not keep
+sending some traffic to prod1. See [Cloudflare's DNS editing instructions](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-dns-records/).
+
+Leave prod1's receivers available while the change propagates and existing browser
+connections drain. Check both public URLs, confirm the new origin IPs in the
+Cloudflare records, and check that the new VMs' services remain healthy. The live
+connections have a ten-minute maximum lifetime, so allow at least that reconnection
+window; elapsed time alone does not prove the move succeeded.
+
+### 5G. Finally reduce prod1 to website plus retail
+
+**prod1 — after the new public demo hosts are working:**
 
 ```bash
+set -e
 cd /home/samane/plotsrv-upload
 sudo ./deploy-plotsrv.sh select-demos retail
+sudo ./deploy-plotsrv.sh status
 ```
+
+Expected final selections: prod1 reports website installed and `retail`; prod2
+reports website not installed and `live_import`; prod3 reports website not installed
+and `scan_audit`. Check `plotsrv.com`, `demo.plotsrv.com` and all three demo links
+in a browser. You do not need to rebuild or reinstall the website for this move.
 
 This keeps both websites and retail while stopping the other receivers/jobs and
 removing only their public host blocks. The old demo data remains available for
 rollback. Do not restart the old scan writer while prod3 owns the job.
+
+If a new VM fails **before** the DNS switch, leave prod1's selection alone and fix
+the new VM. If you already stopped prod1's scan writer for a transfer, choose which
+VM owns scans and keep only that writer running. To undo a completed migration,
+follow section 6 so any new scan history comes back before moving traffic.
 
 ## 6. Return from one demo on prod1 to all three
 
