@@ -51,6 +51,12 @@ the archives. The deployment command also checks checksums automatically.
 
 ### B. Update just the demos and plotsrv (your current prod1 task)
 
+**For the presentation update with Northstar's watched logs:** publish the matching
+plotsrv fixes to PyPI first. This bundle needs the local-watch authentication and
+view-ID fixes, as well as the UI changes. Its package preflight rejects an older
+plotsrv before activating the new release; copying the bundle alone does not ship
+your local plotsrv checkout.
+
 **VM — these commands are complete; no earlier tooling-extraction step is needed:**
 
 ```bash
@@ -158,7 +164,7 @@ sudo systemctl show plotsrv-demo@retail -p MemoryCurrent -p MemoryPeak -p NResta
 
 `status` returns a nonzero exit code if an expected service is inactive. It is a
 local service check, not a public HTTPS or load test. Open the selected public demo
-URLs and check tables/plots, source code, snapshots, live imports and scan reports.
+URLs and check tables/plots, watched logs, snapshots, live imports and scan reports.
 Northstar freshness warnings and the dim scan's failed data check are intentional.
 
 For an all-demo VM, verify local HTTPS through the real proxy:
@@ -703,8 +709,8 @@ These source paths are relative to your workstation's
 
 | Setting | Where to edit | Current value / meaning |
 | --- | --- | --- |
-| Receiver memory | `deploy/systemd/plotsrv-demo@.service`: `MemoryMax` | `320M` per receiver; `512M` is a suggested 4 GB VM test setting |
-| Receiver tasks and open files | Same file: `TasksMax`, `LimitNOFILE` | `64` tasks (including threads), `1024` open files; keep initially |
+| Receiver memory | `deploy/systemd/plotsrv-demo@.service` and `plotsrv-demo@retail.service`: `MemoryMax` | `320M` per receiver; `512M` is a suggested 4 GB VM test setting |
+| Receiver tasks and open files | Both receiver files: `TasksMax`, `LimitNOFILE` | `64` tasks (including threads), `1024` open files; keep initially |
 | Publisher/job memory | Individual `.service` files in `deploy/systemd/` | Retail and scan jobs: `320M`; live follower: `160M`; live writer: `64M` |
 | Live-update connections | Each demo's `plotsrv.yml`: `browser-update-settings` | `96` per receiver, `64` per client IP, `600` seconds per connection |
 | Proxy request rates | `deploy/Caddyfile`: `rate_limit` zones | Dynamic reads: `900` per client IP and `1200` total per 10 seconds, separately for each demo |
@@ -726,8 +732,8 @@ It keeps future bundles consistent with your chosen settings.
 
 1. **Workstation:** edit the relevant source files listed above. For example,
    change `MemoryMax=320M` to `MemoryMax=512M` in
-   `deploy/systemd/plotsrv-demo@.service`. This affects all demo receiver instances
-   installed from that template; it does not change the publisher job limits.
+   `deploy/systemd/plotsrv-demo@.service` and `deploy/systemd/plotsrv-demo@retail.service`.
+   Retail has its own unit to register the two watched logs inside its receiver; it does not change the publisher job limits.
 2. Rebuild the bundle:
 
    ```bash

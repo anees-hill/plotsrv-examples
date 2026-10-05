@@ -7,6 +7,13 @@ import tarfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DEMOS = ('retail', 'live_import', 'scan_audit')
+DEMO_ASSETS = (
+    'demos/retail/northstar.svg',
+    'demos/retail/logs/orders.log', 'demos/retail/logs/fulfillment-access.log',
+    'demos/retail/previews/orders.png', 'demos/retail/previews/guide.png',
+    'demos/live_import/previews/imports.png', 'demos/live_import/previews/report.png',
+    'demos/live_import/previews/recent.png',
+)
 WEBSITE_FILES = ('index.html', 'styles.css', 'shared.css', 'app.js', 'navigation.js',
                  'demos/index.html', 'demos/styles.css')
 SUFFIXES = {'.html', '.css', '.js', '.png', '.svg', '.webp', '.jpg', '.jpeg', '.ico', '.woff2'}
@@ -19,7 +26,8 @@ def files(root, kind):
     else:
         paths = [p for demo in DEMOS for p in (root / 'demos' / demo).rglob('*')
                  if p.suffix in {'.py', '.yml', '.yaml', '.md'}]
-        paths += [root / 'demos/publishing.py', root / 'demos/restore.py', root / 'demos/retail/northstar.svg']
+        paths += [root / 'demos/publishing.py', root / 'demos/restore.py']
+        paths += [root / name for name in DEMO_ASSETS]
         paths += [p for p in (root / 'deploy').rglob('*')
                   if p.suffix in {'.py', '.sh', '.txt', '.md', '.service', '.timer'} or p.name == 'Caddyfile']
     for p in sorted(set(paths)):

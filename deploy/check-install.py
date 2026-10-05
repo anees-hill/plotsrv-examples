@@ -43,8 +43,10 @@ def check_storage(state_dir):
 
 
 def check_core_features():
+    import inspect
     import plotsrv
     import plotsrv.config as config
+    import plotsrv.runtime as runtime
     missing = []
     for name in ('publish_view', 'stream_view', 'flush_views'):
         if not callable(getattr(plotsrv, name, None)):
@@ -53,6 +55,8 @@ def check_core_features():
         missing.append('browser-update-settings admission/lifetime support')
     if find_spec('plotsrv.standalone') is None:
         missing.append('plotsrv serve')
+    if not {'destination', 'view_id'} <= set(inspect.signature(runtime.publish_watch_payload).parameters):
+        missing.append('authenticated local watches with explicit view IDs')
     if missing:
         raise RuntimeError(
             f"Installed PyPI plotsrv {version('plotsrv')} lacks required demo features: "

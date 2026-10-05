@@ -72,7 +72,7 @@ def render(state):
 
 def extract(archive, destination, kind):
     """Validate the entire archive before writing; accept only ordinary source files."""
-    from package import WEBSITE_FILES, SUFFIXES
+    from package import WEBSITE_FILES, SUFFIXES, DEMO_ASSETS
     with tarfile.open(archive, 'r:gz') as source:
         members = source.getmembers()
         names = set()
@@ -90,7 +90,7 @@ def extract(archive, destination, kind):
             else:
                 allowed = ((p.parts[0] == 'deploy' and len(p.parts) >= 2) or
                            (len(p.parts) >= 3 and p.parts[0] == 'demos' and p.parts[1] in TOKENS))
-                prepared_asset = str(p) in {'demos/publishing.py', 'demos/restore.py', 'demos/retail/northstar.svg'}
+                prepared_asset = str(p) in {'demos/publishing.py', 'demos/restore.py', *DEMO_ASSETS}
                 allowed = prepared_asset or (allowed and (p.suffix in {'.py', '.sh', '.yml', '.yaml', '.txt', '.md', '.service', '.timer'} or p.name == 'Caddyfile'))
             if not allowed:
                 raise ValueError(f'Unexpected archive file: {member.name}')
@@ -100,7 +100,8 @@ def extract(archive, destination, kind):
             'deploy/systemd/plotsrv-demo-content@.service', 'demos/retail/app.py',
             'demos/live_import/follow.py', 'demos/live_import/generate_events.py',
             'demos/scan_audit/run_audit.py', 'demos/live_import/reports.py', 'demos/publishing.py',
-            'demos/restore.py', 'demos/retail/northstar.svg', *[f'demos/{d}/plotsrv.yml' for d in TOKENS]}
+            'demos/restore.py', 'demos/retail/serve.py', 'deploy/systemd/plotsrv-demo@retail.service',
+            *DEMO_ASSETS, *[f'demos/{d}/plotsrv.yml' for d in TOKENS]}
         if not required <= names:
             raise ValueError('Archive missing: ' + ', '.join(sorted(required - names)))
         for member in members:
@@ -297,6 +298,8 @@ def check_data(name):
     paths = {'retail': ['/table/data?view=retail:orders'],
              'live_import': ['/stream/status?view=live:imports', '/artifact?view=live:report'],
              'scan_audit': ['/artifact?view=scans:example', '/checks?view=scans:metrics']}
+    if (EXAMPLES / 'demos/retail/serve.py').is_file():
+        paths['retail'] += ['/artifact?view=retail:log:orders', '/artifact?view=retail:log:fulfillment']
     if not prepared_content_available():
         paths['live_import'] = ['/stream/status?view=live:imports']
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))

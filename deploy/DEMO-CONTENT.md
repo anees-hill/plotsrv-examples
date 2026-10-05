@@ -13,8 +13,9 @@ Snapshot timestamps are genuine, not the dates of the fictional reports. Publish
 inspect confirmed history and maintain small per-demo journals in the writable
 working directory under `.plotsrv/demo-publishing`. Do not delete these journals
 on upgrades. Interrupted setup fills missing editions; ordinary restart restores
-latest content and republishes missing source views without repeating the history.
-A changed source/content hash permits an explicit updated publication.
+latest content without repeating the history. A changed content hash permits an
+explicit updated publication. Source-code views are no longer published or admitted;
+the previous bundle disabled their persistence, so they disappear on restart.
 
 On scan restart, the startup job republishes the latest successful metrics from
 `.plotsrv/scans-output/state.json`. This restores the check's evidence without
@@ -22,34 +23,45 @@ running another image audit. On first setup there is no previous state; the norm
 initial audit populates the content. Calibration image SHEET-01 is intentionally
 dim, so the warning `Scans require review` is expected. The report explains it.
 
-Northstar's orders and trading report warn after ten minutes and become overdue
-after fifteen. This is intentional; source-code views have freshness disabled.
-The report explains the shortened thresholds. Stored content may display plotsrv's
-normal restored-state indicator after restart until another live publication.
+Northstar's dataset summary and the import manifest warn after ten minutes and
+become overdue after fifteen. These are the only deliberate short freshness checks;
+featured entries have freshness disabled. Capture/publication timestamps remain
+genuine. The scan demo retains its daily freshness thresholds and visible failed
+quality check, with all views shown as normal entries.
 
-## Packaged assets and public code
+## Watched logs and packaged assets
 
-The archive includes `demos/publishing.py`, `demos/restore.py` and the exact
-`demos/retail/northstar.svg` asset. Extraction allows these explicit additions,
-without accepting arbitrary assets or directories. Runtime storage is relocated to
-writable VM state. Before rewriting each config, `configure-state.py` preserves
-its portable source as `plotsrv.source.yml` for the public code view. It never
-copies credentials or resolves the token environment variables into that file.
+Northstar uses `demos/retail/serve.py`, launched by the instance unit
+`plotsrv-demo@retail.service`. It starts the receiver with two small static watched
+logs in the same process, capped at 32 KiB each with history/latest persistence off.
+The receiver restores all published views before registering these watches. The
+other receivers still use the ordinary service template. Change both receiver
+unit files when changing shared resource limits; all existing limits are retained.
 
-The shared code view exposes only a fixed list of demo scripts and the source
-config. Source files are bounded to 64 KiB and have snapshot/latest persistence
-disabled. The core code renderer itself has a 64 KiB limit. Generated reports are
-bounded to 128 KiB and images to 1 MiB; selected history retains three snapshots.
-Stream persistence remains explicitly disabled. Public history reads and the new
-live-demo plot/table reads are allowed; publication and control remain private.
+The exact logo, two logs and five preview PNGs are listed in `package.DEMO_ASSETS`.
+Archive extraction accepts this explicit asset list. Featured screenshots are
+captured during development and served locally; the VM never runs a screenshot job.
+Portable configs remain beside relocated VM configs for operator reference, but
+are no longer published as dashboard content. No credentials are expanded into them.
+
+Generated reports remain bounded to 128 KiB and plot images to 1 MiB. Selected
+history retains three snapshots (seven for scans). Stream persistence stays off.
+Public read routes remain available; publication and control remain private.
 
 ## Validation and rollout
+
+The new plotsrv Python formatting, watched-file identity/authentication and UI fixes
+must be released to PyPI separately. The demo bundle does not contain plotsrv.
+The installer resolves the latest stable PyPI version; deploying before publishing
+that release will fail the feature preflight before activating the new release. Check the installed version in the
+installer output and `/status` after rollout.
+
 
 - Run the focused demo, installer, browser and rehearsal tests before packaging.
 - Keep the previous release and writable state; build a new archive from the
   examples checkout. Install only in an agreed deployment window.
 - Verify content oneshots completed, all expected views exist, and every logo
-  links to `https://plotsrv.com`.
+  links to `https://demo.plotsrv.com`.
 - Run the short production ptop smoke rehearsal before the longer conference
   rehearsal. A successful local test does not measure VM/Cloudflare performance.
 
@@ -57,7 +69,32 @@ Normal read/restart testing does not require clearing history. For a deliberatel
 fresh **local test**, use an empty temporary working directory and receiver store.
 Do not clear production storage to reseed the examples.
 
-### Local verification of this change
+### Presentation update verification (October 5)
+
+The focused content, configuration, packaging, installer and rehearsal checks
+passed, along with six real receiver/browser checks across all three demos.
+They cover restart restoration without new snapshot IDs, local thumbnail loading,
+compact watched logs with text highlighting, source-view absence, scan check
+visibility, browser sizing and real freshness transitions. The authenticated local
+watch regression also verifies that a receiver does not send its logs to an
+independently configured outbound publisher destination.
+
+A fresh local 6 → 20 → 6 visitor rehearsal, including an HTML report update during
+the burst, completed **917 operations with zero failures**. Peak receiver RSS was
+approximately **207 MiB retail, 193 MiB imports and 193 MiB scans**. Stored content
+remained about **1.28 MiB, 0.53 MiB and 0.06 MiB**, respectively. Existing history
+counts stayed at three. This short development-machine run does not measure
+production capacity or long-term memory behaviour. Systemd unit verification
+also passed using temporary copies with harmless executable placeholders.
+
+Core tests passed 2,636 checks in the full run. Four assertions about the former
+stream order were updated and passed their focused rerun. Two multi-tab browser
+checks crash Chromium here; the same two crashes reproduce on the unchanged
+starting commit (`86ffe8d`). Mobile Chromium TOC checks pass. WebKit could not run
+because its required system libraries are absent; physical iOS Safari still needs
+a manual TOC check. No production services were changed by these tests.
+
+### Earlier rehearsal (before this presentation update)
 
 A short loopback rehearsal exercised 6 → 20 → 6 simultaneous visitors, including
 an HTML report republication during the burst: **930 recorded operations, zero
@@ -73,7 +110,7 @@ production service orchestration or long-term memory stability. Run the producti
 smoke rehearsal after deployment.
 
 Browser tests exercised Chromium at desktop and mobile sizes, including the
-trusted HTML iframe, logo links, source display and scan-check popover. Real
+trusted HTML iframe, logo links, the then-present source display and scan-check popover. Real
 receiver tests confirmed restart restoration and stable snapshot IDs across
 unchanged republishing. A controlled-clock test checked retail freshness at
 publication, ten minutes and fifteen minutes without changing stored timestamps.

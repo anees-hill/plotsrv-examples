@@ -21,7 +21,9 @@ def test_demo_archive_includes_only_the_required_new_assets(tmp_path):
     for path in (
         "demos/publishing.py",
         "demos/restore.py",
-        "demos/retail/northstar.svg",
+        *package.DEMO_ASSETS,
+        "demos/retail/serve.py",
+        "deploy/systemd/plotsrv-demo@retail.service",
         "demos/live_import/reports.py",
         "deploy/systemd/plotsrv-demo-content@.service",
     ):
@@ -169,3 +171,44 @@ def test_profile_change_preserves_legacy_service_files(tmp_path, monkeypatch):
         "Wants=plotsrv-demo-content@"
         not in (manage.UNITS / "plotsrv-demo@.service").read_text()
     )
+
+
+def test_preflight_rejects_core_without_authenticated_local_watches(monkeypatch):
+    import pytest
+    import plotsrv.runtime as runtime
+    spec = importlib.util.spec_from_file_location('check_install', ROOT / 'deploy/check-install.py')
+    check = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(check)
+    check.check_core_features()
+    monkeypatch.setattr(runtime, 'publish_watch_payload', lambda *, host, port: None)
+    with pytest.raises(RuntimeError, match='authenticated local watches'):
+        check.check_core_features()
+
+
+def test_content_probe_accepts_older_profile_and_checks_new_logs(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(manage, 'EXAMPLES', tmp_path)
+    monkeypatch.setattr(manage, 'prepared_content_available', lambda: True)
+    paths = []
+
+    class Response:
+        status = 200
+        def read(self, size): return b'x'
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+
+    def open_url(url, **kwargs):
+        paths.append(url)
+        return Response()
+
+    monkeypatch.setattr(manage.urllib.request, 'build_opener', lambda *a: SimpleNamespace(open=open_url))
+    manage.check_data('retail')
+    assert len(paths) == 1 and 'retail:orders' in paths[0]
+    entrypoint = tmp_path / 'demos/retail/serve.py'
+    entrypoint.parent.mkdir(parents=True)
+    entrypoint.write_text('# receiver with static watches')
+    paths.clear()
+    manage.check_data('retail')
+    assert len(paths) == 3
+    assert 'retail:log:orders' in paths[1] and 'retail:log:fulfillment' in paths[2]
