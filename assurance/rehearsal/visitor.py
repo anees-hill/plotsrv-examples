@@ -274,7 +274,7 @@ class Visitor:
                 ("markdown", endpoint("/artifact", "retail:guide"), "json"),
                 ("summary", endpoint("/artifact", "retail:summary"), "json"),
                 ("history", endpoint("/history", "retail:orders", limit=3), "json"),
-                ("source", endpoint("/artifact", "retail:source:plotsrv-yml"), "json"),
+                ("operations_log", endpoint("/artifact", "retail:log:orders"), "json"),
             ]
         if self.demo == "live":
             return [
@@ -288,7 +288,6 @@ class Visitor:
                 ("durations", endpoint("/plot", "live:durations"), "png"),
                 ("report", endpoint("/artifact", "live:report"), "json"),
                 ("history", endpoint("/history", "live:recent", limit=3), "json"),
-                ("source", endpoint("/artifact", "live:source:reports-py"), "json"),
             ]
         return [
             ("table", endpoint("/table/data", self.view), "json"),

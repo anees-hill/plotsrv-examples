@@ -43,5 +43,8 @@ content is reused. There is **no recurring report job** and no growing archive.
 
 The HTML report uses trusted rendering with bundled styles, no external fonts or
 scripts, and escaped data values. The default plotsrv header logo links to
-https://plotsrv.com. **Demo source code** includes the generator, follower, reports,
-shared publishing helpers and portable config; it never substitutes token values.
+https://demo.plotsrv.com. The three featured entries use small local screenshots.
+Source-code views have been removed. Only the manifest deliberately expects a
+refresh every five minutes, warns after ten and becomes overdue after fifteen.
+The featured views have freshness checks disabled. The fixed manifest is left
+unchanged to demonstrate freshness; no extra recurring work is introduced.

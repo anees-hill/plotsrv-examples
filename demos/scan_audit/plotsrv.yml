@@ -13,10 +13,6 @@ server-settings:
     - scans:observed
     - scans:changes
     - scans:metrics
-    - scans:source:run_audit-py
-    - scans:source:plotsrv-yml
-    - scans:source:publishing-py
-    - scans:source:restore-py
 publisher-settings:
   destination:
     url: http://127.0.0.1:8103
@@ -48,19 +44,7 @@ storage-settings:
     enabled: true
     max_size_mb: 2
     min_store_interval_s: 1
-  views:
-    scans:source:run_audit-py:
-      enabled: false
-      latest_enabled: false
-    scans:source:plotsrv-yml:
-      enabled: false
-      latest_enabled: false
-    scans:source:publishing-py:
-      enabled: false
-      latest_enabled: false
-    scans:source:restore-py:
-      enabled: false
-      latest_enabled: false
+  views: {}
 limits:
   published_objects:
     max_plot_bytes: 1048576
@@ -77,41 +61,18 @@ limits:
 ui-settings:
   page_title: Document scans · plotsrv demo
   header_text: Document scan audit
-  featured_views:
-  - view: scans:changes
-    title: Since previous run
-    caption: What changed while you were away
-  - view: scans:results
-    title: Scan results
-    caption: Inspect the quality flags for each synthetic JPEG
-  - view: scans:metrics
-    title: Quality check
-    caption: A measured calibration defect triggers a warning
-  icon_url: https://plotsrv.com
+  featured_views: []
+  icon_url: https://demo.plotsrv.com
   show_history_controls: true
 freshness-settings:
   enabled: true
   expected_every: 24h
   warn_after: 26h
   overdue_after: 48h
-  views:
-    scans:source:run_audit-py:
-      enabled: false
-    scans:source:plotsrv-yml:
-      enabled: false
-    scans:source:publishing-py:
-      enabled: false
-    scans:source:restore-py:
-      enabled: false
 browser-update-settings:
   max_connections: 96
   max_connections_per_client: 64
   max_connection_seconds: 600
-code-settings:
-  views:
-    scans:source:plotsrv-yml:
-      language: yaml
-      style: code
 checks-settings:
   enabled: true
   rules:
@@ -124,3 +85,20 @@ checks-settings:
     op: gt
     value: 0
     severity: warning
+description-settings:
+  views:
+    scans:results: 'Document operations: one row per scanned sheet, with measured brightness, contrast
+      and review flags. Filter for review items before accepting the batch. SHEET-01 is an intentionally
+      dim calibration example. All documents are synthetic.'
+    scans:example: 'Document operations: inspect the example sheet alongside its measured quality
+      flags. The dim calibration sheet is deliberately retained so reviewers can see why it requires
+      attention. This is a synthetic document.'
+    scans:observed: 'Audit team: the latest completed scan run, its coverage and measured quality
+      outcomes. Use this summary for the daily handover and the results table for sheet-level investigation.
+      All documents are synthetic.'
+    scans:changes: 'Audit team: changes since the previous completed run, including new or resolved
+      quality flags. Snapshot capture times are real; daily synthetic batches provide controlled
+      examples for reviewer training.'
+    scans:metrics: 'Quality leads: machine-readable totals from the latest successful audit. The
+      Scans require review check fires when review_count is greater than zero. The intentionally
+      dim calibration sheet keeps this warning visible; documents are synthetic.'

@@ -1,4 +1,4 @@
-"""Shared bounded demo publishing, resumable example history and public source views."""
+"""Shared bounded demo publishing and resumable example history."""
 
 from __future__ import annotations
 
@@ -17,58 +17,6 @@ from urllib.request import ProxyHandler, build_opener
 import yaml
 
 ROOT = Path(__file__).resolve().parent
-SOURCE_FILES = {
-    "retail": ("app.py", "generate_data.py", "plotsrv.yml"),
-    "live_import": ("follow.py", "generate_events.py", "reports.py", "plotsrv.yml"),
-    "scan_audit": ("run_audit.py", "plotsrv.yml"),
-}
-PREFIXES = {"retail": "retail", "live_import": "live", "scan_audit": "scans"}
-
-
-def source_id(demo, filename):
-    return PREFIXES[demo] + ":source:" + filename.replace(".", "-")
-
-
-def public_sources(demo):
-    """Read an explicit set of source files; never resolve environment variables."""
-    for filename in (*SOURCE_FILES[demo], "publishing.py", "restore.py"):
-        path = (
-            ROOT / demo / filename
-            if filename not in ("publishing.py", "restore.py")
-            else ROOT / filename
-        )
-        # Deployment preserves the portable source config before relocating storage.
-        if filename == "plotsrv.yml" and path.with_name("plotsrv.source.yml").is_file():
-            path = path.with_name("plotsrv.source.yml")
-        if path.is_symlink() or not path.is_file() or path.stat().st_size > 65536:
-            raise ValueError(f"Invalid or oversized public source: {filename}")
-        content = path.read_text()
-        if filename.endswith(".yml"):
-            validate_public_config(yaml.safe_load(content))
-        yield source_id(demo, filename), filename, content
-
-
-def validate_public_config(value):
-    if isinstance(value, dict):
-        for key, item in value.items():
-            lower = str(key).lower()
-            if (
-                lower
-                in {
-                    "bearer_token",
-                    "token",
-                    "password",
-                    "secret",
-                    "api_key",
-                    "authorization",
-                }
-                and item
-            ):
-                raise ValueError("Public config contains a literal credential")
-            validate_public_config(item)
-    elif isinstance(value, list):
-        for item in value:
-            validate_public_config(item)
 
 
 class Publisher:
@@ -224,16 +172,6 @@ class Publisher:
             self.wait_snapshot(view, label, previous)
         hashes[view] = digest
         self.save()
-
-    def sources(self):
-        for view, filename, content in public_sources(self.demo):
-            self.publish(
-                view,
-                filename,
-                content,
-                "python" if filename.endswith(".py") else "text",
-                section="Demo source code",
-            )
 
 
 def fingerprint(obj, kind):

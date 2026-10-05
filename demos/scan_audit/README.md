@@ -37,7 +37,7 @@ The completed report contains scan/flag and comparison tables, review priorities
 and measurement thresholds. The first report remains useful before a previous run
 exists. The daily schedule and seven-snapshot retention are unchanged.
 
-The **Demo source code** section displays the scripts and portable config without
-credentials. The plotsrv logo links to https://plotsrv.com. On receiver restart,
+All scan views are normal entries, with no featured or source-code section.
+The plotsrv logo links to https://demo.plotsrv.com. On receiver restart,
 `demos/restore.py scan_audit` resubmits the last successful metrics so the check can
 re-evaluate actual evidence; restored snapshots alone do not trigger checks.

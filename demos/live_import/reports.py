@@ -212,8 +212,8 @@ def content(revision):
             "axes.spines.top": False,
             "axes.spines.right": False,
             "axes.titleweight": "bold",
-            "figure.facecolor": "#f5f8fc",
-            "axes.facecolor": "#f5f8fc",
+            "figure.facecolor": "white",
+            "axes.facecolor": "white",
         }
     ):
         fig, ax = plt.subplots(figsize=(8.5, 4.5), layout="constrained")
@@ -229,7 +229,7 @@ def content(revision):
             label="Quarantined",
         )
         ax.set(
-            title="Every record gets a decision",
+            title="Validation outcomes by source file",
             xlabel="Fictional batch time (UTC)",
             ylabel="Records per 90-second window",
         )
@@ -250,7 +250,7 @@ def content(revision):
         for box in boxes["boxes"]:
             box.set_facecolor("#8acabd")
         ax.set(
-            title="Not every feed takes the same path", ylabel="Simulated duration (ms)"
+            title="Validation duration by source file", ylabel="Simulated duration (ms)"
         )
         ax.grid(axis="y", alpha=0.15)
         yield "live:durations", "Processing profile", fig, "plot"
@@ -261,7 +261,6 @@ def publish():
     with Publisher("live_import").locked() as publisher:
         publisher.seeded(HISTORY_VIEWS, content)
         publisher.current(content)
-        publisher.sources()
 
 
 if __name__ == "__main__":

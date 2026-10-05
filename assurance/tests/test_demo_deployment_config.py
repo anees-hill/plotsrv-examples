@@ -6,7 +6,6 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "demos"))
-from publishing import public_sources
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -24,6 +23,8 @@ def test_receivers_are_separate_locked_and_loopback_only():
                 "retail:fulfillment",
                 "retail:guide",
                 "retail:summary",
+                "retail:log:orders",
+                "retail:log:fulfillment",
             },
         ),
         "live_import": (
@@ -60,9 +61,7 @@ def test_receivers_are_separate_locked_and_loopback_only():
             "allow_remote_without_key": False,
         }
         assert server["admission"]["mode"] == "catalogue-locked"
-        assert set(server["admission"]["allowed_ids"]) == ids | {
-            v for v, _, _ in public_sources(name)
-        }
+        assert set(server["admission"]["allowed_ids"]) == ids
         assert cfg["publisher-settings"]["destination"] == {
             "url": f"http://127.0.0.1:{port}",
             "bearer_token_env": token,

@@ -39,6 +39,8 @@ class Receiver:
         cfg["storage-settings"]["root_dir"] = str(directory / "store")
         if demo == "retail":
             cfg["ui-settings"]["logo"] = str(ROOT / "demos/retail/northstar.svg")
+        for feature in cfg["ui-settings"].get("featured_views", []):
+            feature["thumbnail"] = str(ROOT / "demos" / demo / feature["thumbnail"])
         self.config = directory / "plotsrv.yml"
         self.config.write_text(yaml.safe_dump(cfg, sort_keys=False))
         self.cfg = cfg
@@ -63,13 +65,18 @@ class Receiver:
     def start(self):
         log = (self.directory / f"receiver-{len(self.logs)}.log").open("w")
         self.logs.append(log)
-        self.process = subprocess.Popen(
-            [
+        command = (
+            [sys.executable, str(ROOT / "demos/retail/serve.py")]
+            if self.demo == "retail"
+            else [
                 str(Path(sys.executable).with_name("plotsrv")),
                 "serve",
                 "--config",
                 str(self.config),
-            ],
+            ]
+        )
+        self.process = subprocess.Popen(
+            command,
             cwd=self.directory,
             env=self.env,
             stdout=log,
@@ -126,7 +133,7 @@ def receiver(request, tmp_path_factory):
         instance.stop()
 
 
-def test_history_sources_and_restart(receiver):
+def test_history_logs_and_restart(receiver):
     r = receiver
     if r.demo in HISTORY:
         before = {v: r.get("/history", view=v)["snapshots"] for v in HISTORY[r.demo]}
@@ -139,12 +146,17 @@ def test_history_sources_and_restart(receiver):
         assert before == {
             v: r.get("/history", view=v)["snapshots"] for v in HISTORY[r.demo]
         }
-    for view in r.cfg["server-settings"]["admission"]["allowed_ids"]:
-        if ":source:" in view:
+    assert not any(":source:" in v["view_id"] for v in r.get("/views"))
+    if r.demo == "retail":
+        for view in ("retail:log:orders", "retail:log:fulfillment"):
             assert r.get("/history", view=view)["count"] == 0
-            data = r.get("/artifact", view=view)
-            assert "fixture-only-token" not in json.dumps(data)
-            assert "html" in data
+            assert "data-plotsrv-pre" in r.get("/artifact", view=view)["html"]
+    descriptions = {v["view_id"]: v["description"] for v in r.get("/views")}
+    assert all(
+        descriptions[v] == description
+        for v, description in r.cfg["description-settings"]["views"].items()
+        if v in descriptions
+    )
     if r.demo == "scan_audit":
         assert (
             r.get("/checks", view="scans:metrics")["states"][0]["state"] == "triggered"
@@ -169,7 +181,7 @@ def test_history_sources_and_restart(receiver):
     assert storage < 100 * 1024**2
 
 
-def test_browser_branding_reports_and_sources(receiver):
+def test_browser_branding_reports_and_logs(receiver):
     playwright = pytest.importorskip("playwright.sync_api")
     r = receiver
     view = {
@@ -182,7 +194,7 @@ def test_browser_branding_reports_and_sources(receiver):
         try:
             page = browser.new_page(viewport={"width": 1280, "height": 900})
             page.goto(r.base + "/?" + urlencode({"view": view}))
-            page.wait_for_selector('a[href="https://plotsrv.com"] img.header-logo')
+            page.wait_for_selector('a[href="https://demo.plotsrv.com"] img.header-logo')
             if r.demo == "live_import":
                 frame = page.frame_locator("iframe.plotsrv-html-iframe")
                 frame.locator("h1").wait_for()
@@ -193,11 +205,31 @@ def test_browser_branding_reports_and_sources(receiver):
                     ".artifact-markdown table, .markdown-body table, table"
                 )
                 assert page.locator("h1").count() >= 1
+            page.locator(".ps-viewselect__btn").click()
+            catalogue = {v["view_id"] for v in r.get("/views")}
+            featured = [
+                v
+                for v in r.cfg["ui-settings"].get("featured_views", [])
+                if v["view"] in catalogue
+            ]
+            thumbnails = page.locator(".ps-viewselect__feature-thumbnail")
+            assert thumbnails.count() == len(featured)
+            if featured:
+                page.wait_for_function(
+                    "Array.from(document.querySelectorAll('.ps-viewselect__feature-thumbnail')).every(e => e.complete && e.naturalWidth > 0)"
+                )
+            if r.demo == "retail":
+                assert page.locator(".ps-viewselect__item--compact").count() == 2
+            assert (
+                "Demo source code"
+                not in page.locator(".ps-viewselect__menu").inner_text()
+            )
+            page.keyboard.press("Escape")
             if r.demo == "scan_audit":
                 page.goto(r.base + "/?" + urlencode({"view": "scans:metrics"}))
                 page.locator("#header-status-button").click()
                 page.locator("#status-modal").wait_for(state="visible")
-                page.get_by_text("Scans require review", exact=False).first.wait_for()
+                page.locator("#status-modal").get_by_text("Scans require review", exact=False).first.wait_for()
                 page.locator("#status-modal-close-icon").click()
             page.screenshot(path=str(r.directory / "desktop.png"), full_page=True)
             page.set_viewport_size({"width": 390, "height": 844})
@@ -206,13 +238,11 @@ def test_browser_branding_reports_and_sources(receiver):
                     "e => e.scrollWidth <= window.innerWidth + 1"
                 )
             page.screenshot(path=str(r.directory / "mobile.png"), full_page=True)
-            source = next(
-                v
-                for v in r.cfg["server-settings"]["admission"]["allowed_ids"]
-                if v.endswith("source:plotsrv-yml")
-            )
-            page.goto(r.base + "/?" + urlencode({"view": source}))
-            page.wait_for_selector("pre")
-            assert "bearer_token_env" in page.locator("pre").inner_text()
+            if r.demo == "retail":
+                page.goto(r.base + "/?" + urlencode({"view": "retail:log:orders"}))
+                page.wait_for_selector(".ps-log-token--warn")
+                page.goto(r.base + "/?" + urlencode({"view": "retail:log:fulfillment"}))
+                page.wait_for_selector(".ps-log-token--method")
+                assert page.locator("pre").inner_text().count("GET /warehouse") == 5
         finally:
             browser.close()

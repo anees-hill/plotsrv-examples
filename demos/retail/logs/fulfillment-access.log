@@ -1,0 +1,7 @@
+192.0.2.18 - - [30/Jun/2026:08:10:00 +0000] "GET /warehouse/dispatches?region=North HTTP/1.1" 200 2184 "-" "Northstar-Synthetic-Integration/1.0"
+192.0.2.18 - - [30/Jun/2026:08:10:01 +0000] "POST /warehouse/dispatches/NS-D101/ack HTTP/1.1" 204 0 "-" "Northstar-Synthetic-Integration/1.0"
+192.0.2.18 - - [30/Jun/2026:08:10:02 +0000] "GET /warehouse/dispatches?region=Midlands HTTP/1.1" 200 1986 "-" "Northstar-Synthetic-Integration/1.0"
+192.0.2.18 - - [30/Jun/2026:08:10:03 +0000] "GET /warehouse/dispatches?region=West HTTP/1.1" 503 76 "-" "Northstar-Synthetic-Integration/1.0"
+192.0.2.18 - - [30/Jun/2026:08:10:08 +0000] "GET /warehouse/dispatches?region=West HTTP/1.1" 200 1732 "-" "Northstar-Synthetic-Integration/1.0"
+192.0.2.18 - - [30/Jun/2026:08:10:09 +0000] "POST /warehouse/dispatches/NS-D104/ack HTTP/1.1" 204 0 "-" "Northstar-Synthetic-Integration/1.0"
+192.0.2.18 - - [30/Jun/2026:08:10:10 +0000] "GET /warehouse/dispatches?region=South HTTP/1.1" 200 2420 "-" "Northstar-Synthetic-Integration/1.0"

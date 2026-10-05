@@ -166,7 +166,7 @@ def comparison(metrics, previous, rows=()):
         "| Absolute skew | Above 2 degrees |",
         "> SHEET-01 is an intentionally dim calibration sample. It ensures the real pixel audit finds a defect and the ‘Scans require review’ data check remains visible.",
         "### Provenance",
-        "All JPEGs are generated synthetic documents. The job calculates these metrics and comparisons; plotsrv displays the supplied results and evaluates the configured check. The source-code section contains the complete audit and config.",
+        "All JPEGs are generated synthetic documents. The job calculates these metrics and comparisons; plotsrv displays the supplied results and evaluates the configured check.",
     ]
     return "\n".join(
         line if line.startswith("|") else "\n" + line + "\n" for line in lines
@@ -303,4 +303,3 @@ if __name__ == "__main__":
     )
     with Publisher("scan_audit").locked() as publisher:
         print(json.dumps(complete(args.date, args.output)))
-        publisher.sources()

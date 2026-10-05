@@ -125,7 +125,7 @@ def visitor(origin, demo="retail", *extra):
 @pytest.mark.parametrize(
     "demo,expected",
     [
-        ("retail", {"table", "plot", "markdown", "summary"}),
+        ("retail", {"table", "plot", "markdown", "summary", "operations_log"}),
         (
             "live",
             {
@@ -139,7 +139,6 @@ def visitor(origin, demo="retail", *extra):
                 "durations",
                 "report",
                 "history",
-                "source",
             },
         ),
         ("scans", {"table", "image", "observation", "changes", "history"}),

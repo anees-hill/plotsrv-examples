@@ -3,7 +3,7 @@
 import argparse
 import os
 import sys
-from collections import Counter, defaultdict
+from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
@@ -47,8 +47,8 @@ def make_plots(rows):
             "axes.spines.top": False,
             "axes.spines.right": False,
             "axes.titleweight": "bold",
-            "figure.facecolor": "#f7faf8",
-            "axes.facecolor": "#f7faf8",
+            "figure.facecolor": "white",
+            "axes.facecolor": "white",
             "text.color": "#234d40",
             "axes.labelcolor": "#234d40",
         }
@@ -78,7 +78,7 @@ def make_plots(rows):
             ms=4,
             label="Gross profit before returns",
         )
-        ax.set(title="A year on the trail", ylabel="Monthly total")
+        ax.set(title="Monthly sales and gross profit", ylabel="Monthly total")
         ax.yaxis.set_major_formatter(money)
         ax.grid(axis="y", alpha=0.15)
         ax.legend(frameon=False)
@@ -108,9 +108,9 @@ def make_plots(rows):
             rotation=60,
             ha="right",
         )
-        ax.set_title("Every season has its essentials", pad=16)
+        ax.set_title("Monthly sales by category", pad=16)
         fig.colorbar(image, ax=ax, shrink=0.8, label="Booked sales (£)")
-        yield "retail:categories", "Seasonal demand", fig
+        yield "retail:categories", "Sales by category", fig
 
         fig, ax = plt.subplots(figsize=(9, 5.2), layout="constrained")
         colours = dict(zip(names, [GREEN, BLUE, AMBER, "#876496"]))
@@ -136,13 +136,13 @@ def make_plots(rows):
                 fontsize=8,
             )
         ax.set(
-            title="Popular does not always mean trouble-free",
+            title="Return rate by product",
             xlabel="Units ordered",
             ylabel="Orders returned (%)",
         )
         ax.margins(x=0.3, y=0.25)
         ax.grid(alpha=0.15)
-        yield "retail:returns", "Popularity & returns", fig
+        yield "retail:returns", "Product return rates", fig
 
         fig, ax = plt.subplots(figsize=(9, 4.5), layout="constrained")
         names = sorted(regions)
@@ -157,10 +157,10 @@ def make_plots(rows):
             patch.set_facecolor(colour)
             patch.set_alpha(0.45)
         ax.axhline(3, color=AMBER, linestyle="--", lw=1, label="3-day service target")
-        ax.set(title="The journey after checkout", ylabel="Fulfilment time (days)")
+        ax.set(title="Fulfilment time by region", ylabel="Fulfilment time (days)")
         ax.grid(axis="y", alpha=0.15)
         ax.legend(frameon=False)
-        yield "retail:fulfillment", "Delivery experience", fig
+        yield "retail:fulfillment", "Regional fulfilment times", fig
 
 
 def trading_report(rows):
@@ -240,8 +240,8 @@ All customers, transactions and report editions are **fictional, deterministic
 examples**. The history selector contains three illustrative editions; snapshot
 capture timestamps are genuine and are not the dates of the fictional reports.
 
-The orders and trading-report views deliberately expect a refresh every five
-minutes, warn after ten, and become overdue after fifteen. They are left unchanged
+The dataset summary deliberately expects a refresh every five
+minutes, warn after ten, and become overdue after fifteen. It is left unchanged
 to demonstrate freshness. An overdue badge here illustrates the feature; it does
 not indicate a broken demo server.
 """
@@ -266,6 +266,120 @@ def content(rows):
     yield "retail:guide", "Trading review", trading_report(rows), "markdown"
 
 
+def dataset_summary(rows):
+    """Reconcile the register without introducing a second source of figures."""
+    from statistics import median
+
+    def totals(group):
+        sales = sum(r["order_value_gbp"] for r in group)
+        profit = sum(r["margin_gbp"] for r in group)
+        returned = sum(r["returned"] for r in group)
+        return {
+            "orders": len(group),
+            "units": sum(r["quantity"] for r in group),
+            "booked_sales_gbp": round(sales, 2),
+            "gross_profit_before_returns_gbp": round(profit, 2),
+            "gross_margin_pct": round(100 * profit / sales, 2) if sales else None,
+            "average_order_value_gbp": round(sales / len(group), 2) if group else None,
+            "returned_orders": returned,
+            "returned_order_pct": round(100 * returned / len(group), 2)
+            if group
+            else None,
+            "median_fulfillment_days": median(r["fulfillment_days"] for r in group)
+            if group
+            else None,
+            "within_3_day_target_pct": round(
+                100 * sum(r["fulfillment_days"] <= 3 for r in group) / len(group), 2
+            )
+            if group
+            else None,
+        }
+
+    fields = list(rows[0]) if rows else []
+    dates = [r["order_date"] for r in rows]
+    return {
+        "source": "Northstar Outdoors order register · deterministic fictional data",
+        "reporting_period": {
+            "from": min(dates) if dates else None,
+            "through": max(dates) if dates else None,
+            "months": len({d[:7] for d in dates}),
+        },
+        "coverage": {
+            "rows": len(rows),
+            "fields": len(fields),
+            "field_names": ", ".join(fields),
+            "products": len({r["product"] for r in rows}),
+            "regions": len({r["region"] for r in rows}),
+        },
+        "totals": totals(rows),
+        "by_category": {
+            name: {
+                k: v
+                for k, v in totals([r for r in rows if r["category"] == name]).items()
+                if k
+                in {"orders", "booked_sales_gbp", "gross_profit_before_returns_gbp"}
+            }
+            for name in sorted({r["category"] for r in rows})
+        },
+        "by_region": {
+            name: {
+                k: v
+                for k, v in totals([r for r in rows if r["region"] == name]).items()
+                if k in {"orders", "booked_sales_gbp", "median_fulfillment_days"}
+            }
+            for name in sorted({r["region"] for r in rows})
+        },
+        "returns": {
+            "by_reason": {
+                reason: sum(r["return_reason"] == reason for r in rows)
+                for reason in sorted(
+                    {r["return_reason"] for r in rows if r["return_reason"]}
+                )
+            }
+        },
+        "data_quality": {
+            "duplicate_order_ids": len(rows) - len({r["order_id"] for r in rows}),
+            "missing_values_by_field": {
+                field: sum(r.get(field) is None for r in rows)
+                for field in fields
+                if any(r.get(field) is None for r in rows)
+            },
+            "return_reason_missing_on_returned_orders": sum(
+                r["returned"] and not r["return_reason"] for r in rows
+            ),
+            "financial_reconciliation_errors": sum(
+                abs(
+                    r["order_value_gbp"]
+                    - round(
+                        r["unit_price_gbp"]
+                        * r["quantity"]
+                        * (1 - r["discount_pct"] / 100),
+                        2,
+                    )
+                )
+                > 0.005
+                or abs(
+                    r["margin_gbp"]
+                    - round(
+                        r["order_value_gbp"] - r["unit_cost_gbp"] * r["quantity"], 2
+                    )
+                )
+                > 0.005
+                for r in rows
+            ),
+            "nullable_field_note": "return_reason is intentionally null for orders that were not returned",
+        },
+        "definitions": {
+            "booked_sales_gbp": "Quantity × list price, less discount; before refunds",
+            "gross_profit_before_returns_gbp": "Booked sales less product cost; excludes refunds, shipping, overheads and tax",
+            "returned_order_pct": "Returned orders / all orders × 100; not a unit-based return rate",
+            "fulfillment_days": "Elapsed days from order placement to fulfilment",
+            "within_3_day_target_pct": "Orders fulfilled in at most three days / all orders × 100",
+            "report_revision": "Illustrative reporting edition 1, 2 or 3; snapshot timestamps are actual capture times",
+        },
+    }
+
+
 def publish(rows):
     """Explicit republish of current content; unchanged restored views are reused."""
     with Publisher("retail").locked() as publisher:
@@ -277,16 +391,9 @@ def publish(rows):
         publisher.publish(
             "retail:summary",
             "Dataset summary",
-            {
-                "orders": len(rows),
-                "period": "2025-01 to 2026-06",
-                "categories": dict(Counter(row["category"] for row in rows)),
-                "source": "deterministic synthetic data",
-                "gross_profit_basis": "before returns and overheads",
-            },
+            dataset_summary(rows),
             "json",
         )
-        publisher.sources()
 
 
 if __name__ == "__main__":

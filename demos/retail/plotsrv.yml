@@ -15,11 +15,8 @@ server-settings:
     - retail:fulfillment
     - retail:guide
     - retail:summary
-    - retail:source:app-py
-    - retail:source:generate_data-py
-    - retail:source:plotsrv-yml
-    - retail:source:publishing-py
-    - retail:source:restore-py
+    - retail:log:orders
+    - retail:log:fulfillment
 publisher-settings:
   destination:
     url: http://127.0.0.1:8101
@@ -50,19 +47,8 @@ storage-settings:
     enabled: true
     max_size_mb: 3
     min_store_interval_s: 0
+    restore_scope: all
   views:
-    retail:source:app-py:
-      enabled: false
-      latest_enabled: false
-    retail:source:generate_data-py:
-      enabled: false
-      latest_enabled: false
-    retail:source:plotsrv-yml:
-      enabled: false
-      latest_enabled: false
-    retail:source:publishing-py:
-      enabled: false
-      latest_enabled: false
     retail:orders:
       enabled: true
       keep_last: 3
@@ -84,7 +70,10 @@ storage-settings:
     retail:summary:
       enabled: false
       latest_enabled: true
-    retail:source:restore-py:
+    retail:log:orders:
+      enabled: false
+      latest_enabled: false
+    retail:log:fulfillment:
       enabled: false
       latest_enabled: false
   default_min_store_interval: null
@@ -110,30 +99,29 @@ ui-settings:
   featured_views:
   - view: retail:orders
     title: Explore orders
-    caption: A year and a half on the trail
+    caption: Order register · January 2025 to June 2026
+    thumbnail: previews/orders.png
   - view: retail:guide
     title: Trading review
     caption: The Northstar commercial report
-  icon_url: https://plotsrv.com
+    thumbnail: previews/guide.png
+  icon_url: https://demo.plotsrv.com
   logo: northstar.svg
   header_fill_colour: '#eaf4f0'
+  compact_views:
+  - view: retail:log:orders
+    title: Order processing log
+  - view: retail:log:fulfillment
+    title: Fulfilment API access log
 browser-update-settings:
   max_connections: 96
   max_connections_per_client: 64
   max_connection_seconds: 600
-code-settings:
-  views:
-    retail:source:plotsrv-yml:
-      language: yaml
-      style: code
 freshness-settings:
   enabled: true
   views:
     retail:orders:
-      enabled: true
-      expected_every: 5m
-      warn_after: 10m
-      overdue_after: 15m
+      enabled: false
     retail:sales:
       enabled: false
     retail:categories:
@@ -143,19 +131,48 @@ freshness-settings:
     retail:fulfillment:
       enabled: false
     retail:guide:
+      enabled: false
+    retail:summary:
       enabled: true
       expected_every: 5m
       warn_after: 10m
       overdue_after: 15m
-    retail:summary:
+    retail:log:orders:
       enabled: false
-    retail:source:app-py:
+    retail:log:fulfillment:
       enabled: false
-    retail:source:generate_data-py:
-      enabled: false
-    retail:source:plotsrv-yml:
-      enabled: false
-    retail:source:publishing-py:
-      enabled: false
-    retail:source:restore-py:
-      enabled: false
+description-settings:
+  views:
+    retail:orders: 'Trading team: use these order lines to reconcile booked sales and investigate
+      product, size and regional patterns. Gross profit excludes refunds, shipping and overheads.
+      The reporting period runs from January 2025 to June 2026. Fictional data.'
+    retail:sales: 'Finance: monthly booked sales and gross profit from the orders register. September
+      2025 includes a 20% promotion with unchanged product costs. Compare both lines before assessing
+      campaign performance. Fictional data.'
+    retail:categories: 'Buying team: compare monthly category revenue to plan stock ahead of seasonal
+      demand. Each cell is booked sales in GBP, before returns. The category totals reconcile to
+      the orders register. Fictional data.'
+    retail:returns: 'Customer support: compare order return rates against units sold for each product.
+      Drill into the orders register by product and size before raising a supplier issue; rates here
+      count orders, not units. Fictional data.'
+    retail:fulfillment: 'Operations: fulfilment days by region, with a three-day service target.
+      Boxes show the middle half of orders and points show unusual delays. Check order dates when
+      investigating the West region. Fictional data.'
+    retail:guide: 'Commercial team: the trading review combines sales, gross profit, returns and
+      fulfilment findings for our next planning meeting. Use the saved editions to compare reporting
+      periods. This company report uses fictional data.'
+    retail:summary: 'Data team: coverage, financial reconciliation, completeness and field definitions
+      for the orders dataset. We expect this summary every five minutes; this prepared example is
+      deliberately left unchanged to show freshness warnings. Fictional data.'
+    retail:log:orders: 'Operations support: a static extract from order validation and reconciliation.
+      Timestamps, severity and batch references help trace warnings to their resolution. The watched
+      file is synthetic and is not appended to on this demo server.'
+    retail:log:fulfillment: 'Integration support: HTTP access log for warehouse dispatch requests,
+      including a retry after a temporary upstream failure. Addresses and requests are fictional;
+      this bounded watched file remains static.'
+code-settings:
+  views:
+    retail:log:orders:
+      style: timestamp
+    retail:log:fulfillment:
+      style: http

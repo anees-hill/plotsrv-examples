@@ -15,12 +15,6 @@ server-settings:
     - live:outcomes
     - live:durations
     - live:report
-    - live:source:follow-py
-    - live:source:generate_events-py
-    - live:source:reports-py
-    - live:source:plotsrv-yml
-    - live:source:publishing-py
-    - live:source:restore-py
 publisher-settings:
   destination:
     url: http://127.0.0.1:8102
@@ -37,21 +31,6 @@ security-settings:
 storage-settings:
   enabled: true
   views:
-    live:source:follow-py:
-      enabled: false
-      latest_enabled: false
-    live:source:generate_events-py:
-      enabled: false
-      latest_enabled: false
-    live:source:reports-py:
-      enabled: false
-      latest_enabled: false
-    live:source:plotsrv-yml:
-      enabled: false
-      latest_enabled: false
-    live:source:publishing-py:
-      enabled: false
-      latest_enabled: false
     live:recent:
       enabled: true
       keep_last: 3
@@ -71,9 +50,6 @@ storage-settings:
       enabled: true
       keep_last: 3
     live:imports:
-      enabled: false
-      latest_enabled: false
-    live:source:restore-py:
       enabled: false
       latest_enabled: false
   default_keep_last: 3
@@ -101,13 +77,16 @@ ui-settings:
   - view: live:imports
     title: Live import log
     caption: New validation events every three seconds
+    thumbnail: previews/imports.png
   - view: live:report
     title: Import operations
-    caption: A colourful report with three illustrative editions
+    caption: Batch status, source performance and follow-up actions
+    thumbnail: previews/report.png
   - view: live:recent
     title: Explore imports
     caption: Follow records from incoming files to validation outcomes
-  icon_url: https://plotsrv.com
+    thumbnail: previews/recent.png
+  icon_url: https://demo.plotsrv.com
   show_history_controls: true
 browser-update-settings:
   max_connections: 96
@@ -132,8 +111,46 @@ limits:
     text: 65536
     markdown: 131072
     html: 131072
-code-settings:
+description-settings:
   views:
-    live:source:plotsrv-yml:
-      language: yaml
-      style: code
+    live:imports: 'Integration team: incoming validation events from our file-import worker. Recent
+      records appear first; pause the view to inspect a record without new arrivals. The event generator
+      runs every three seconds using fictional inputs.'
+    live:recent: 'Data operations: one row per imported record, with source file, region, value and
+      validation outcome. Filter by source or outcome to reconcile a batch. Saved editions show the
+      same batch at successive processing stages. Fictional data.'
+    live:exceptions: 'Data operations: records requiring correction before acceptance. Group by validation
+      issue to allocate fixes, then use record IDs to locate the affected source rows in the import
+      register. Fictional data.'
+    live:manifest: 'Integration team: batch counts, schema and source-file details for the prepared
+      import report. We expect a manifest refresh every five minutes; this fixed example intentionally
+      becomes stale to demonstrate freshness warnings. Fictional data.'
+    live:outcomes: 'Operations leads: accepted and rejected record counts by source file. Review
+      alongside the exceptions table to distinguish a high-volume feed from a high rejection rate.
+      All counts come from the same prepared batch. Fictional data.'
+    live:durations: 'Platform team: simulated per-record validation times by source file. Compare
+      medians and spread before investigating slow feeds; these are example processing durations,
+      not measurements of the demo server.'
+    live:report: 'Operations leads: batch status, source performance and follow-up actions for the
+      daily handover. This report, register, exceptions and manifest describe the same prepared batch.
+      Saved editions illustrate progress; data is fictional.'
+freshness-settings:
+  enabled: true
+  views:
+    live:imports:
+      enabled: false
+    live:recent:
+      enabled: false
+    live:exceptions:
+      enabled: false
+    live:manifest:
+      enabled: true
+      expected_every: 5m
+      warn_after: 10m
+      overdue_after: 15m
+    live:outcomes:
+      enabled: false
+    live:durations:
+      enabled: false
+    live:report:
+      enabled: false

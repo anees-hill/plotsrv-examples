@@ -6,7 +6,7 @@ From the examples checkout, with plotsrv installed in `.venv`:
 
 ```sh
 export PLOTSRV_RETAIL_TOKEN="$(.venv/bin/python -c 'import secrets; print(secrets.token_urlsafe(32))')"
-uv run --no-sync plotsrv serve --config demos/retail/plotsrv.yml
+uv run --no-sync python -B demos/retail/serve.py
 ```
 
 In another terminal, with the **same** token:
@@ -28,13 +28,26 @@ Three snapshots are retained for the orders, four plots and trading report. The
 small `.plotsrv/demo-publishing/retail-v1.json` journal makes setup resumable;
 confirmed history is also inspected after interruption. Keep it with receiver state.
 
-Orders and the trading report deliberately expect an update every five minutes,
+The dataset summary deliberately expects an update every five minutes,
 warn after ten minutes and become overdue after fifteen. Other views do not use
 these short thresholds. No recurring retail job is needed: the overdue status is
 part of the demonstration and is explained in the report.
 
 Northstar uses the existing homepage logo, bundled locally; clicking it opens
-https://plotsrv.com. The **Demo source code** section displays the publishing files
-and portable config without resolving token environment variables. Source views
-have no snapshot history. Republish with the command above after editing content;
-unchanged live/restored views are reused.
+https://demo.plotsrv.com. Featured orders and trading-review entries have small local
+screenshots and freshness checks disabled. Source-code views have been removed.
+Republish with the command above after editing content; unchanged live/restored
+views are reused.
+
+## Operations logs
+
+`serve.py` registers two static watched files in the receiver process: order
+processing and fulfilment API access logs. They appear as compact entries in the
+view selector. Text styling highlights timestamps/severity and HTTP requests.
+Both use synthetic content, a 32 KiB read bound and memory materialisation; they
+have no history/latest persistence. Only the existing file watcher polls for
+changes. There is no log-writing process or report regeneration schedule.
+
+The receiver restores all persisted published views before registering its logs.
+SIGTERM/SIGINT shut down the receiver and watches together. A local health read
+every 30 seconds detects a stopped background HTTP server so systemd can restart it.

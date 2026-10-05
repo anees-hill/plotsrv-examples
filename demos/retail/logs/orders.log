@@ -1,0 +1,9 @@
+2026-06-30T08:00:00Z INFO orders.worker batch=NS-20260630 source=synthetic starting order reconciliation
+2026-06-30T08:00:01Z INFO orders.validation batch=NS-20260630 schema=orders-v3 required_fields=16
+2026-06-30T08:00:02Z INFO orders.validation batch=NS-20260630 duplicate_order_ids=0
+2026-06-30T08:00:03Z WARN orders.returns batch=NS-20260630 product="Summit Rain Shell" size=M elevated_return_rate=true owner=buying
+2026-06-30T08:00:04Z INFO orders.returns batch=NS-20260630 action=review_fit_guidance ticket=NS-142
+2026-06-30T08:00:05Z WARN orders.fulfillment batch=NS-20260630 region=West historical_delays=true period=2025-03/2025-06
+2026-06-30T08:00:06Z INFO orders.fulfillment batch=NS-20260630 action=review_carrier_performance owner=operations
+2026-06-30T08:00:07Z INFO orders.finance batch=NS-20260630 reconciliation=passed currency=GBP basis=before_returns
+2026-06-30T08:00:08Z INFO orders.worker batch=NS-20260630 report_revision=3 status=complete

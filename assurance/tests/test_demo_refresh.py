@@ -10,7 +10,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "demos"))
-from publishing import Publisher, public_sources, validate_public_config
+from publishing import Publisher
 
 
 def module(demo, filename, monkeypatch):
@@ -91,32 +91,41 @@ def test_import_editions_agree_and_remain_bounded(monkeypatch):
     assert "<script>" not in html and "&lt;script&gt;" in html
 
 
-def test_configs_admit_sources_and_bound_history(monkeypatch):
-    for demo, prefix in [
-        ("retail", "retail"),
-        ("live_import", "live"),
-        ("scan_audit", "scans"),
+def test_configs_bound_history_and_keep_featured_views_fresh():
+    for demo, stale in [
+        ("retail", "retail:summary"),
+        ("live_import", "live:manifest"),
+        ("scan_audit", None),
     ]:
         config = yaml.safe_load((ROOT / "demos" / demo / "plotsrv.yml").read_text())
-        assert config["ui-settings"]["icon_url"] == "https://plotsrv.com"
-        sources = list(public_sources(demo))
-        assert any(filename == "plotsrv.yml" for _, filename, _ in sources)
-        assert any(filename == "publishing.py" for _, filename, _ in sources)
-        for view, _, text in sources:
-            assert view in config["server-settings"]["admission"]["allowed_ids"]
-            assert config["storage-settings"]["views"][view] == {
-                "enabled": False,
-                "latest_enabled": False,
+        assert config["ui-settings"]["icon_url"] == "https://demo.plotsrv.com"
+        ids = config["server-settings"]["admission"]["allowed_ids"]
+        assert not any(":source:" in view for view in ids)
+        assert set(config["description-settings"]["views"]) == set(ids)
+        assert all(
+            len(d) <= 512 for d in config["description-settings"]["views"].values()
+        )
+        if stale:
+            enabled = {
+                k
+                for k, v in config["freshness-settings"]["views"].items()
+                if v["enabled"]
             }
-            assert len(text) < 65536
-        if demo != "scan_audit":
+            assert enabled == {stale}
             assert config["storage-settings"]["default_keep_last"] == 3
             assert not config["storage-settings"]["streams"]["enabled"]
-    config = yaml.safe_load((ROOT / "demos/retail/plotsrv.yml").read_text())
-    enabled = {
-        k for k, v in config["freshness-settings"]["views"].items() if v["enabled"]
-    }
-    assert enabled == {"retail:orders", "retail:guide"}
+            for feature in config["ui-settings"]["featured_views"]:
+                assert feature["view"] != stale
+                assert feature["thumbnail"].startswith("previews/")
+        else:
+            assert config["ui-settings"]["featured_views"] == []
+    retail = yaml.safe_load((ROOT / "demos/retail/plotsrv.yml").read_text())
+    assert retail["storage-settings"]["latest"]["restore_scope"] == "all"
+    for entry in retail["ui-settings"]["compact_views"]:
+        assert retail["storage-settings"]["views"][entry["view"]] == {
+            "enabled": False,
+            "latest_enabled": False,
+        }
     from plotsrv.checks_config import parse_checks
 
     rules = parse_checks(
@@ -127,14 +136,46 @@ def test_configs_admit_sources_and_bound_history(monkeypatch):
     assert rules[0].source == "scans:metrics" and rules[0].path == ("review_count",)
 
 
-def test_public_configs_do_not_expand_credentials(monkeypatch):
-    monkeypatch.setenv("PLOTSRV_RETAIL_TOKEN", "must-never-be-published")
-    assert all(
-        "must-never-be-published" not in text for _, _, text in public_sources("retail")
+def test_retail_summary_reconciles_with_orders(monkeypatch):
+    app = module("retail", "app.py", monkeypatch)
+    rows = app.make_orders()
+    summary = app.dataset_summary(rows)
+    assert summary["coverage"]["rows"] == len(rows)
+    assert summary["reporting_period"] == {
+        "from": "2025-01-01",
+        "through": "2026-06-30",
+        "months": 18,
+    }
+    assert summary["totals"]["booked_sales_gbp"] == round(
+        sum(r["order_value_gbp"] for r in rows), 2
     )
-    with pytest.raises(ValueError, match="credential"):
-        validate_public_config({"publisher-settings": {"bearer_token": "secret"}})
-    validate_public_config({"bearer_token_env": "PLOTSRV_RETAIL_TOKEN"})
+    for groups in [summary["by_category"], summary["by_region"]]:
+        assert sum(g["orders"] for g in groups.values()) == len(rows)
+        assert (
+            round(sum(g["booked_sales_gbp"] for g in groups.values()), 2)
+            == summary["totals"]["booked_sales_gbp"]
+        )
+    assert summary["data_quality"]["duplicate_order_ids"] == 0
+    assert summary["data_quality"]["financial_reconciliation_errors"] == 0
+    assert (
+        sum(summary["returns"]["by_reason"].values())
+        == summary["totals"]["returned_orders"]
+    )
+    assert len(json.dumps(summary)) < 128 * 1024
+    # The transmitted JSON tree also stays inside the unchanged receiver cap.
+    from plotsrv.http_publish import _container_item_count
+    from plotsrv.publisher import _to_publish_payload
+
+    payload = _to_publish_payload(
+        summary,
+        kind="artifact",
+        artifact_kind="json",
+        label=None,
+        section=None,
+        update_limit_s=None,
+        force=False,
+    )
+    assert _container_item_count(payload["artifact"]) <= 2000
 
 
 def test_seeding_resumes_after_snapshot_write_before_state_save(tmp_path, monkeypatch):
@@ -206,16 +247,25 @@ def test_invalid_later_payload_cannot_partially_publish_a_batch(tmp_path, monkey
     assert not calls
 
 
-def test_retail_freshness_transitions_use_real_publication_time(tmp_path):
+@pytest.mark.parametrize(
+    "demo,stale,featured,token",
+    [
+        ("retail", "retail:summary", "retail:guide", "PLOTSRV_RETAIL_TOKEN"),
+        ("live_import", "live:manifest", "live:report", "PLOTSRV_LIVE_TOKEN"),
+    ],
+)
+def test_freshness_transitions_use_real_publication_time(
+    tmp_path, demo, stale, featured, token
+):
     import os
     import subprocess
 
     script = """
 from datetime import datetime,timedelta,timezone
 from plotsrv import store
-store.set_artifact(obj='report',kind='markdown',view_id='retail:guide')
-store.set_artifact(obj='source',kind='text',view_id='retail:source:app-py')
-base=datetime.fromisoformat(store.get_status(view_id='retail:guide')['last_updated'])
+store.set_artifact(obj='report',kind='markdown',view_id='STALE_VIEW')
+store.set_artifact(obj='source',kind='text',view_id='FEATURED_VIEW')
+base=datetime.fromisoformat(store.get_status(view_id='STALE_VIEW')['last_updated'])
 class Clock(datetime):
     offset=0
     @classmethod
@@ -223,17 +273,18 @@ class Clock(datetime):
 store.datetime=Clock
 for seconds,state in [(0,'ok'),(601,'warn'),(901,'error')]:
     Clock.offset=seconds
-    assert store.get_freshness(view_id='retail:guide')['state']==state
-    assert store.get_freshness(view_id='retail:source:app-py')['state']=='disabled'
-assert store.get_status(view_id='retail:guide')['last_updated']==base.isoformat()
+    assert store.get_freshness(view_id='STALE_VIEW')['state']==state
+    assert store.get_freshness(view_id='FEATURED_VIEW')['state']=='disabled'
+assert store.get_status(view_id='STALE_VIEW')['last_updated']==base.isoformat()
 """
+    script = script.replace("STALE_VIEW", stale).replace("FEATURED_VIEW", featured)
     result = subprocess.run(
         [sys.executable, "-c", script],
         cwd=tmp_path,
         env={
             **os.environ,
-            "PLOTSRV_CONFIG": str(ROOT / "demos/retail/plotsrv.yml"),
-            "PLOTSRV_RETAIL_TOKEN": "fixture-only-token",
+            "PLOTSRV_CONFIG": str(ROOT / "demos" / demo / "plotsrv.yml"),
+            token: "fixture-only-token",
         },
         capture_output=True,
         text=True,
