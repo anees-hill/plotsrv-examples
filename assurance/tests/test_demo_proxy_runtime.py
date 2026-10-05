@@ -5,13 +5,16 @@ requests exercise admission/reconnection; this is not a load test.
 """
 import json
 import os
-from pathlib import Path
 import socket
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 import pytest
 import yaml
@@ -25,6 +28,98 @@ def free_port():
         return sock.getsockname()[1]
 
 
+@pytest.mark.parametrize("demo,host,port,view", [
+    ("retail", "retail-demo.plotsrv.com", 8101, "retail:orders"),
+    ("live_import", "live-demo.plotsrv.com", 8102, "live:imports"),
+    ("scan_audit", "scans-demo.plotsrv.com", 8103, "scans:results"),
+])
+def test_public_entry_view_preserves_links_and_route_boundaries(tmp_path, demo, host, port, view):
+    binary = os.environ.get("CADDY_DEMO_BINARY")
+    if not binary:
+        pytest.skip("set CADDY_DEMO_BINARY to the built custom Caddy")
+
+    class Echo(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("X-Upstream-Path", self.path)
+            self.end_headers()
+
+        do_HEAD = do_GET
+
+        def log_message(self, *args):
+            pass
+
+    upstream = ThreadingHTTPServer(("127.0.0.1", 0), Echo)
+    worker = threading.Thread(target=upstream.serve_forever, daemon=True)
+    worker.start()
+    proxy_port = free_port()
+    source = subprocess.check_output(
+        [sys.executable, str(ROOT / "deploy/render-caddy.py"), demo], text=True
+    )
+    source = source[source.index(f"\n{host} {{"):]
+    source = source.replace(host, f"http://127.0.0.1:{proxy_port}")
+    source = source.replace("\timport managed_tls\n", "").replace("\timport demo_headers\n", "")
+    source = source.replace(f"127.0.0.1:{port}", f"127.0.0.1:{upstream.server_port}")
+    config = tmp_path / "Caddyfile"
+    config.write_text("{\n admin off\n auto_https off\n}\n" + source)
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
+    def request(path, method="GET"):
+        return opener.open(urllib.request.Request(
+            f"http://127.0.0.1:{proxy_port}{path}", method=method,
+            headers={"CF-Connecting-IP": "192.0.2.1"},
+        ), timeout=5)
+
+    process = None
+    try:
+        with (tmp_path / "caddy.log").open("w") as log:
+            process = subprocess.Popen(
+                [binary, "run", "--config", str(config), "--adapter", "caddyfile"],
+                stdout=log, stderr=log,
+            )
+            for _ in range(100):
+                assert process.poll() is None, Path(log.name).read_text()
+                try:
+                    with request("/status"):
+                        break
+                except OSError:
+                    time.sleep(.1)
+            else:
+                pytest.fail("local proxy did not become ready")
+            for path in ("/", "/?", "/?snapshot=saved&tag=a&tag=b"):
+                for method in ("GET", "HEAD"):
+                    with request(path, method) as response:
+                        query = parse_qs(urlsplit(response.headers["X-Upstream-Path"]).query)
+                        expected = parse_qs(urlsplit(path).query)
+                        assert query == {**expected, "view": [view]}
+                        assert response.status == 200
+                        assert "Location" not in response.headers
+            for path in (
+                "/?view=other%3Aview&snapshot=saved&tag=a&tag=b",
+                "/?view=", "/?view=one&view=two",
+                "/status", "/artifact?view=other%3Aview&snapshot=saved",
+                "/history?view=other%3Aview", "/static/logo_plot.png",
+                "/assets/example.png",
+            ):
+                with request(path) as response:
+                    assert response.headers["X-Upstream-Path"] == path
+            for path, method in (("/", "POST"), ("/publish", "POST"), ("/docs", "GET")):
+                with pytest.raises(urllib.error.HTTPError) as blocked:
+                    request(path, method)
+                assert blocked.value.code == 404
+    finally:
+        if process is not None:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait()
+        upstream.shutdown()
+        upstream.server_close()
+        worker.join(timeout=5)
+
+
 def test_proxy_preserves_reads_when_sse_is_full_and_releases_expired_clients(tmp_path):
     binary = os.environ.get("CADDY_DEMO_BINARY")
     if not binary:
@@ -33,8 +128,11 @@ def test_proxy_preserves_reads_when_sse_is_full_and_releases_expired_clients(tmp
     config = yaml.safe_load((ROOT / "demos/retail/plotsrv.yml").read_text())
     config["server-settings"]["bind"]["port"] = port
     config["publisher-settings"]["destination"]["url"] = f"http://127.0.0.1:{port}"
-    config["browser-update-settings"] = dict(max_connections=2,
-        max_connections_per_client=1, max_connection_seconds=2)
+    config["browser-update-settings"] = {
+        "max_connections": 2,
+        "max_connections_per_client": 1,
+        "max_connection_seconds": 2,
+    }
     config_path = tmp_path / "plotsrv.yml"
     config_path.write_text(yaml.safe_dump(config))
     env = {**os.environ, "PLOTSRV_RETAIL_TOKEN": "local-acceptance-only",

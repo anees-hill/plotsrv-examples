@@ -48,6 +48,12 @@ Generated reports remain bounded to 128 KiB and plot images to 1 MiB. Selected
 history retains three snapshots (seven for scans). Stream persistence stays off.
 Public read routes remain available; publication and control remain private.
 
+The public root URL selects `retail:orders`, `live:imports` or `scans:results`
+when no `view` parameter is supplied. This is a Caddy query rewrite, so startup
+registration order cannot send new visitors to a minor log or prepared import
+table. Explicit view links, snapshot parameters and other read routes are preserved.
+Direct loopback receiver URLs do not use this proxy rule.
+
 ## Validation and rollout
 
 The new plotsrv Python formatting, watched-file identity/authentication and UI fixes
@@ -70,6 +76,13 @@ fresh **local test**, use an empty temporary working directory and receiver stor
 Do not clear production storage to reseed the examples.
 
 ### Presentation update verification (October 5)
+
+A follow-up browser review caught and corrected a truncated field-name preview in
+the Northstar summary and an import chart title that incorrectly described source
+files instead of time windows. The summary now groups field names by purpose and
+stays within the existing 2,000-item publication cap without a truncation warning.
+Actual bundled-Caddy tests verify the three public entry views, saved links,
+query preservation, unchanged read/static routes and blocked public writes.
 
 The focused content, configuration, packaging, installer and rehearsal checks
 passed, along with six real receiver/browser checks across all three demos.

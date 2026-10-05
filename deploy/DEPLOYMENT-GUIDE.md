@@ -167,6 +167,11 @@ local service check, not a public HTTPS or load test. Open the selected public d
 URLs and check tables/plots, watched logs, snapshots, live imports and scan reports.
 Northstar freshness warnings and the dim scan's failed data check are intentional.
 
+Opening a public demo URL without a `view` parameter should show **Explore orders**
+on Northstar, **Live import log** on file imports, and **Scan results** on scan audit.
+The bundled Caddy configuration chooses these entry views; explicit view and
+snapshot links still work. Direct loopback receiver URLs bypass this entry rule.
+
 For an all-demo VM, verify local HTTPS through the real proxy:
 
 ```bash

@@ -102,12 +102,18 @@ retail-demo.plotsrv.com {
 			}
 		}
 	}
+	# Pick the public entry view without changing explicit view/snapshot links.
+	@landing {
+		path /
+		not query view=*
+	}
 	@read {
 		method GET HEAD
 		path / /plot /artifact /table/data /table/export /status /checks /updates /history/navigation /history/month /history /compare/latest
 	}
 	handle @read {
 		route {
+			uri @landing query view retail:orders
 			# The key is trustworthy only while direct origin access is blocked.
 			rate_limit {
 				sweep_interval 15s
@@ -168,12 +174,18 @@ live-demo.plotsrv.com {
 			}
 		}
 	}
+	# Pick the public entry view without changing explicit view/snapshot links.
+	@landing {
+		path /
+		not query view=*
+	}
 	@read {
 		method GET HEAD
 		path / /plot /artifact /table/data /table/export /status /checks /updates /stream/data /stream/status /stream/summary /history/navigation /history/month /history /compare/latest
 	}
 	handle @read {
 		route {
+			uri @landing query view live:imports
 			rate_limit {
 				sweep_interval 15s
 				zone live_client {
@@ -233,12 +245,18 @@ scans-demo.plotsrv.com {
 			}
 		}
 	}
+	# Pick the public entry view without changing explicit view/snapshot links.
+	@landing {
+		path /
+		not query view=*
+	}
 	@read {
 		method GET HEAD
 		path / /artifact /table/data /table/export /status /checks /updates /history/navigation /history/month /history /compare/latest
 	}
 	handle @read {
 		route {
+			uri @landing query view scans:results
 			rate_limit {
 				sweep_interval 15s
 				zone scans_client {
