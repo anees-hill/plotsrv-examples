@@ -141,6 +141,11 @@ def test_retail_summary_reconciles_with_orders(monkeypatch):
     rows = app.make_orders()
     summary = app.dataset_summary(rows)
     assert summary["coverage"]["rows"] == len(rows)
+    assert {
+        field
+        for group in summary["coverage"]["field_names"].values()
+        for field in group.split(", ")
+    } == set(rows[0])
     assert summary["reporting_period"] == {
         "from": "2025-01-01",
         "through": "2026-06-30",
@@ -176,6 +181,7 @@ def test_retail_summary_reconciles_with_orders(monkeypatch):
         force=False,
     )
     assert _container_item_count(payload["artifact"]) <= 2000
+    assert payload["artifact"]["meta"]["truncated"] is False
 
 
 def test_seeding_resumes_after_snapshot_write_before_state_save(tmp_path, monkeypatch):

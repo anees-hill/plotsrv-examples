@@ -239,6 +239,9 @@ def test_browser_branding_reports_and_logs(receiver):
                 )
             page.screenshot(path=str(r.directory / "mobile.png"), full_page=True)
             if r.demo == "retail":
+                page.goto(r.base + "/?" + urlencode({"view": "retail:summary"}))
+                page.wait_for_selector(".ps-json-rich-head", state="attached")
+                assert "TRUNCATED" not in page.locator("body").inner_text()
                 page.goto(r.base + "/?" + urlencode({"view": "retail:log:orders"}))
                 page.wait_for_selector(".ps-log-token--warn")
                 page.goto(r.base + "/?" + urlencode({"view": "retail:log:fulfillment"}))

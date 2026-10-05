@@ -229,7 +229,7 @@ def content(revision):
             label="Quarantined",
         )
         ax.set(
-            title="Validation outcomes by source file",
+            title="Validation outcomes over time",
             xlabel="Fictional batch time (UTC)",
             ylabel="Records per 90-second window",
         )

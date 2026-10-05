@@ -125,8 +125,8 @@ description-settings:
     live:manifest: 'Integration team: batch counts, schema and source-file details for the prepared
       import report. We expect a manifest refresh every five minutes; this fixed example intentionally
       becomes stale to demonstrate freshness warnings. Fictional data.'
-    live:outcomes: 'Operations leads: accepted and rejected record counts by source file. Review
-      alongside the exceptions table to distinguish a high-volume feed from a high rejection rate.
+    live:outcomes: 'Operations leads: accepted and quarantined record counts in 90-second windows
+      across all feeds. Use the exceptions table and manifest for a breakdown by source file.
       All counts come from the same prepared batch. Fictional data.'
     live:durations: 'Platform team: simulated per-record validation times by source file. Compare
       medians and spread before investigating slow feeds; these are example processing durations,

@@ -307,7 +307,12 @@ def dataset_summary(rows):
         "coverage": {
             "rows": len(rows),
             "fields": len(fields),
-            "field_names": ", ".join(fields),
+            "field_names": {
+                "order": "order_date, order_id, product, category, region, quantity, size",
+                "financial": "unit_price_gbp, order_value_gbp, margin_gbp, unit_cost_gbp, discount_pct",
+                "service": "fulfillment_days, returned, return_reason",
+                "report": "report_revision",
+            },
             "products": len({r["product"] for r in rows}),
             "regions": len({r["region"] for r in rows}),
         },
