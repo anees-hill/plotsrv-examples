@@ -9,6 +9,9 @@ HTTP success does not certify browser behavior.
 | doctor; release provenance gate | Module, distribution, reference revision/status; reject mismatch and suite-time change | Confirm intended candidate | `test_doctor.py`, `test_suites.py` |
 | `basic-publication` (quick and release) | Unique received view/sentinel, publisher exit, cleanup | Attached workflow interaction | `test_quick.py` |
 | `gallery` | Receiver sentinels, exact table rows, decoded plot PNGs | Layout, formatting, controls | `test_gallery.py` |
+| `publication-modes` | Four direct/decorated sync/async table versions, exact CSV exports, stripped remote HTML script, traceback policies at both ends, configured render limits, attached publish/show/watch receipt | Filter/column persistence, reset, filtered exports, plot controls, simple/rich mode and traceback presentation | `test_smoke.py` |
+| `watch-formats` | Memory/file CSV receipt and exact source export, explicit row preview limit, byte-bounded head/tail, JSON/YAML/Markdown/HTML sentinels | Pagination, multi-sort, controls, sandbox behavior and live updates | `test_smoke.py` |
+| `observation-changes` | Same-session healthy/failing/recovered metrics and missingness, first-capture absence of comparisons, supplied metric deltas, examples off | Changes/help/history interaction and new-session boundary | `test_smoke.py` |
 | `stream-structured` | Finite JSONL records and drain | Updates and filters | `test_stream_structured.py` |
 | `stream-http` | Mixed HTTP/text/traceback event content | Mixed event presentation | `test_stream_structured.py` |
 | `stream-python-logs` | Raw Python log records, three validated events, four suggested presentations | Live log controls and suggested views | `test_stream_structured.py` |
@@ -23,19 +26,22 @@ HTTP success does not certify browser behavior.
 | `checks-webhook` | Baseline/failure/recovery, local webhook sink, bounded failure | Attention/check controls | `test_checks_webhook.py` |
 | `resource-monitor` | Finite real psutil samples, bounded history, decoded plots, cleanup | Longer chart/table session | `test_resource_monitor.py` |
 | `weather-demo` | Deterministic local HTTP sample through shared pipeline | Sample presentation and opt-in live source | `test_weather_demo.py` |
-| Release aggregation | All 16 required, exit/evidence/cleanup checked, missing or failed evidence nonzero | Sign-off always separate | `test_suites.py` |
+| Release aggregation | All 19 required, exit/evidence/cleanup checked, missing or failed evidence nonzero | Sign-off always separate | `test_suites.py` |
+| Explicit wheel smoke (separate command) | Wheel SHA-256, fresh-env import/direct URL, text/table/decoded PNG, packaged local CSS/JS | Installed browser behavior and intended build selection | `test_wheel_smoke.py` |
 | Focused publication/decorator/async/traceback and attached lifecycle examples | Separate repository tests; not additional release scenario IDs | Readability, interaction, traceback controls | `test_focused_examples.py` |
 | Fixtures/configs/workspace/process primitives | Separate repository tests; not behavioral release scenario IDs | None inferred | `test_fixtures.py`, `test_current_configs.py`, `test_workspace.py`, `test_lifecycle.py` |
 | Core internals, benchmarks, browser automation | Core-owned; no duplicated benchmark thresholds or browser automation | Not certified by examples | Outside this suite |
 
-All 16 named release scenarios are required; quick is the `basic-publication`
+All 19 named release scenarios are required; quick is the `basic-publication`
 subset. `python -m plotsrv_examples list` exposes the executable registry in
 `src/plotsrv_examples/suites.py`. See [release semantics](release.md) and the
 [manual checklist](manual-checklist.md). Test paths above are relative to
 `assurance/tests/`, except `assurance/test_doctor.py`. The matrix records coverage
 implementation, not a claim that final integration or manual checks have passed.
-Broad watch formats/head-tail/limits, async fault variants, real networking, and
-live weather are not certified by the deterministic suite. Historical inspection
+Representative watch formats/head-tail/limits are now checked, with detailed
+browser actions in [the smoke guide](manual-smoke-test.md). Exhaustive format/limit
+combinations, async congestion/fault variants, stream age retention, real
+networking and live weather are not certified by the deterministic suite. Historical inspection
 below is supplemented by [the reconciliation baseline](final-core-candidate.md).
 
 ## Inspected reference

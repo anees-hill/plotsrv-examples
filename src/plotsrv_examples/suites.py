@@ -16,6 +16,9 @@ from .doctor import report
 SCENARIOS = {
     "basic-publication": ("basic", {}),
     "gallery": ("gallery", {}),
+    "publication-modes": ("smoke", {"scenario": "publication-modes"}),
+    "watch-formats": ("smoke", {"scenario": "watch-formats"}),
+    "observation-changes": ("smoke", {"scenario": "observation-changes"}),
     "stream-structured": ("stream_structured", {}),
     "stream-http": ("stream_http", {}),
     "stream-python-logs": ("stream_python_logs", {}),

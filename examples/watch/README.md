@@ -1,5 +1,10 @@
 # Local and separate publisher file examples
 
+`run watch-formats` additionally checks representative CSV/text/JSON/YAML/Markdown/
+HTML inputs, memory/file CSV materialization, exact source export, preview limits,
+and bounded head/tail windows. The [manual smoke guide](../../assurance/manual-smoke-test.md)
+adds pagination, filtering, browser persistence and live update steps.
+
 From the examples checkout, with the matching core candidate available (see the
 repository setup and `python -m plotsrv_examples doctor`):
 

@@ -30,19 +30,34 @@ the candidate revision and its dependency environment.
 reports imported module, distribution/direct URL and reference revision/dirty
 state separately. It blocks missing or mismatched candidates. A sibling fallback
 exists, but explicit selection is recommended. Separately installed wheels are
-currently rejected by the source-identity gate; they are not silently certified.
+rejected by the source-identity gate; use the explicit `check wheel` workflow below.
 See [the inspected candidate baseline](assurance/final-core-candidate.md).
 The [current core review](assurance/current-core-review.md) records the fresh
 0.8.0 integration result.
 
 ## Workflows and coverage
 
-Quick requires a real received view and sentinel. Release requires all 16
+Quick requires a real received view and sentinel. Release requires all 19
 deterministic scenarios; failed assertions, absent dependencies, timeouts and
 interruption cannot pass. Exit 0 means automated success while manual status stays
 pending and full sign-off stays withheld. See [release semantics](assurance/release.md),
 [coverage matrix](assurance/coverage.md), and the reconstructed
 [manual checklist](assurance/manual-checklist.md).
+
+For the command-by-command browser workflow, use
+[Manual functional smoke testing — 0.8.0](assurance/manual-smoke-test.md).
+It retains the old two-terminal, command/expectation/checkbox style, including
+filter persistence, exports, live streams, observation changes and storage restart.
+Manual steps use an activated environment, ordinary `plotsrv`/`python` commands,
+and editor changes to configs and sample files.
+`python -m plotsrv_examples smoke-prepare` generates its isolated inputs/configs.
+The additional release scenarios are `publication-modes`, `watch-formats` and
+`observation-changes`; their server evidence does not certify browser interaction.
+
+An explicit wheel can also be tested in a fresh environment, separately from the
+source suite: `uv run --no-sync python -B -m plotsrv_examples check wheel --wheel-path /absolute/candidate.whl`.
+This records artifact identity and checks received text/table/plot plus packaged
+local assets. It requires `uv` and may install dependencies from the network.
 
 ```bash
 uv run --no-sync python -B -m plotsrv_examples run gallery --inspect
@@ -56,6 +71,7 @@ prints a local URL and stays available for 30 seconds; extend with
 
 | Examples / scenario | Guide |
 | --- | --- |
+| Manual release walkthrough, publishing variants, watched formats and observation changes | [0.8.0 smoke guide](assurance/manual-smoke-test.md) |
 | Direct/decorated/async objects, files, exceptions and lifecycle | [Gallery and focused examples](assurance/gallery.md) |
 | JSONL, mixed HTTP/text/traceback, and Python application logs | [Stream examples](examples/streams/README.md) |
 | Observed ETL, application result and capture provenance | [Observation](examples/observation/README.md) |
@@ -92,10 +108,12 @@ destination is loopback port 8101. See its `--help` for finite record bounds.
 
 ## Owned local state
 
-The [static landing page](site/README.md) and [deployment templates](deploy/README.md)
-are the starting point for a public demo suite. They have not been deployed by
-this repository. Representative VM memory, streaming behavior through Cloudflare
-and conference capacity must be measured before public launch.
+The [deployment templates](deploy/README.md) are the starting point for a public
+demo suite. The homepage and demo landing page live together in the separate
+`plotsrv-homepage` repository; this repository contains the runnable examples.
+This repository has not deployed them. Representative VM memory, streaming
+behavior through Cloudflare and conference capacity must be measured before
+public launch.
 
 Scenarios retain diagnostics in ignored `.plotsrv-runs/run-*` directories:
 

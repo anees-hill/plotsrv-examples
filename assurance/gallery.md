@@ -1,5 +1,8 @@
 # Focused examples and gallery
 
+For the full two-terminal release walkthrough, including export and browser
+persistence checks, use [the 0.8.0 manual smoke guide](manual-smoke-test.md).
+
 Run after the candidate setup and doctor described in the root README:
 
 ```bash

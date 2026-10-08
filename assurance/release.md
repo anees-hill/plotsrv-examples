@@ -9,7 +9,7 @@ uv run --no-sync python -B -m plotsrv_examples check quick
 uv run --no-sync python -B -m plotsrv_examples check release
 ```
 
-Quick checks one real publication. Release requires all 16 named scenarios in
+Quick checks one real publication. Release requires all 19 named scenarios in
 `coverage.md`, sequentially, using ephemeral loopback ports and owned workspaces.
 Weather uses the local deterministic sample; no external weather service is used.
 Each scenario must return zero, report success and nonempty asserted evidence,
@@ -42,6 +42,18 @@ assertion failures, interruption, invalid evidence and changed provenance.
 Use [the manual checklist](manual-checklist.md) to record human observations
 separately. Repository tests, compilation, privacy/migration review and final
 independent review are additional obligations; this suite does not replace them.
+The [manual smoke guide](manual-smoke-test.md) supplies two-terminal commands and
+expected results. New source scenarios cover publishing variants and exports,
+traceback policy, render limits, attached lifecycle, mixed watched-file formats,
+head/tail windows, and compatible observation changes. Browser persistence,
+filtered exports, live controls and reset remain human checks.
+
+`check wheel --wheel-path /absolute/candidate.whl` is a separate packaged smoke
+check, not a waiver of the source provenance gate. It creates an owned virtual
+environment, installs that artifact, verifies import/direct-URL identity and
+checks received text/table/plot plus local page assets. Its report includes the
+wheel SHA-256 and installation diagnostics. It requires `uv`; installation can
+use the network. It leaves manual status pending and retains its workspace.
 Generated workspaces are retained locally for diagnostics and can be cleaned
 with the documented `workspace-clean` command. Do not commit runtime reports.
 

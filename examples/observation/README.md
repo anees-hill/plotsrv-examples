@@ -1,5 +1,11 @@
 # Bounded ETL observation and custom calculations
 
+To compare healthy/failing/recovered captures within one publisher session, use
+`examples/observation/changes.py --port 8101 --interactive` against an existing
+receiver. See [the manual smoke guide](../../assurance/manual-smoke-test.md) for
+the complete commands and expected Changes/missingness states. The release
+suite's `observation-changes` scenario independently verifies those transitions.
+
 With the candidate installed as described in the repository README, run the
 finite scenario with its owned receiver and separate publishers:
 

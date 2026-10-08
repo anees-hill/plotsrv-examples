@@ -1,6 +1,8 @@
 # Manual release checklist
 
 Status: **pending**. Automated suite success does not complete any row below.
+Use [the command-by-command 0.8.0 smoke guide](manual-smoke-test.md) for current
+commands, prepared fixtures, expected results and detailed checkboxes.
 This checklist is reconstructed from the retained examples, core inspection
 contracts, and the legacy interactive gallery purpose; it is not a recovered
 historical sign-off or a claim that a tester has performed these checks.
@@ -24,6 +26,9 @@ terminals as described in `examples/streams/README.md`.
 | Surface / scenario | Human observation required | Status |
 | --- | --- | --- |
 | `gallery` | Table formatting, plot sizing, object expansion, Featured/compact view entries, Grouped/A–Z navigation, pins and browser theme | pending |
+| `publication-modes` and manual guide | Direct/decorated sync/async receipt; filtered/source exports; filters/columns survive view changes, browser refresh and same-origin server restart; reset; traceback policy at each end; HTML script isolation; render limits and simple/rich modes | pending |
+| `watch-formats` and manual guide | CSV pagination/multi-sort/search/filter, source and presentation exports, 99-row small fixture, mixed JSON/YAML/Markdown/HTML, memory/file materialization, head/tail windows and live updates | pending |
+| `observation-changes` and interactive publisher | First capture, healthy/failing/recovered Changes, observed missingness, supplied metric history, and new-session comparison boundary | pending |
 | Focused `examples/lifecycle.py` and gallery | Attached publish/show/watch behavior and terminal interaction; follow example CLI help | pending |
 | Focused `examples/exceptions.py` | Traceback display, expansion, readability and intended security presentation | pending |
 | `stream-structured`, `stream-http`, `stream-python-logs` | Live feed, filters, interpretation controls, saved presentations, mixed HTTP/text/traceback and Python log suggestions | pending |
